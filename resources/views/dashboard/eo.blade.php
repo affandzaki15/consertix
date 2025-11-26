@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="min-h-screen bg-gray-100 px-6 py-8 text-gray-900">
-    
+
     <div class="max-w-7xl mx-auto">
 
         {{-- HEADER --}}
@@ -13,7 +13,7 @@
                 <p class="text-gray-500 mt-1">Kelola konser yang kamu selenggarakan dengan mudah ✨</p>
             </div>
 
-            <a href="{{ route('concerts.create') }}"
+            <a href="{{ route('eo.concerts.create') }}"
                 class="bg-indigo-600 hover:bg-indigo-700 transition px-5 py-2.5 rounded-lg font-semibold text-white shadow-md">
                 + Buat Konser Baru
             </a>
@@ -85,14 +85,16 @@
                             </td>
 
                             <td class="px-3 text-center space-x-2">
-                                <a href="{{ route('concerts.edit',$c->id) }}"
-                                   class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md text-xs">
-                                   Edit
+                                <a href="{{ route('eo.concerts.edit', $c->id) }}"
+                                    class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md text-xs">
+                                    Edit
                                 </a>
-                                <a href="{{ route('concerts.tickets.index',$c->id) }}"
-                                   class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs">
-                                   Tiket
+
+                                <a href="{{ route('eo.concerts.tickets.index',$c->id) }}"
+                                    class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs">
+                                    Tiket
                                 </a>
+
                             </td>
                         </tr>
 

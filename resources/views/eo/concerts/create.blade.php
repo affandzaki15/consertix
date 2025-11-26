@@ -18,7 +18,7 @@
         @endif
 
         {{-- FORM --}}
-        <form action="{{ route('concerts.store') }}" method="POST" enctype="multipart/form-data">
+       <form action="{{ route('eo.concerts.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             {{-- JUDUL --}}

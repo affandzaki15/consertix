@@ -10,7 +10,7 @@
             <h2 class="text-2xl font-bold text-gray-800">Edit Konser 🎤</h2>
 
             @if($concert->status == 'draft')
-            <form action="{{ route('concerts.update', $concert->id) }}" method="POST">
+            <form action="{{ route('eo.concerts.update', $concert->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="status" value="pending">
@@ -29,7 +29,7 @@
         @endif
 
         {{-- EDIT FORM --}}
-        <form action="{{ route('concerts.update', $concert->id) }}" method="POST">
+        <form action="{{ route('eo.concerts.update', $concert->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -62,7 +62,7 @@
         {{-- KELANDA TIKET --}}
         <div class="mt-10">
             <h3 class="text-lg font-semibold mb-3">Kelola Tipe Tiket 🎟️</h3>
-            <a href="{{ route('concerts.tickets.index', $concert->id) }}"
+            <a href="{{ route('eo.concerts.tickets.index', $concert->id) }}"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">
                 Kelola Tiket Sekarang ➜
             </a>

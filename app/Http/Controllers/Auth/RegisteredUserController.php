@@ -42,6 +42,13 @@ class RegisteredUserController extends Controller
             'role'     => $request->role,
             'phone'    => $request->phone,
         ]);
+        // Jika user mendaftar sebagai EO → buatkan organizer otomatis
+        if ($user->role === 'eo') {
+            \App\Models\Organizer::create([
+                'user_id' => $user->id,
+                'organization_name' => $user->name // atau nama EO custom nanti
+            ]);
+        }
 
         event(new Registered($user));
 

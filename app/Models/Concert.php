@@ -13,7 +13,7 @@ class Concert extends Model
         'price',
         'image_url',
         'status',
-        'organizer'
+        'organizer_id'
     ];
 
     protected $casts = [
@@ -25,5 +25,9 @@ class Concert extends Model
     public function ticketTypes()
     {
         return $this->hasMany(TicketType::class, 'concert_id');
+    }
+    public function organizer()
+    {
+        return $this->belongsTo(\App\Models\Organizer::class, 'organizer_id');
     }
 }

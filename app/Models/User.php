@@ -48,4 +48,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+public function organizer()
+{
+    return $this->hasOne(\App\Models\Organizer::class, 'user_id');
+}
+
+
+public function concerts()
+{
+    return $this->hasMany(\App\Models\Concert::class, 'organizer_id');
+}
+
 }
