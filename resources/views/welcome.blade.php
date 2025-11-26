@@ -150,11 +150,14 @@
 
                     <h3 class="mt-2 text-lg font-semibold">{{ $concert->title }}</h3>
 
-                    <p class="text-sm mt-2 text-gray-700">
-                        Mulai dari <span class="text-red-600 font-bold">Rp. {{ number_format($concert->price, 0, ',', '.') }}</span>
-                    </p>
+                    <div class="mt-2 flex items-center justify-between">
+                        <div>
+                            <div class="text-xs text-gray-500">Mulai dari</div>
+                            <div class="text-2xl font-extrabold text-orange-500">Rp. {{ number_format($concert->price, 0, ',', '.') }}</div>
+                        </div>
 
-                    <span class="text-green-600 font-medium text-sm">{{ $concert->status }}</span>
+                        <div class="text-green-600 font-medium text-sm">{{ $concert->status }}</div>
+                    </div>
 
                     <!-- Organizer (logo + name) -->
                     <div class="border-t mt-4 pt-4 flex items-center space-x-3">
