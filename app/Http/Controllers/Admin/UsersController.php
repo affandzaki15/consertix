@@ -10,34 +10,48 @@ class UsersController extends Controller
 {
     public function index(Request $request)
     {
-        $q = $request->input('q');
-        $users = User::when($q, fn($b) => $b->where('name', 'like', "%{$q}%")->orWhere('email', 'like', "%{$q}%"))
-            ->paginate(20);
+        $q = $request->query('q');
+        $role = $request->query('role');
 
-        return view('admin.users.index', compact('users', 'q'));
+        $users = User::query()
+            ->when($q, fn($b) => $b->where(fn($qb) =>
+                $qb->where('name', 'like', "%{$q}%")
+                   ->orWhere('email', 'like', "%{$q}%")
+            ))
+            ->when($role, fn($b) => $b->where('role', $role))
+            ->orderBy('created_at', 'desc')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('admin.users.index', compact('users', 'q', 'role'));
     }
 
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        $roles = ['user','eo','admin'];
+        return view('admin.users.edit', compact('user','roles'));
     }
 
     public function update(Request $request, User $user)
     {
-        $request->validate(['role' => 'required|string', 'active' => 'nullable|boolean']);
+        $data = $request->validate([
+            'role' => 'required|string|in:user,eo,admin',
+            'active' => 'nullable|boolean',
+        ]);
 
-        $user->role = $request->role;
+        $user->role = $data['role'];
         if ($request->has('active')) {
-            $user->active = (bool) $request->active;
+            $user->active = (bool) $request->boolean('active');
         }
         $user->save();
 
-        return redirect()->route('admin.users.index')->with('success', 'User updated.');
+        return redirect()->route('admin.users.index')->with('success', 'User diperbarui.');
     }
 
     public function destroy(User $user)
     {
+        // soft delete jika model gunakan SoftDeletes, jika tidak hapus langsung
         $user->delete();
-        return back()->with('success', 'User removed.');
+        return back()->with('success', 'User dihapus.');
     }
 }

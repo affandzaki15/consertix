@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -6,9 +5,22 @@
     <h2 class="text-xl font-bold">Pending Concerts</h2>
     <ul class="mt-4">
         @foreach($pending as $c)
-            <li class="py-2 border-b">
-                {{ $c->title }} — {{ $c->date ?? 'tanggal belum' }}
-                <a href="{{ route('admin.concerts.show', $c) }}" class="text-indigo-600 ml-4">Inspect</a>
+            <li class="py-2 border-b flex items-center justify-between">
+                <div>
+                    {{ $c->title }} — {{ $c->date ?? 'tanggal belum' }}
+                </div>
+                <div class="flex items-center space-x-2">
+                    <form action="{{ route('admin.concerts.approve', $c) }}" method="POST">
+                        @csrf
+                        <button class="px-3 py-1 bg-green-600 text-white rounded">Approve</button>
+                    </form>
+
+                    <form action="{{ route('admin.concerts.reject', $c) }}" method="POST" class="flex items-center">
+                        @csrf
+                        <input type="text" name="note" placeholder="Catatan (opsional)" class="border rounded px-2 py-1 mr-2">
+                        <button class="px-3 py-1 bg-red-600 text-white rounded">Reject</button>
+                    </form>
+                </div>
             </li>
         @endforeach
     </ul>
