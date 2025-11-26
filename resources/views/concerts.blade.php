@@ -9,7 +9,7 @@
 
         <!-- Header with search -->
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-3xl font-bold text-gray-900">Event Terbaru</h2>
+            <h2 class="text-3xl font-bold text-gray-900">Events Terbaru</h2>
 
             <div class="flex items-center space-x-4">
                 <form method="GET" action="{{ route('concerts.index') }}" class="flex items-center space-x-2">
