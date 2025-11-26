@@ -51,44 +51,30 @@
                     <h2 class="text-xl font-semibold text-gray-900">Data Pemesan</h2>
                 </div>
 
-                <form action="{{ route('purchase.processDetail', $order->id) }}" method="POST">
-                    @csrf
-
-                    {{-- NAMA --}}
-                    <div class="mb-5">
-                        <label class="font-medium text-gray-700">Nama Lengkap *</label>
-                        <input 
-                            type="text" 
-                            name="name"
-                            value="{{ auth()->user()->name }}"
-                            class="w-full mt-2 p-3 border rounded-xl focus:ring focus:ring-indigo-200"
-                            required>
+                {{-- NAMA --}}
+                <div class="mb-5">
+                    <label class="font-medium text-gray-700">Nama Lengkap</label>
+                    <div class="w-full mt-2 p-3 border rounded-xl bg-gray-50">
+                        {{ auth()->user()->name }}
                     </div>
+                </div>
 
-                    {{-- EMAIL --}}
-                    <div class="mb-5">
-                        <label class="font-medium text-gray-700">Email *</label>
-                        <input 
-                            type="email" 
-                            name="email"
-                            value="{{ auth()->user()->email }}"
-                            class="w-full mt-2 p-3 border rounded-xl focus:ring focus:ring-indigo-200"
-                            required>
+                {{-- EMAIL --}}
+                <div class="mb-5">
+                    <label class="font-medium text-gray-700">Email</label>
+                    <div class="w-full mt-2 p-3 border rounded-xl bg-gray-50">
+                        {{ auth()->user()->email }}
                     </div>
+                </div>
 
-                    {{-- NOMOR WHATSAPP --}}
-                    <div class="mb-5">
-                        <label class="font-medium text-gray-700">No. WhatsApp *</label>
-                        <input 
-                            type="text" 
-                            name="phone"
-                            value="{{ auth()->user()->phone }}"
-                            class="w-full mt-2 p-3 border rounded-xl focus:ring focus:ring-indigo-200"
-                            required>
+                {{-- NOMOR WHATSAPP --}}
+                <div class="mb-5">
+                    <label class="font-medium text-gray-700">No. WhatsApp</label>
+                    <div class="w-full mt-2 p-3 border rounded-xl bg-gray-50">
+                        {{ auth()->user()->phone ?? '-' }}
                     </div>
+                </div>
 
-                  
-                </form>
             </div>
 
         </div>
@@ -103,24 +89,26 @@
                 <h3 class="text-lg font-semibold text-gray-900">Rincian Pesanan</h3>
             </div>
 
-            <div class="mb-3">
-                <div class="flex justify-between font-medium text-gray-900">
-                    <span>{{ $ticket->name }}</span>
-                    <span>Rp{{ number_format($ticket->price) }}</span>
+            @foreach($order->items as $item)
+                <div class="mb-3">
+                    <div class="flex justify-between font-medium text-gray-900">
+                        <span>{{ $item->ticketType->name }}</span>
+                        <span>Rp{{ number_format($item->price) }}</span>
+                    </div>
+                    <p class="text-sm text-gray-500">x{{ $item->quantity }}</p>
                 </div>
-                <p class="text-sm text-gray-500">x1</p>
-            </div>
+            @endforeach
 
             <hr class="my-4">
 
             <div class="flex justify-between text-gray-600 text-sm mb-2">
                 <span>Subtotal</span>
-                <span>Rp{{ number_format($ticket->price) }}</span>
+                <span>Rp{{ number_format($order->total_amount) }}</span>
             </div>
 
             <div class="flex justify-between font-semibold text-gray-900 text-lg mb-4">
                 <span>Total Bayar</span>
-                <span>Rp{{ number_format($ticket->price) }}</span>
+                <span>Rp{{ number_format($order->total_amount) }}</span>
             </div>
 
             <hr class="my-4">
@@ -133,7 +121,10 @@
 
                 <form action="{{ route('purchase.processDetail', $order->id) }}" method="POST" class="flex-1 ml-3">
                     @csrf
-                    <button
+                    <input type="hidden" name="name" value="{{ auth()->user()->name }}">
+                    <input type="hidden" name="email" value="{{ auth()->user()->email }}">
+                    <input type="hidden" name="phone" value="{{ auth()->user()->phone ?? '' }}">
+                    <button type="submit"
                         class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold">
                         Lanjutkan
                     </button>

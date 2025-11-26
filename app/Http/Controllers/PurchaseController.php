@@ -28,21 +28,39 @@ class PurchaseController extends Controller
 
     public function store(Request $request, Concert $concert)
     {
+        // Cek apakah user sudah punya order untuk konser ini
         $existingOrder = Order::where('user_id', Auth::id())
             ->where('concert_id', $concert->id)
+            ->latest()
             ->first();
 
         if ($existingOrder) {
+            // Jika order sebelumnya belum selesai (mis. status != 'paid'), arahkan ke detail agar user bisa melanjutkan
+            if ($existingOrder->status !== 'paid') {
+                return redirect()->route('purchase.detail', $existingOrder->id)
+                    ->with('error', 'Anda memiliki pesanan tertunda. Silakan lanjutkan detail pesanan.');
+            }
+
+            // Jika sudah berstatus paid, berikan pesan bahwa user sudah membeli tiket
             return back()->with('error', 'Anda sudah membeli tiket untuk konser ini.');
         }
 
-        // 2. Hitung jumlah tiket yg dibeli
-        $totalQty = array_sum($request->quantity);
-
-        if ($totalQty > 1) {
-            return back()->with('error', 'Anda hanya boleh membeli 1 tiket.');
+        // Validasi: minimal ada data tiket
+        if (!$request->has('ticket_type_id') || !$request->has('quantity')) {
+            return back()->with('error', 'Pilih tiket terlebih dahulu.');
         }
 
+        // Hitung jumlah tiket yang dibeli
+        $totalQty = array_sum($request->quantity);
+
+        // Validasi: minimal 1, maksimal 5 tiket
+        if ($totalQty < 1) {
+            return back()->with('error', 'Pilih minimal 1 tiket.');
+        }
+
+        if ($totalQty > 5) {
+            return back()->with('error', 'Maksimal 5 tiket per pesanan.');
+        }
 
         $total = 0;
         $items = [];
@@ -55,6 +73,10 @@ class PurchaseController extends Controller
 
             $type = TicketType::find($typeId);
 
+            if (!$type) {
+                return back()->with('error', 'Tiket tidak ditemukan.');
+            }
+
             $total += $type->price * $qty;
 
             $items[] = [
@@ -64,16 +86,18 @@ class PurchaseController extends Controller
             ];
         }
 
+        if (empty($items)) {
+            return back()->with('error', 'Tidak ada tiket yang dipilih.');
+        }
+
         $order = Order::create([
-            'user_id'      => auth()->id(),
-            'concert_id'   => $concert->id,   // ← WAJIB ADA
-            'buyer_name'   => auth()->user()->name,
-            'buyer_email'  => auth()->user()->email,
+            'user_id'      => Auth::id(),
+            'concert_id'   => $concert->id,
+            'buyer_name'   => Auth::user()->name,
+            'buyer_email'  => Auth::user()->email,
             'total_amount' => $total,
             'status'       => 'pending',
         ]);
-
-        session(['last_order_id' => $order->id]);
 
         foreach ($items as $item) {
             OrderItem::create([
@@ -87,17 +111,13 @@ class PurchaseController extends Controller
                 ->increment('sold', $item['quantity']);
         }
 
-
-return redirect()->route('purchase.detail', $order->id);
-
-
+        return redirect()->route('purchase.detail', $order->id);
     }
     public function detail(Order $order)
     {
         return view('purchase.detail', [
             'order' => $order,
-            'concert' => $order->concert,
-            'ticket' => $order->items->first()->ticketType
+            'concert' => $order->concert
         ]);
     }
 

@@ -31,6 +31,31 @@
         </div>
     </div>
 
+    {{-- FLASH / ERROR MESSAGES --}}
+    <div class="max-w-6xl mx-auto px-6 mb-4">
+        @if(session('error'))
+            <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if(session('success'))
+            <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg">
+                <ul class="list-disc list-inside">
+                    @foreach($errors->all() as $err)
+                        <li>{{ $err }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+    </div>
+
     <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
 
         {{-- LEFT --}}
@@ -83,12 +108,11 @@
 
                                 <div>
                                     @if(!$soldOut)
-                                        <button
-                                            class="select-ticket px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition"
-                                            data-id="{{ $t->id }}"
-                                            data-price="{{ $t->price }}">
-                                            Pilih Tiket
-                                        </button>
+                                        <div class="flex items-center gap-3">
+                                            <button type="button" class="qty-minus w-10 h-10 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-700 flex items-center justify-center" data-id="{{ $t->id }}">−</button>
+                                            <input type="text" class="qty-display w-12 text-center text-lg font-bold bg-transparent" value="0" readonly data-id="{{ $t->id }}" data-price="{{ $t->price }}">
+                                            <button type="button" class="qty-plus w-10 h-10 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-700 flex items-center justify-center" data-id="{{ $t->id }}">+</button>
+                                        </div>
                                     @else
                                         <button class="px-6 py-2 bg-gray-300 text-gray-600 rounded-lg font-medium cursor-not-allowed">
                                             Sold Out
@@ -138,15 +162,15 @@
             </div>
 
             <form id="paymentForm" action="{{ route('purchase.store', $concert->id) }}"
-                  method="POST" class="hidden">
+                  method="POST">
                 @csrf
+                
+                <button id="bayarBtn" type="submit"
+                    class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed transition"
+                    disabled>
+                    Beli Sekarang
+                </button>
             </form>
-
-            <button id="bayarBtn"
-                class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed transition"
-                disabled>
-                Beli Sekarang
-            </button>
 
         </div>
 
@@ -158,48 +182,117 @@
 
         const bayarBtn = document.getElementById("bayarBtn");
         const form = document.getElementById("paymentForm");
-
         const detailBox = document.getElementById("orderDetailContainer");
         const ticketName = document.getElementById("ticketName");
         const ticketPrice = document.getElementById("ticketPrice");
         const subtotalValue = document.getElementById("subtotalValue");
         const totalValue = document.getElementById("totalValue");
 
-        document.querySelectorAll('.select-ticket').forEach(button => {
-
-            button.addEventListener('click', function() {
-
+        // Handle tombol +
+        document.querySelectorAll('.qty-plus').forEach(btn => {
+            btn.addEventListener('click', function(e){
+                e.preventDefault();
                 const id = this.dataset.id;
-                const price = parseInt(this.dataset.price);
-                const name = this.closest('.relative').querySelector('h3').innerText;
-
-                form.innerHTML = `@csrf
-                    <input type="hidden" name="ticket_type_id[]" value="${id}">
-                    <input type="hidden" name="quantity[]" value="1">`;
-
-                form.classList.remove("hidden");
-
-                detailBox.classList.remove("hidden");
-                ticketName.textContent = name;
-                ticketPrice.textContent = "Rp" + price.toLocaleString();
-                subtotalValue.textContent = "Rp" + price.toLocaleString();
-                totalValue.textContent = "Rp" + price.toLocaleString();
-
-                bayarBtn.disabled = false;
-
-                document.querySelectorAll('.select-ticket').forEach(b => {
-                    b.innerText = "Pilih Tiket";
-                    b.classList.remove("bg-green-600");
-                    b.classList.add("bg-indigo-600");
-                });
-
-                this.innerText = "Dipilih";
-                this.classList.remove("bg-indigo-600");
-                this.classList.add("bg-green-600");
+                const display = document.querySelector(`.qty-display[data-id="${id}"]`);
+                let qty = parseInt(display.value) || 0;
+                if(qty < 5) {
+                    qty++;
+                    display.value = qty;
+                    updateAllQty();
+                } else {
+                    alert('Maksimal 5 tiket per kategori');
+                }
             });
         });
 
-        bayarBtn.addEventListener("click", () => form.submit());
+        // Handle tombol -
+        document.querySelectorAll('.qty-minus').forEach(btn => {
+            btn.addEventListener('click', function(e){
+                e.preventDefault();
+                const id = this.dataset.id;
+                const display = document.querySelector(`.qty-display[data-id="${id}"]`);
+                let qty = parseInt(display.value) || 0;
+                if(qty > 0) {
+                    qty--;
+                    display.value = qty;
+                    updateAllQty();
+                }
+            });
+        });
+
+        function updateAllQty() {
+            let totalQty = 0;
+            let totalPrice = 0;
+            let selectedName = null;
+
+            document.querySelectorAll('.qty-display').forEach(display => {
+                const qty = parseInt(display.value) || 0;
+                if(qty > 0) {
+                    totalQty += qty;
+                    const price = parseInt(display.dataset.price) || 0;
+                    totalPrice += price * qty;
+                    if(!selectedName) {
+                        selectedName = display.closest('.relative').querySelector('h3').innerText;
+                    }
+                }
+            });
+
+            if(totalQty > 0) {
+                // Remove old hidden inputs (keep CSRF token)
+                form.querySelectorAll('input[name^="ticket_type_id"], input[name^="quantity"]').forEach(el => {
+                    el.remove();
+                });
+                
+                // Add inputs for each selected ticket
+                document.querySelectorAll('.qty-display').forEach(display => {
+                    const qty = parseInt(display.value) || 0;
+                    if(qty > 0) {
+                        const id = display.dataset.id;
+                        const input1 = document.createElement('input');
+                        input1.type = 'hidden';
+                        input1.name = 'ticket_type_id[]';
+                        input1.value = id;
+                        form.appendChild(input1);
+                        
+                        const input2 = document.createElement('input');
+                        input2.type = 'hidden';
+                        input2.name = 'quantity[]';
+                        input2.value = qty;
+                        form.appendChild(input2);
+                    }
+                });
+
+                detailBox.classList.remove("hidden");
+                ticketName.textContent = selectedName || '-';
+                ticketPrice.textContent = "Rp" + totalPrice.toLocaleString();
+                subtotalValue.textContent = "Rp" + totalPrice.toLocaleString();
+                totalValue.textContent = "Rp" + totalPrice.toLocaleString();
+                bayarBtn.disabled = false;
+            } else {
+                // Remove hidden inputs when no qty selected
+                form.querySelectorAll('input[name^="ticket_type_id"], input[name^="quantity"]').forEach(el => {
+                    el.remove();
+                });
+                detailBox.classList.add("hidden");
+                bayarBtn.disabled = true;
+            }
+        }
+
+        // Use native form submit; validate before submitting
+        form.addEventListener('submit', function(e) {
+            let totalQty = 0;
+            document.querySelectorAll('.qty-display').forEach(display => {
+                totalQty += parseInt(display.value) || 0;
+            });
+
+            if (totalQty === 0) {
+                e.preventDefault();
+                alert('Pilih jumlah tiket terlebih dahulu');
+                return;
+            }
+
+            // Allow native submit (browser will follow redirects or auth)
+        });
     });
 </script>
 
