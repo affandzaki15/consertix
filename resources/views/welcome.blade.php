@@ -128,7 +128,7 @@
     <div class="max-w-7xl mx-auto px-6">
 
         <!-- Header with search -->
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-6"> 
             <h2 class="text-3xl font-bold text-gray-900">Event Terbaru</h2>
         </div>
 
@@ -150,11 +150,14 @@
 
                     <h3 class="mt-2 text-lg font-semibold">{{ $concert->title }}</h3>
 
-                    <p class="text-sm mt-2 text-gray-700">
-                        Mulai dari <span class="text-red-600 font-bold">Rp. {{ number_format($concert->price, 0, ',', '.') }}</span>
-                    </p>
+                    <div class="mt-2 flex items-center justify-between">
+                        <div>
+                            <div class="text-xs text-gray-500">Mulai dari</div>
+                            <div class="text-2xl font-extrabold text-orange-500">Rp. {{ number_format($concert->price, 0, ',', '.') }}</div>
+                        </div>
 
-                    <span class="text-green-600 font-medium text-sm">{{ $concert->status }}</span>
+                        <div class="text-green-600 font-medium text-sm">{{ $concert->status }}</div>
+                    </div>
 
                     <!-- Organizer (logo + name) -->
                     <div class="border-t mt-4 pt-4 flex items-center space-x-3">
@@ -175,7 +178,7 @@
     </div>
 </section>
 
-<!-- 4 EASY STEPS SECTION -->
+<!-- 4 EASY STEPS SECTIONudadadad aa-->
 <section class="w-full py-20 bg-white">
     <div class="max-w-7xl mx-auto px-6">
 
@@ -233,7 +236,7 @@
                 <img src="{{ asset('logo/download.png') }}" alt="concert" class="h-32 mb-6">
                 <h3 class="font-semibold text-lg mb-2">Download Your Ticket!</h3>
                 <p class="text-gray-500 text-sm">
-                    After completing checkout, download your ticket and get ready for the event!
+                    After completings checkout, download your ticket and get ready for the event!
                 </p>
             </div>
 
@@ -325,7 +328,7 @@
 
 
 
-<!-- Footer -->
+<!-- Footers t-->
 {{-- <footer class="bg-gray-900 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p>&copy; {{ date('Y') }} Concertix. All rights reserved.</p>
