@@ -33,7 +33,10 @@ Route::get('/', function () {
 });
 
 Route::get('/concerts', [ConcertController::class, 'index'])->name('concerts.index');
-Route::get('/concerts/search', [ConcertController::class, 'search'])->name('concerts.search');
+
+Route::get('/concerts/search', [ConcertController::class, 'search'])
+    ->name('concerts.search');
+
 Route::get('/concerts/{concert}', [ConcertController::class, 'show'])->name('concerts.show');
 
 

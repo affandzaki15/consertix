@@ -19,7 +19,7 @@ class ConcertController extends Controller
         if ($q) {
             $query->where(function ($builder) use ($q) {
                 $builder->where('title', 'like', "%{$q}%")
-                        ->orWhere('location', 'like', "%{$q}%");
+                    ->orWhere('location', 'like', "%{$q}%");
             });
         }
 
@@ -33,24 +33,25 @@ class ConcertController extends Controller
      */
     public function search(Request $request)
     {
-        $q = $request->query('q');
+        $query = $request->q;
 
-        $query = Concert::query();
+        $concerts = Concert::where(function ($q) use ($query) {
+            $q->where('title', 'like', '%' . $query . '%')
+                ->orWhere('location', 'like', '%' . $query . '%');
+        })
+            ->with('organizer.user:id,name')
+            ->select('id', 'title', 'location', 'date', 'image_url', 'organizer_id')
+            ->get();
 
-        if ($q) {
-            $query->where(function ($builder) use ($q) {
-                $builder->where('title', 'like', "%{$q}%")
-                        ->orWhere('location', 'like', "%{$q}%")
-                        ->orWhere('organizer', 'like', "%{$q}%");
-            });
+
+        // Perbaiki image path
+        foreach ($concerts as $c) {
+            $c->image_url = asset('storage/' . $c->image_url);
         }
 
-        $results = $query->orderBy('date', 'desc')
-            ->limit(10)
-            ->get(['id','title','location','date','image_url','price','organizer']);
-
-        return response()->json($results);
+        return response()->json($concerts);
     }
+
 
     /**
      * Display a single concert detail.

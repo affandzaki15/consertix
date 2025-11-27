@@ -24,42 +24,53 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
 
             @forelse($concerts as $concert)
-                <a href="{{ route('concerts.show', $concert->id) }}" class="block border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
-                    <img src="{{ $concert->image_url }}" class="w-full h-56 object-cover rounded-t-xl" />
+            <a href="{{ route('concerts.show', $concert->id) }}" class="block border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+                <img src="{{ asset('storage/' . $concert->image_url) }}" class="w-full h-56 object-cover rounded-t-xl" />
 
-                    <div class="p-4">
-                        <div class="flex items-center text-gray-600 text-sm space-x-2">
-                            <span>📍 {{ $concert->location }}</span>
-                        </div>
-
-                        <div class="flex items-center text-gray-600 text-sm space-x-2">
-                            <span>📅 {{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}</span>
-                        </div>
-
-                        <h3 class="mt-2 text-lg font-semibold">{{ $concert->title }}</h3>
-
-                        <div class="mt-2 flex items-center justify-between">
-                            <div>
-                                <div class="text-xs text-gray-500">Mulai dari</div>
-                                <div class="text-2xl font-extrabold text-orange-500">Rp. {{ number_format($concert->price, 0, ',', '.') }}</div>
-                            </div>
-
-                            <div class="text-green-600 font-medium text-sm">{{ $concert->status }}</div>
-                        </div>
-                        
-                        <!-- Organizer (logo + name) -->
-                        <div class="border-t mt-4 pt-4 flex items-center space-x-3">
-                            <img src="{{ $concert->image_url }}" alt="{{ $concert->organizer }}" class="h-10 w-10 rounded-full object-cover"> 
-                            <div class="text-sm text-gray-700 font-medium">{{ $concert->organizer }}</div>
-                        </div>
+                <div class="p-4">
+                    <div class="flex items-center text-gray-600 text-sm space-x-2">
+                        <span>📍 {{ $concert->location }}</span>
                     </div>
-                </a>
-            @empty
-                <div class="col-span-1 sm:col-span-2 md:col-span-4">
-                    <div class="bg-white rounded-xl shadow p-8 text-center">
-                        <span class="text-gray-400">(Belum ada data konser)</span>
+
+                    <div class="flex items-center text-gray-600 text-sm space-x-2">
+                        <span>📅 {{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}</span>
+                    </div>
+
+                    <h3 class="mt-2 text-lg font-semibold">{{ $concert->title }}</h3>
+
+                    <div class="mt-2 flex items-center justify-between">
+                        <div>
+                            <div class="text-xs text-gray-500">Mulai dari</div>
+                            <div class="text-2xl font-extrabold text-orange-500">Rp. {{ number_format($concert->price, 0, ',', '.') }}</div>
+                        </div>
+
+                        @php
+                        $status = $concert->ticket_status;
+                        @endphp
+
+                        @if($status === 'sold_out')
+                        <div class="text-red-600 font-medium text-sm">Sold Out ❌</div>
+                        @elseif($status === 'coming_soon')
+                        <div class="text-yellow-600 font-medium text-sm">Coming Soon ⏳</div>
+                        @else
+                        <div class="text-green-600 font-medium text-sm">Tiket Tersedia ✔</div>
+                        @endif
+
+                    </div>
+
+                    <!-- Organizer (logo + name) -->
+                    <div class="border-t mt-4 pt-4 flex items-center space-x-3">
+                        <img src="{{ $concert->image_url }}" alt="{{ $concert->organizer }}" class="h-10 w-10 rounded-full object-cover">
+                        <div class="text-sm text-gray-700 font-medium">{{ $concert->organizer }}</div>
                     </div>
                 </div>
+            </a>
+            @empty
+            <div class="col-span-1 sm:col-span-2 md:col-span-4">
+                <div class="bg-white rounded-xl shadow p-8 text-center">
+                    <span class="text-gray-400">(Belum ada data konser)</span>
+                </div>
+            </div>
             @endforelse
 
         </div>
@@ -69,4 +80,3 @@
 
 
 @endsection
-

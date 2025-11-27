@@ -128,7 +128,7 @@
     <div class="max-w-7xl mx-auto px-6">
 
         <!-- Header with search -->
-        <div class="flex items-center justify-between mb-6"> 
+        <div class="flex items-center justify-between mb-6">
             <h2 class="text-3xl font-bold text-gray-900">Event Terbaru</h2>
         </div>
 
@@ -137,7 +137,7 @@
 
             @forelse($concerts as $concert)
             <a href="{{ route('concerts.show', $concert->id) }}" class="block border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
-                <img src="{{ $concert->image_url }}" class="w-full h-56 object-cover rounded-t-xl" />
+                <img src="{{ asset('storage/' . $concert->image_url) }}" class="w-full h-56 object-cover rounded-t-xl" />
 
                 <div class="p-4">
                     <div class="flex items-center text-gray-600 text-sm space-x-2">
@@ -156,7 +156,18 @@
                             <div class="text-2xl font-extrabold text-orange-500">Rp. {{ number_format($concert->price, 0, ',', '.') }}</div>
                         </div>
 
-                        <div class="text-green-600 font-medium text-sm">{{ $concert->status }}</div>
+                        @php
+                        $status = $concert->ticket_status;
+                        @endphp
+
+                        @if($status === 'sold_out')
+                        <div class="text-red-600 font-medium text-sm">Sold Out</div>
+                        @elseif($status === 'coming_soon')
+                        <div class="text-yellow-600 font-medium text-sm">Coming Soon ⏳</div>
+                        @else
+                        <div class="text-green-600 font-medium text-sm">Tiket Tersedia</div>
+                        @endif
+
                     </div>
 
                     <!-- Organizer (logo + name) -->
@@ -498,7 +509,7 @@
                 return `\
                                             <a href="/concerts/${item.id}" class="block px-6 py-4 hover:bg-gray-50">\
                                     <div class="flex items-start space-x-4">\
-                                        <img src="${escapeHtml(item.image_url)}" alt="" class="w-20 h-12 object-cover rounded-md flex-shrink-0">\
+                                       <img src="${item.image_url}" alt="" class="w-20 h-12 object-cover rounded-md flex-shrink-0">\
                                         <div class="flex-1">\
                                             <div class="font-semibold text-lg text-gray-900">${escapeHtml(item.title)}</div>\
                                             <div class="text-sm text-gray-500 mt-1">${date}</div>\
