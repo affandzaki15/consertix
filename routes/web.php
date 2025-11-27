@@ -120,6 +120,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','role:admin'])->group
     Route::post('/reports/export', [ReportsController::class, 'export'])->name('reports.export');
 });
 
+// Toggle active/inactive user
+Route::middleware(['auth','admin'])->group(function () {
+    Route::patch('admin/users/{user}/toggle', [UsersController::class, 'toggle'])
+        ->name('admin.users.toggle');
+});
 
 // PROFILE ROUTES
 Route::middleware('auth')->group(function () {

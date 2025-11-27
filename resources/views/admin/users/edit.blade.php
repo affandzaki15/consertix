@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    {{-- include shared admin menu --}}
     @includeWhen(View::exists('admin.partials.menu'), 'admin.partials.menu')
 
     <div class="mb-4">

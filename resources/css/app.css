@@ -11,41 +11,40 @@ header {
 
 .swiper-button-next,
 .swiper-button-prev {
-  width: 45px;
-  height: 45px;
-  background: rgba(0,0,0,0.4);
-  border-radius: 50%;
-  backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Warna icon panah */
 .swiper-button-next::after,
 .swiper-button-prev::after {
-  font-size: 20px !important;
-  color: rgb(0, 0, 0) !important;
+    font-size: 20px !important;
+    color: rgb(0, 0, 0) !important;
 }
 
 /* Posisi tombol */
 .swiper-button-next {
-  right: 20px;
+    right: 20px;
 }
 
 .swiper-button-prev {
-  left: 20px;
+    left: 20px;
 }
 
 .search-home {
-      border-color: #ffffff !important;
+    border-color: #ffffff !important;
     border-width: 0px !important;
 }
 
 input:focus,
 textarea:focus {
-  outline: none; 
-  border-color: #ffffff; /* Ubah warna border utama */
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); /* Tambahkan efek glow tipis */
+    outline: none;
+    border-color: #ffffff; /* Ubah warna border utama */
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); /* Tambahkan efek glow tipis */
 }
-

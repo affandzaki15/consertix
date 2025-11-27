@@ -13,148 +13,136 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 
-
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="{{ request()->is('admin*') ? 'bg-gray-50 text-gray-800' : '' }}">
+<body class="font-sans antialiased">
     <div id="app" class="{{ request()->is('admin*') ? 'min-h-screen' : '' }}">
-        <!-- Header Custom -->
-        <!-- Header Custom -->
-        <header class="w-full bg-gradient-to-b from-[#0d0f55] to-[#0a0c38] text-white py-4">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
-                <!-- ================= MOBILE (HP) ================= -->
-                <div class="md:hidden">
+        {{-- Header --}}
+        @if (request()->is('admin*'))
+            {{-- Admin Header + Menu --}}
+            @includeWhen(View::exists('admin.partials.menu'), 'admin.partials.menu')
+        @else
+            {{-- User Header --}}
+            <header class="w-full bg-gradient-to-b from-[#0d0f55] to-[#0a0c38] text-white py-4">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
-                    <!-- LOGO DI ATAS -->
-                    <div class="flex justify-center mb-4">
-                        <a href="{{ url('/') }}">
-                            <img src="{{ asset('logo/header.png') }}" class="h-10">
-                        </a>
+                    <!-- Mobile -->
+                    <div class="md:hidden">
+                        <div class="flex justify-center mb-4">
+                            <a href="{{ url('/') }}">
+                                <img src="{{ asset('logo/header.png') }}" class="h-10">
+                            </a>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <nav class="flex items-center space-x-4 text-sm font-medium">
+                                <a href="{{ url('/') }}" class="hover:text-indigo-300">Home</a>
+                                <a href="{{ route('concerts.index') }}" class="hover:text-indigo-300">Concerts</a>
+                                <a href="#" class="hover:text-indigo-300">Singers</a>
+                            </nav>
+
+                            <div class="flex items-center space-x-3">
+                                <button class="text-white hover:text-indigo-300">
+                                    <!-- Cart Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
+                                        class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
+                                    </svg>
+                                </button>
+
+                                @guest
+                                    <a href="{{ route('login') }}"
+                                        class="bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium">
+                                        Login / Register
+                                    </a>
+                                @else
+                                    <x-dropdown align="right" width="48">
+                                        <x-slot name="trigger">
+                                            <button
+                                                class="flex items-center space-x-1 bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100">
+                                                <span>{{ Auth::user()->name }}</span>
+                                            </button>
+                                        </x-slot>
+
+                                        <x-slot name="content">
+                                            <x-dropdown-link :href="route('history')">History</x-dropdown-link>
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <x-dropdown-link href="{{ route('logout') }}"
+                                                    onclick="event.preventDefault(); this.closest('form').submit();">
+                                                    Logout
+                                                </x-dropdown-link>
+                                            </form>
+                                        </x-slot>
+                                    </x-dropdown>
+                                @endguest
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- MENU KIRI + LOGIN/CART KANAN -->
-                    <div class="flex items-center justify-between">
-
-                        <!-- MENU HP -->
-                        <nav class="flex items-center space-x-4 text-sm font-medium">
-                            <a href="{{ url('/') }}" class="hover:text-indigo-300">Home</a>
-                            <a href="{{ route('concerts.index') }}" class="hover:text-indigo-300">Concerts</a>
-                            <a href="#" class="hover:text-indigo-300">Singers</a>
+                    <!-- Desktop -->
+                    <div class="hidden md:flex flex-wrap items-center justify-between gap-4">
+                        <nav class="flex items-center space-x-8 text-sm lg:text-lg font-medium order-1">
+                            <a href="{{ url('/') }}" class="hover:text-indigo-300 transition">Home</a>
+                            <a href="{{ route('concerts.index') }}" class="hover:text-indigo-300 transition">Concerts</a>
+                            <a href="#" class="hover:text-indigo-300 transition">Singers</a>
                         </nav>
 
-                        <!-- LOGIN + CART -->
-                        <div class="flex items-center space-x-3">
+                        <div class="flex-1 flex justify-center order-2">
+                            <a href="{{ url('/') }}">
+                                <img src="{{ asset('logo/header.png') }}" class="h-10 sm:h-12">
+                            </a>
+                        </div>
 
-                            <!-- Cart -->
-                            <button class="text-white hover:text-indigo-300">
+                        <div class="flex items-center space-x-4 order-3">
+                            <button class="text-white hover:text-indigo-300 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                     viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
-                                    class="w-6 h-6">
+                                    class="w-7 h-7 md:w-8 md:h-8">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
                                 </svg>
                             </button>
 
                             @guest
-                            <a href="{{ route('login') }}"
-                                class="bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium">
-                                Login / Register
-                            </a>
+                                <a href="{{ route('login') }}"
+                                    class="bg-white text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100 transition">
+                                    Login / Register
+                                </a>
                             @else
-                            <x-dropdown align="right" width="48">
-                                <x-slot name="trigger">
-                                    <button
-                                        class="flex items-center space-x-1 bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100">
-                                        <span>{{ Auth::user()->name }}</span>
-                                    </button>
-                                </x-slot>
+                                <x-dropdown align="right" width="48">
+                                    <x-slot name="trigger">
+                                        <button
+                                            class="flex items-center space-x-2 bg-white text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100">
+                                            <span>{{ Auth::user()->name }}</span>
+                                        </button>
+                                    </x-slot>
 
-                                <x-slot name="content">
-                                    <x-dropdown-link :href="route('history')">History</x-dropdown-link>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <x-dropdown-link href="{{ route('logout') }}"
-                                            onclick="event.preventDefault(); this.closest('form').submit();">
-                                            Logout
-                                        </x-dropdown-link>
-                                    </form>
-                                </x-slot>
-                            </x-dropdown>
+                                    <x-slot name="content">
+                                        <x-dropdown-link :href="route('history')">History</x-dropdown-link>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <x-dropdown-link href="{{ route('logout') }}"
+                                                onclick="event.preventDefault(); this.closest('form').submit();">
+                                                Logout
+                                            </x-dropdown-link>
+                                        </form>
+                                    </x-slot>
+                                </x-dropdown>
                             @endguest
                         </div>
                     </div>
+
                 </div>
-
-                <!-- ================= TABLET & DESKTOP ================= -->
-                <div class="hidden md:flex flex-wrap items-center justify-between gap-4">
-
-                    <!-- MENU LEFT -->
-                    <nav class="flex items-center space-x-8 text-sm lg:text-lg font-medium order-1">
-                        <a href="{{ url('/') }}" class="hover:text-indigo-300 transition">Home</a>
-                        <a href="{{ route('concerts.index') }}" class="hover:text-indigo-300 transition">Concerts</a>
-                        <a href="#" class="hover:text-indigo-300 transition">Singers</a>
-                    </nav>
-
-                    <!-- LOGO CENTER -->
-                    <div class="flex-1 flex justify-center order-2">
-                        <a href="{{ url('/') }}">
-                            <img src="{{ asset('logo/header.png') }}" class="h-10 sm:h-12">
-                        </a>
-                    </div>
-
-                    <!-- LOGIN + CART RIGHT -->
-                    <div class="flex items-center space-x-4 order-3">
-
-                        <!-- Cart -->
-                        <button class="text-white hover:text-indigo-300 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
-                                class="w-7 h-7 md:w-8 md:h-8">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
-                            </svg>
-                        </button>
-
-                        @guest
-                        <a href="{{ route('login') }}"
-                            class="bg-white text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100 transition">
-                            Login / Register
-                        </a>
-                        @else
-                        <x-dropdown align="right" width="48">
-                            <x-slot name="trigger">
-                                <button
-                                    class="flex items-center space-x-2 bg-white text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100">
-                                    <span>{{ Auth::user()->name }}</span>
-                                </button>
-                            </x-slot>
-
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('history')">History</x-dropdown-link>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <x-dropdown-link href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); this.closest('form').submit();">
-                                        Logout
-                                    </x-dropdown-link>
-                                </form>
-                            </x-slot>
-                        </x-dropdown>
-                        @endguest
-
-                    </div>
-                </div>
-
-            </div>
-        </header>
-
-
+            </header>
+        @endif
 
         <!-- Page Content -->
-        <main>
+        <main class="{{ request()->is('admin*') ? 'pt-32' : 'pt-0' }}">
             @yield('content')
         </main>
     </div>

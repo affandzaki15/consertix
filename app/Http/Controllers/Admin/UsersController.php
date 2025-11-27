@@ -54,4 +54,19 @@ class UsersController extends Controller
         $user->delete();
         return back()->with('success', 'User dihapus.');
     }
+
+    public function toggle(Request $request, User $user)
+    {
+        // validasi sederhana; pastikan hanya admin mengakses (route memakai middleware 'admin')
+        $active = $request->has('active') ? (bool) $request->input('active') : ! ((bool) $user->active);
+        // jika kolom tidak ada, tambahkan fallback: buat property virtual tidak disimpan
+        if (! \Schema::hasColumn('users', 'active')) {
+            return redirect()->back()->with('error', 'Kolom users.active tidak ditemukan. Tambahkan migration terlebih dulu.');
+        }
+
+        $user->active = $active;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Status pengguna diperbarui.');
+    }
 }

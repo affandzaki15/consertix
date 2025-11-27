@@ -21,20 +21,31 @@ class ConcertsController extends Controller
 
     public function approve(Request $request, Concert $concert)
     {
-        $concert->status = 'approved';
-        $concert->save();
+        $concert->update([
+            'approval_status' => 'approved'
+        ]);
+
+        // otomatis update selling status
+        $concert->updateSellingStatus();
 
         return redirect()->route('admin.concerts.pending')->with('success', 'Konser disetujui.');
     }
 
     public function reject(Request $request, Concert $concert)
     {
-        $concert->status = 'rejected';
-        if ($request->filled('note')) {
-            $concert->admin_note = $request->input('note');
-        }
-        $concert->save();
+        $concert->update([
+            'approval_status' => 'rejected',
+            'selling_status' => 'coming_soon'
+        ]);
 
-        return redirect()->route('admin.concerts.pending')->with('success', 'Konser ditolak.');
+        if ($request->filled('note')) {
+            // simpan catatan jika ada kolom notes/admin_note
+            if (Schema::hasColumn('concerts', 'notes')) {
+                $concert->notes = $request->input('note');
+                $concert->save();
+            }
+        }
+
+        return redirect()->route('admin.concerts.pending')->with('error', 'Konser ditolak.');
     }
 }
