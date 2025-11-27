@@ -7,15 +7,9 @@
         <div class="flex items-center justify-between mb-6">
             <div>
                 <h1 class="text-3xl font-extrabold text-gray-900">Admin Dashboard</h1>
-                <p class="mt-1 text-sm text-gray-600">Ringkasan cepat: pengguna, EO, penjualan, dan order terbaru.</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="{{ route('admin.reports.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border rounded-md text-sm shadow-sm hover:shadow focus:outline-none">
-                    Export Reports
-                </a>
-                <a href="{{ route('admin.users.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700">
-                    Manage Users
-                </a>
+                <p class="mt-1 text-sm text-gray-600">
+                    Ringkasan cepat: pengguna, EO, penjualan, dan order terbaru.
+                </p>
             </div>
         </div>
 
@@ -28,120 +22,115 @@
 
         <!-- KPI Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+
             <div class="bg-white p-5 rounded-lg shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-sm text-gray-500">Total Users</h3>
-                        <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $usersCount ?? 0 }}</p>
-                    </div>
-                    <div class="text-indigo-600 bg-indigo-50 p-2 rounded-full">
-                        <!-- icon -->
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5.121 17.804A9 9 0 1118.88 6.195" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                </div>
-                <p class="mt-3 text-xs text-gray-500">Jumlah user terdaftar</p>
+                <h3 class="text-sm text-gray-500">Total Users</h3>
+                <p class="mt-1 text-2xl font-semibold">{{ $usersCount ?? 0 }}</p>
             </div>
 
             <div class="bg-white p-5 rounded-lg shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-sm text-gray-500">Organizers (EO)</h3>
-                        <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $eoCount ?? 0 }}</p>
-                    </div>
-                    <div class="text-green-600 bg-green-50 p-2 rounded-full">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 11c2.21 0 4-1.79 4-4S14.21 3 12 3 8 4.79 8 7s1.79 4 4 4z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                </div>
-                <p class="mt-3 text-xs text-gray-500">Jumlah EO aktif</p>
+                <h3 class="text-sm text-gray-500">Organizers (EO)</h3>
+                <p class="mt-1 text-2xl font-semibold">{{ $eoCount ?? 0 }}</p>
             </div>
 
             <div class="bg-white p-5 rounded-lg shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-sm text-gray-500">Pending Payments</h3>
-                        <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $pendingPayments ?? 0 }}</p>
-                    </div>
-                    <div class="text-purple-600 bg-purple-50 p-2 rounded-full">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                </div>
-                <p class="mt-3 text-xs text-gray-500">Order dengan bukti belum terverifikasi</p>
+                <h3 class="text-sm text-gray-500">Pending Payments</h3>
+                <p class="mt-1 text-2xl font-semibold">{{ $pendingPayments ?? 0 }}</p>
             </div>
 
             <div class="bg-white p-5 rounded-lg shadow-sm border">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-sm text-gray-500">Sales Total</h3>
-                        <p class="mt-1 text-2xl font-semibold text-gray-900">Rp {{ number_format($salesTotal ?? 0, 0, ',', '.') }}</p>
-                    </div>
-                    <div class="text-yellow-600 bg-yellow-50 p-2 rounded-full">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c4 0 8 2 8 6s-4 6-8 6-8-2-8-6 4-6 8-6z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                </div>
-                <p class="mt-3 text-xs text-gray-500">Total pendapatan</p>
+                <h3 class="text-sm text-gray-500">Sales Total</h3>
+                <p class="mt-1 text-2xl font-semibold">
+                    Rp {{ number_format($salesTotal ?? 0, 0, ',', '.') }}
+                </p>
             </div>
+
         </div>
 
-        <!-- Main content grid -->
+        <!-- Main content -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Concerts by status -->
-            <div class="lg:col-span-1 bg-white p-5 rounded-lg shadow-sm border">
-                <h3 class="text-lg font-semibold text-gray-800 mb-3">Concerts by Status</h3>
+
+            <!-- Approval Status -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border">
+                <h3 class="text-lg font-semibold mb-3">Concert Approval Status</h3>
                 <ul class="space-y-2 text-sm">
-                    @forelse($concertsByStatus as $status => $count)
-                        <li class="flex items-center justify-between">
-                            <span class="capitalize text-gray-700">{{ $status }}</span>
-                            <span class="text-sm font-medium text-gray-900">{{ $count }}</span>
-                        </li>
-                    @empty
-                        <li class="text-gray-500">Tidak ada data konser.</li>
-                    @endforelse
+                    <li class="flex justify-between">
+                        <span>Pending</span>
+                        <span>{{ $approvalStats['pending'] ?? 0 }}</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Approved</span>
+                        <span>{{ $approvalStats['approved'] ?? 0 }}</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Rejected</span>
+                        <span>{{ $approvalStats['rejected'] ?? 0 }}</span>
+                    </li>
                 </ul>
             </div>
 
-            <!-- Recent orders -->
-            <div class="lg:col-span-2 bg-white p-5 rounded-lg shadow-sm border">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Recent Orders</h3>
-                    <form method="GET" action="{{ route('admin.orders.index') }}" class="flex items-center gap-2">
-                        <input name="q" type="search" placeholder="Cari order / user" class="border rounded-md px-3 py-2 text-sm" />
-                        <button class="px-3 py-2 bg-indigo-600 text-white rounded-md text-sm">View all</button>
-                    </form>
-                </div>
+            <!-- Selling Status -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border">
+                <h3 class="text-lg font-semibold mb-3">Selling Status (Approved)</h3>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex justify-between">
+                        <span>Coming Soon</span>
+                        <span>{{ $sellingStats['coming_soon'] ?? 0 }}</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Tiket Tersedia</span>
+                        <span>{{ $sellingStats['available'] ?? 0 }}</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Sold Out</span>
+                        <span>{{ $sellingStats['sold_out'] ?? 0 }}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border lg:col-span-1">
+                <h3 class="text-lg font-semibold mb-3">Recent Orders</h3>
 
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs text-gray-500">#</th>
-                                <th class="px-4 py-3 text-left text-xs text-gray-500">User</th>
-                                <th class="px-4 py-3 text-left text-xs text-gray-500">Total</th>
-                                <th class="px-4 py-3 text-left text-xs text-gray-500">Status</th>
+                                <th class="px-3 py-2 text-left">ID</th>
+                                <th class="px-3 py-2 text-left">Total</th>
+                                <th class="px-3 py-2 text-left">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y">
                             @forelse($recentOrders as $order)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-4 py-3">{{ $order->id }}</td>
-                                    <td class="px-4 py-3 text-gray-700">{{ $usersMap[$order->user_id]->name ?? '-' }}</td>
-                                    <td class="px-4 py-3">Rp {{ number_format($order->total_amount ?? 0, 0, ',', '.') }}</td>
-                                    <td class="px-4 py-3">
-                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ ($order->payment_status ?? $order->status ?? '') === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
-                                            {{ $order->payment_status ?? $order->status ?? '-' }}
+                                <tr>
+                                    <td class="px-3 py-2">{{ $order->id }}</td>
+                                    <td class="px-3 py-2">
+                                        Rp {{ number_format($order->total_amount ?? 0, 0, ',', '.') }}
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        <span class="px-2 py-1 rounded-full text-xs font-semibold
+                                            {{ ($order->payment_status ?? 'pending') === 'pending'
+                                                ? 'bg-yellow-200 text-yellow-800'
+                                                : 'bg-green-200 text-green-800' }}">
+                                            {{ $order->payment_status ?? 'pending' }}
                                         </span>
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td class="px-4 py-3" colspan="4">Belum ada order.</td></tr>
+                                <tr>
+                                    <td colspan="3" class="px-3 py-3 text-center text-gray-500">
+                                        Tidak ada order terbaru.
+                                    </td>
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                <div class="mt-4">
-                    {{ $recentOrders->links() }}
-                </div>
+                <div class="mt-4">{{ $recentOrders->links() }}</div>
             </div>
+
         </div>
 
     </div>
