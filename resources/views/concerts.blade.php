@@ -27,7 +27,7 @@
             <a href="{{ route('concerts.show', $concert->id) }}" class="block border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
                 <img src="{{ asset('storage/' . $concert->image_url) }}" class="w-full h-56 object-cover rounded-t-xl" />
 
-                <div class="p-4">
+                < class="p-4">
                     <div class="flex items-center text-gray-600 text-sm space-x-2">
                         <span>📍 {{ $concert->location }}</span>
                     </div>
@@ -41,29 +41,32 @@
                     <div class="mt-2 flex items-center justify-between">
                         <div>
                             <div class="text-xs text-gray-500">Mulai dari</div>
-                            <div class="text-2xl font-extrabold text-orange-500">Rp. {{ number_format($concert->price, 0, ',', '.') }}</div>
+                            <div class="text-2xl font-extrabold text-orange-500">
+                                Rp. {{ number_format($concert->price, 0, ',', '.') }}
+                            </div>
                         </div>
 
-                        @php
-                        $status = $concert->ticket_status;
-                        @endphp
-
-                        @if($status === 'sold_out')
+                        {{-- Logic status tampil --}}
+                        @if($concert->approval_status !== 'approved')
+                        <div class="text-yellow-600 font-medium text-sm">Coming Soon ⏳</div>
+                        @else
+                        @if($concert->selling_status === 'sold_out')
                         <div class="text-red-600 font-medium text-sm">Sold Out ❌</div>
-                        @elseif($status === 'coming_soon')
+                        @elseif($concert->selling_status === 'coming_soon')
                         <div class="text-yellow-600 font-medium text-sm">Coming Soon ⏳</div>
                         @else
                         <div class="text-green-600 font-medium text-sm">Tiket Tersedia ✔</div>
                         @endif
-
+                        @endif
                     </div>
 
-                    <!-- Organizer (logo + name) -->
+                    <!-- Organizer -->
                     <div class="border-t mt-4 pt-4 flex items-center space-x-3">
-                        <img src="{{ $concert->image_url }}" alt="{{ $concert->organizer }}" class="h-10 w-10 rounded-full object-cover">
-                        <div class="text-sm text-gray-700 font-medium">{{ $concert->organizer }}</div>
+                        <img src="{{ asset('logo/user.png') }}" class="h-10 w-10 rounded-full object-cover" alt="Organizer">
+                        <div class="text-sm text-gray-700 font-medium">
+                            {{ $concert->organizer->organization_name ?? 'Unknown Organizer' }}
+                        </div>
                     </div>
-                </div>
             </a>
             @empty
             <div class="col-span-1 sm:col-span-2 md:col-span-4">

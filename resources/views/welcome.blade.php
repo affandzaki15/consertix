@@ -156,24 +156,28 @@
                             <div class="text-2xl font-extrabold text-orange-500">Rp. {{ number_format($concert->price, 0, ',', '.') }}</div>
                         </div>
 
-                        @php
-                        $status = $concert->ticket_status;
-                        @endphp
-
-                        @if($status === 'sold_out')
+                        @if($concert->approval_status !== 'approved')
+                        {{-- belum disetujui admin --}}
+                        <div class="text-yellow-600 font-medium text-sm">Coming Soon ⏳</div>
+                        @else
+                        @if($concert->selling_status === 'sold_out')
                         <div class="text-red-600 font-medium text-sm">Sold Out</div>
-                        @elseif($status === 'coming_soon')
+                        @elseif($concert->selling_status === 'coming_soon')
                         <div class="text-yellow-600 font-medium text-sm">Coming Soon ⏳</div>
                         @else
                         <div class="text-green-600 font-medium text-sm">Tiket Tersedia</div>
                         @endif
+                        @endif
+
 
                     </div>
 
                     <!-- Organizer (logo + name) -->
                     <div class="border-t mt-4 pt-4 flex items-center space-x-3">
-                        <img src="{{ $concert->image_url }}" alt="{{ $concert->organizer }}" class="h-10 w-10 rounded-full object-cover">
-                        <div class="text-sm text-gray-700 font-medium">{{ $concert->organizer }}</div>
+                        <img src="{{ asset('logo/user.png') }}" class="h-10 w-10 rounded-full object-cover" alt="Organizer">
+                        <div class="text-sm text-gray-700 font-medium">
+                            {{ $concert->organizer->organization_name ?? 'Unknown Organizer' }}
+                        </div>
                     </div>
                 </div>
             </a>

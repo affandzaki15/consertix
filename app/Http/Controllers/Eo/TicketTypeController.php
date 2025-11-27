@@ -47,7 +47,7 @@ class TicketTypeController extends Controller
         ]);
 
         $concert->updatePriceFromTickets();
-        $concert->updateStatus();
+        $concert->updateSellingStatus();
 
         return redirect()->route('eo.concerts.tickets.index', $concert->id)
             ->with('success', 'Tipe tiket berhasil ditambahkan!');
@@ -72,10 +72,11 @@ class TicketTypeController extends Controller
             'quota' => 'required|numeric|min:1'
         ]);
 
-        $concert->updatePriceFromTickets();
         $ticket->update($request->only(['name', 'price', 'quota']));
 
-        $concert->updateStatus();
+        $concert->updatePriceFromTickets();
+        $concert->updateSellingStatus();
+
         return redirect()->route('eo.concerts.tickets.index', $concert->id)
             ->with('success', 'Tipe tiket berhasil diperbarui!');
     }
@@ -87,9 +88,8 @@ class TicketTypeController extends Controller
 
         $ticket->delete();
 
-
         $concert->updatePriceFromTickets();
-        $concert->updateStatus();
+        $concert->updateSellingStatus();
 
         return redirect()->route('eo.concerts.tickets.index', $concert->id)
             ->with('success', 'Tipe tiket berhasil dihapus!');

@@ -12,8 +12,9 @@ class Concert extends Model
         'date',
         'price',
         'image_url',
-        'status',
-        'organizer_id'
+        'selling_status',   // coming_soon / available / sold_out
+        'approval_status',  // pending / approved / rejected
+        'organizer_id',
     ];
 
     protected $casts = [
@@ -21,67 +22,62 @@ class Concert extends Model
         'price' => 'integer',
     ];
 
-    // RELASI WAJIB — INI YANG HILANG (PENYEBAB ERROR)
+    // Relasi TicketTypes
     public function ticketTypes()
     {
-        return $this->hasMany(\App\Models\TicketType::class);
+        return $this->hasMany(TicketType::class);
     }
 
-    public function getTicketStatusAttribute()
+    // Relasi Organizer
+    public function organizer()
     {
-        $totalTickets = $this->ticketTypes->sum('quota'); // pakai quota!
-        $sold = $this->ticketTypes->sum('sold');
-
-        if ($totalTickets == 0) {
-            return 'coming_soon'; // Belum ada tiket
-        }
-
-        if ($sold >= $totalTickets) {
-            return 'sold_out'; // Habis
-        }
-
-        return 'available'; // Masih ada tiket
+        return $this->belongsTo(Organizer::class, 'organizer_id');
     }
-    public function updateStatus()
-    {
-        $totalTickets = $this->ticketTypes()->sum('quota');
-        $soldTickets  = $this->ticketTypes()->sum('sold');
 
-        if ($totalTickets == 0) {
-            $this->status = 'coming_soon';
-        } elseif ($soldTickets >= $totalTickets) {
-            $this->status = 'sold_out';
+    /**
+     * Update status penjualan berdasarkan tiket & approval admin
+     */
+    public function updateSellingStatus()
+    {
+        $totalQuota = $this->ticketTypes()->sum('quota');
+        $sold = $this->ticketTypes()->sum('sold');
+
+        // 🔥 Admin belum approve → tetap Coming Soon
+        if ($this->approval_status !== 'approved') {
+            $this->selling_status = 'coming_soon';
         } else {
-            $this->status = 'available';
+            if ($totalQuota == 0) {
+                $this->selling_status = 'coming_soon';
+            } elseif ($sold >= $totalQuota) {
+                $this->selling_status = 'sold_out';
+            } else {
+                $this->selling_status = 'available';
+            }
         }
 
         $this->save();
     }
 
-    public function getStatusLabelAttribute()
+    /**
+     * Label status untuk tampilan User
+     */
+    public function getSellingStatusLabelAttribute()
     {
-        return match ($this->status) {
+        return match ($this->selling_status) {
             'coming_soon' => 'Coming Soon',
             'available' => 'Tiket Tersedia',
             'sold_out' => 'Sold Out',
-            default => ucfirst($this->status),
+            default => 'Unknown',
         };
     }
 
+    /**
+     * Update harga berdasarkan harga tiket termurah
+     */
     public function updatePriceFromTickets()
-{
-    $lowestPrice = $this->ticketTypes()->min('price');
-
-    // Kalau belum ada tiket → set price tetap 0
-    $this->price = $lowestPrice ?? 0;
-    $this->save();
-}
-
-
-
-
-    public function organizer()
     {
-        return $this->belongsTo(\App\Models\Organizer::class, 'organizer_id');
+        $lowestPrice = $this->ticketTypes()->min('price');
+        $this->price = $lowestPrice ?? 0;
+        $this->save();
     }
 }
