@@ -47,14 +47,14 @@
                         <div class="flex items-center space-x-3">
 
                             <!-- Cart -->
-                            <button class="text-white hover:text-indigo-300">
+                            <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                     viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
                                     class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
                                 </svg>
-                            </button>
+                            </a>
 
                             @guest
                             <a href="{{ route('login') }}"
@@ -104,14 +104,14 @@
                     <div class="flex items-center space-x-4 order-3">
 
                         <!-- Cart -->
-                        <button class="text-white hover:text-indigo-300 transition">
+                        <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                 viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
                                 class="w-7 h-7 md:w-8 md:h-8">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
                             </svg>
-                        </button>
+                        </a>
 
                             @guest
                                 <a href="{{ route('login') }}"

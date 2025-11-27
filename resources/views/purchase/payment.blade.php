@@ -360,6 +360,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const agreePrivacy = document.getElementById('agreePrivacy');
     const form = document.getElementById('paymentSelectionForm');
 
+    // Prepare order items for client-side cart sync
+    const orderItems = @json($order->items->map(function($it) { return ['ticket_type_id' => $it->ticket_type_id, 'quantity' => $it->quantity]; }));
+    const cartAddUrl = '{{ route('cart.add') }}';
+
     // Voucher modal elements
     const openVoucherBtn = document.getElementById('openVoucherModal');
     const voucherModal = document.getElementById('voucherModal');
@@ -576,9 +580,80 @@ document.addEventListener('DOMContentLoaded', function () {
         form.submit();
     });
 
-    payBtn.addEventListener('click', function () {
+    payBtn.addEventListener('click', async function () {
         if (!selectedMethod) return alert('Pilih metode pembayaran dulu.');
-        // create a hidden input and submit
+
+        // Use a hidden iframe POST to ensure server receives cart.add and updates session
+        const syncCartViaIframe = () => new Promise((resolve) => {
+            try {
+                const iframeName = 'cart_sync_iframe_' + Date.now();
+                const iframe = document.createElement('iframe');
+                iframe.name = iframeName;
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+
+                const syncForm = document.createElement('form');
+                syncForm.method = 'POST';
+                syncForm.action = cartAddUrl;
+                syncForm.target = iframeName;
+
+                // CSRF token
+                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = token || '';
+                syncForm.appendChild(csrfInput);
+
+                // concert_id
+                const concertInput = document.createElement('input');
+                concertInput.type = 'hidden';
+                concertInput.name = 'concert_id';
+                concertInput.value = '{{ $order->concert_id }}';
+                syncForm.appendChild(concertInput);
+
+                // ticket_type_id[] and quantity[]
+                orderItems.forEach(it => {
+                    const t = document.createElement('input');
+                    t.type = 'hidden';
+                    t.name = 'ticket_type_id[]';
+                    t.value = it.ticket_type_id;
+                    syncForm.appendChild(t);
+
+                    const q = document.createElement('input');
+                    q.type = 'hidden';
+                    q.name = 'quantity[]';
+                    q.value = it.quantity;
+                    syncForm.appendChild(q);
+                });
+
+                document.body.appendChild(syncForm);
+
+                // Resolve when iframe loads (server processed request)
+                iframe.addEventListener('load', function onLoad() {
+                    iframe.removeEventListener('load', onLoad);
+                    // cleanup
+                    setTimeout(() => {
+                        try { document.body.removeChild(iframe); } catch (e) {}
+                        try { document.body.removeChild(syncForm); } catch (e) {}
+                    }, 200);
+                    resolve(true);
+                });
+
+                // Submit the sync form
+                syncForm.submit();
+
+                // Fallback: resolve after 2s in case load doesn't fire
+                setTimeout(() => resolve(true), 2000);
+            } catch (e) {
+                console.error('iframe sync failed', e);
+                resolve(false);
+            }
+        });
+
+        await syncCartViaIframe();
+
+        // create a hidden input and submit payment form
         const input = document.createElement('input');
         input.type = 'hidden';
         input.name = 'payment_method';

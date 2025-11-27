@@ -23,7 +23,7 @@ class ConcertController extends Controller
             });
         }
 
-        $concerts = $query->orderBy('date', 'desc')->get();
+        $concerts = $query->orderBy('date', 'desc')->paginate(12);
 
         return view('concerts', compact('concerts', 'q'));
     }

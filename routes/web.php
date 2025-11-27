@@ -55,6 +55,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     // Cart routes
     Route::get('/cart', [PurchaseController::class, 'cart'])->name('cart.show');
+    Route::get('/cart/count', [PurchaseController::class, 'cartCount'])->name('cart.count');
     Route::post('/cart/add', [PurchaseController::class, 'cartAdd'])->name('cart.add');
     Route::post('/cart/remove/{ticket_type_id}', [PurchaseController::class, 'cartRemove'])->name('cart.remove');
     Route::post('/cart/clear', [PurchaseController::class, 'cartClear'])->name('cart.clear');

@@ -26,26 +26,35 @@
                 <!-- Cart Items -->
                 <div class="lg:col-span-2 space-y-4">
                     @foreach($cartItems as $item)
-                        <div class="bg-white rounded-2xl shadow p-6 flex items-center justify-between">
-                            <div class="flex-1">
-                                <h3 class="text-lg font-bold text-gray-900">{{ $item['concert']->title }}</h3>
-                                <p class="text-gray-600 mb-2">{{ $item['ticketType']->name }}</p>
-                                <p class="text-sm text-gray-500">
-                                    {{ $item['quantity'] }} × Rp{{ number_format($item['price']) }}
-                                </p>
-                            </div>
+                        @php
+                            // choose target: confirmation if order exists, otherwise buy page
+                            $targetUrl = $item['orderId'] ? route('purchase.confirmation', $item['orderId']) : route('purchase.show', $item['concertId']);
+                        @endphp
 
-                            <div class="text-right">
-                                <p class="text-xl font-bold text-gray-900 mb-3">
-                                    Rp{{ number_format($item['total']) }}
-                                </p>
-                                <form action="{{ route('cart.remove', $item['ticketTypeId']) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-semibold">
-                                        Remove
-                                    </button>
-                                </form>
+                        <a href="{{ $targetUrl }}" class="block">
+                            <div class="bg-white rounded-2xl shadow p-6 flex items-center justify-between hover:shadow-lg transition">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-gray-900">{{ $item['concert']->title }}</h3>
+                                    <p class="text-gray-600 mb-2">{{ $item['ticketType']->name }}</p>
+                                    <p class="text-sm text-gray-500">
+                                        {{ $item['quantity'] }} × Rp{{ number_format($item['price']) }}
+                                    </p>
+                                </div>
+
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-gray-900 mb-3">
+                                        Rp{{ number_format($item['total']) }}
+                                    </p>
+                                </div>
                             </div>
+                        </a>
+                        <div class="flex justify-end mt-2 mb-4">
+                            <form action="{{ route('cart.remove', $item['ticketTypeId']) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-semibold">
+                                    Remove
+                                </button>
+                            </form>
                         </div>
                     @endforeach
                 </div>

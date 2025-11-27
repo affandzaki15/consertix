@@ -20,6 +20,13 @@
             </div>
         </div>
 
+        <!-- Page Info -->
+        @if($concerts->count() > 0)
+        <div class="text-sm text-gray-600 mb-4">
+            Menampilkan <strong>{{ ($concerts->currentPage() - 1) * 12 + 1 }}</strong> hingga <strong>{{ min($concerts->currentPage() * 12, $concerts->total()) }}</strong> dari <strong>{{ $concerts->total() }}</strong> konser
+        </div>
+        @endif
+
         <!-- Event List -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
 
@@ -76,6 +83,11 @@
             </div>
             @endforelse
 
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-10 flex justify-center">
+            {{ $concerts->links() }}
         </div>
     </div>
 </section>

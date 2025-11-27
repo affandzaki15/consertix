@@ -18,6 +18,21 @@ class PurchaseController extends Controller
         ->where('concert_id', $concert->id)
         ->first();
 
+    // Jika ada existingOrder, sync items ke session cart
+    if ($existingOrder) {
+        $cart = session()->get('cart', []);
+        if (!isset($cart[$concert->id])) {
+            $cart[$concert->id] = [];
+        }
+
+        foreach ($existingOrder->items as $item) {
+            $existingQty = $cart[$concert->id][$item->ticket_type_id] ?? 0;
+            $cart[$concert->id][$item->ticket_type_id] = max($existingQty, $item->quantity);
+        }
+
+        session()->put('cart', $cart);
+    }
+
     return view('purchase.show', [
         'concert'       => $concert,
         'ticketTypes'   => $concert->ticketTypes,
@@ -34,15 +49,11 @@ class PurchaseController extends Controller
             ->latest()
             ->first();
 
-        if ($existingOrder) {
-            // Jika order sebelumnya belum selesai (mis. status != 'paid'), arahkan ke detail agar user bisa melanjutkan
-            if ($existingOrder->status !== 'paid') {
-                return redirect()->route('purchase.detail', $existingOrder->id)
-                    ->with('error', 'Anda memiliki pesanan tertunda. Silakan lanjutkan detail pesanan.');
-            }
-
-            // Jika sudah berstatus paid, berikan pesan bahwa user sudah membeli tiket
-            return back()->with('error', 'Anda sudah membeli tiket untuk konser ini.');
+        // If there's an existing order and it's not completed/paid, redirect user to continue it.
+        // But allow creating a new order if the previous order is already 'paid'.
+        if ($existingOrder && $existingOrder->status !== 'paid') {
+            return redirect()->route('purchase.detail', $existingOrder->id)
+                ->with('error', 'Anda memiliki pesanan tertunda. Silakan lanjutkan detail pesanan.');
         }
 
         // Validasi: minimal ada data tiket
@@ -144,6 +155,26 @@ class PurchaseController extends Controller
         $order->status = 'processing';
         $order->save();
 
+        // Sync order items into session cart so user can see them in Cart
+        // Reload order with items relation to ensure data is loaded
+        $order->load('items');
+        
+        $cart = session()->get('cart', []);
+        if (!isset($cart[$order->concert_id])) {
+            $cart[$order->concert_id] = [];
+        }
+
+        foreach ($order->items as $item) {
+            // Add (accumulate) quantity instead of max, so buying same item again increases qty
+            if (isset($cart[$order->concert_id][$item->ticket_type_id])) {
+                $cart[$order->concert_id][$item->ticket_type_id] += $item->quantity;
+            } else {
+                $cart[$order->concert_id][$item->ticket_type_id] = $item->quantity;
+            }
+        }
+
+        session()->put('cart', $cart);
+
         // Redirect to confirmation page
         return redirect()->route('purchase.confirmation', $order->id);
     }
@@ -158,6 +189,7 @@ class PurchaseController extends Controller
         }
 
         foreach ($order->items as $item) {
+            // Accumulate quantity (add to existing)
             if (isset($cart[$order->concert_id][$item->ticket_type_id])) {
                 $cart[$order->concert_id][$item->ticket_type_id] += $item->quantity;
             } else {
@@ -198,6 +230,11 @@ class PurchaseController extends Controller
         foreach ($cart as $concertId => $tickets) {
             $concert = Concert::find($concertId);
             if ($concert) {
+                // find existing order for this user + concert (latest)
+                $existingOrder = Order::where('user_id', Auth::id())
+                    ->where('concert_id', $concertId)
+                    ->latest()
+                    ->first();
                 foreach ($tickets as $ticketTypeId => $qty) {
                     $ticketType = TicketType::find($ticketTypeId);
                     if ($ticketType) {
@@ -210,6 +247,7 @@ class PurchaseController extends Controller
                             'total' => $itemTotal,
                             'concertId' => $concertId,
                             'ticketTypeId' => $ticketTypeId,
+                            'orderId' => $existingOrder ? $existingOrder->id : null,
                         ];
                         $total += $itemTotal;
                     }
@@ -226,26 +264,60 @@ class PurchaseController extends Controller
     public function cartAdd(Request $request)
     {
         $concert_id = $request->input('concert_id');
-        $ticket_type_id = $request->input('ticket_type_id');
-        $quantity = (int) $request->input('quantity', 1);
+
+        // Support both single values and arrays from the form/js
+        $ticket_type_ids = $request->input('ticket_type_id');
+        $quantities = $request->input('quantity');
+
+        if (!$concert_id) {
+            return back()->with('error', 'Concert ID is required');
+        }
+
+        // Normalize to arrays
+        if (!is_array($ticket_type_ids)) {
+            $ticket_type_ids = $ticket_type_ids ? [$ticket_type_ids] : [];
+        }
+
+        if (!is_array($quantities)) {
+            $quantities = $quantities ? [$quantities] : [];
+        }
 
         // Get or initialize cart
         $cart = session()->get('cart', []);
-
-        // Add to cart
         if (!isset($cart[$concert_id])) {
             $cart[$concert_id] = [];
         }
 
-        if (isset($cart[$concert_id][$ticket_type_id])) {
-            $cart[$concert_id][$ticket_type_id] += $quantity;
-        } else {
-            $cart[$concert_id][$ticket_type_id] = $quantity;
+        // Iterate and add each ticket type
+        foreach ($ticket_type_ids as $index => $ticket_type_id) {
+            $qty = (int) ($quantities[$index] ?? 1);
+            if ($qty <= 0) continue;
+
+            if (isset($cart[$concert_id][$ticket_type_id])) {
+                $cart[$concert_id][$ticket_type_id] += $qty;
+            } else {
+                $cart[$concert_id][$ticket_type_id] = $qty;
+            }
         }
 
         session()->put('cart', $cart);
 
-        return back()->with('success', 'Added to cart');
+        // If request expects JSON (AJAX), return JSON with updated cart count
+        if ($request->wantsJson() || $request->ajax()) {
+            $cartCount = 0;
+            foreach (session()->get('cart', []) as $c) {
+                foreach ($c as $q) {
+                    $cartCount += (int) $q;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'cart_count' => $cartCount,
+            ]);
+        }
+
+        return back()->with('success', 'Ditambahkan ke keranjang');
     }
 
     public function cartRemove($ticket_type_id)
@@ -287,10 +359,43 @@ class PurchaseController extends Controller
         // e.g. $order->paid_at = now();
         $order->save();
 
+        // Remove or decrement the paid items from session cart so they disappear
+        $order->load('items');
+        $cart = session()->get('cart', []);
+        $concertId = $order->concert_id;
+
+        if (isset($cart[$concertId])) {
+            foreach ($order->items as $item) {
+                $ticketId = $item->ticket_type_id;
+                if (isset($cart[$concertId][$ticketId])) {
+                    $cart[$concertId][$ticketId] -= $item->quantity;
+                    if ($cart[$concertId][$ticketId] <= 0) {
+                        unset($cart[$concertId][$ticketId]);
+                    }
+                }
+            }
+
+            // If no ticket types left for this concert, remove the concert key
+            if (empty($cart[$concertId])) {
+                unset($cart[$concertId]);
+            }
+
+            session()->put('cart', $cart);
+        }
+
+        // Return updated cart count to allow frontend to refresh badge
+        $cartCount = 0;
+        foreach (session()->get('cart', []) as $c) {
+            foreach ($c as $q) {
+                $cartCount += (int) $q;
+            }
+        }
+
         return response()->json([
             'success' => true,
             'status' => $order->status,
             'updated_at' => $order->updated_at->toDateTimeString(),
+            'cart_count' => $cartCount,
         ]);
     }
 }
