@@ -57,6 +57,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/concerts/{concert}/buy', [PurchaseController::class, 'store'])->name('purchase.store');
     Route::get('/purchase/{order}/detail', [PurchaseController::class, 'detail'])->name('purchase.detail');
     Route::post('/purchase/{order}/detail', [PurchaseController::class, 'processDetail'])->name('purchase.processDetail');
+    // Payment step
+    Route::get('/purchase/{order}/payment', [PurchaseController::class, 'payment'])->name('purchase.payment');
+    Route::post('/purchase/{order}/pay', [PurchaseController::class, 'pay'])->name('purchase.pay');
 });
 
 

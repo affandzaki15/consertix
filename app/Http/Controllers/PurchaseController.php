@@ -121,6 +121,34 @@ class PurchaseController extends Controller
         ]);
     }
 
+    public function payment(Order $order)
+    {
+        // Payment step view — select payment method and show order summary
+        return view('purchase.payment', [
+            'order' => $order,
+            'concert' => $order->concert
+        ]);
+    }
+
+    public function pay(Request $request, Order $order)
+    {
+        $method = $request->input('payment_method');
+
+        // Basic validation
+        if (!$method) {
+            return back()->with('error', 'Pilih metode pembayaran terlebih dahulu.');
+        }
+
+        // Save chosen payment method and mark as processing (simple stub)
+        $order->payment_method = $method;
+        $order->status = 'processing';
+        $order->save();
+
+        // Redirect to a placeholder payments page or the order detail — adjust as needed
+        return redirect()->route('purchase.payment', $order->id)
+            ->with('success', 'Metode pembayaran dipilih. Lanjutkan proses pembayaran.');
+    }
+
     public function processDetail(Request $request, Order $order)
     {
         $order->update([
