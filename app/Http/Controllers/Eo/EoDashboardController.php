@@ -2,42 +2,55 @@
 
 namespace App\Http\Controllers\Eo;
 
-use Illuminate\Http\Request;
-use App\Models\Concert;
 use App\Http\Controllers\Controller;
+use App\Models\Concert;
 
 class EoDashboardController extends Controller
 {
     public function index()
     {
-        // Ambil seluruh konser milik EO yang login
-        $concerts = Concert::where('organizer_id', auth()->id())->get();
+        $organizer = auth()->user()->organizer;
 
-        // Hitung Statistik
-        $totalConcerts = $concerts->count();
-        $totalSold = $concerts->sum(function ($concert) {
-            return $concert->ticketTypes->sum('sold');
+        // Jika EO belum punya organizer -> arahkan setup dulu
+        if (!$organizer) {
+            return redirect()->route('eo.concerts.create')
+                ->with('warning', 'Silakan buat konser terlebih dahulu!');
+        }
+
+        // Ambil semua konser milik EO + tiket nya (lebih efisien)
+        $concerts = Concert::with('ticketTypes')
+            ->where('organizer_id', $organizer->id)
+            ->get();
+
+        // Ambil konser yang sudah disetujui admin saja
+        $approvedConcerts = $concerts->where('approval_status', 'approved');
+
+        // Statistik Dashboard
+        $totalConcerts = $approvedConcerts->count();
+
+        $totalSold = $approvedConcerts->sum(function ($c) {
+            return $c->ticketTypes->sum('sold');
         });
 
-        $totalRevenue = $concerts->sum(function ($concert) {
-            return $concert->ticketTypes->sum(function ($ticket) {
-                return $ticket->price * $ticket->sold;
+        $totalRevenue = $approvedConcerts->sum(function ($c) {
+            return $c->ticketTypes->sum(function ($t) {
+                return $t->price * $t->sold;
             });
         });
 
+        // Info status konser untuk EO
         $statusStats = [
-            'draft' => $concerts->where('status', 'draft')->count(),
-            'pending' => $concerts->where('status', 'pending')->count(),
-            'approved' => $concerts->where('status', 'approved')->count(),
-            'rejected' => $concerts->where('status', 'rejected')->count(),
+            'pending'  => $concerts->where('approval_status', 'pending')->count(),
+            'approved' => $approvedConcerts->count(),
+            'rejected' => $concerts->where('approval_status', 'rejected')->count(),
         ];
 
         return view('dashboard.eo', compact(
+            'concerts',
             'totalConcerts',
             'totalSold',
             'totalRevenue',
-            'statusStats',
-            'concerts'
+            'statusStats'
         ));
     }
 }

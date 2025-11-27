@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.eo')
+
 
 @section('content')
 
@@ -74,7 +75,20 @@
                                     {{ $c->status == 'approved' ? 'bg-green-100 text-green-700' :
                                        ($c->status == 'pending' ? 'bg-yellow-100 text-yellow-700' :
                                         'bg-gray-100 text-gray-700') }}">
-                                    {{ ucfirst($c->status) }}
+                                    @if($c->approval_status === 'approved')
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                                        Approved
+                                    </span>
+                                    @elseif($c->approval_status === 'pending')
+                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">
+                                        Pending Approval
+                                    </span>
+                                    @else
+                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs">
+                                        Rejected
+                                    </span>
+                                    @endif
+
                                 </span>
                             </td>
 
@@ -85,17 +99,28 @@
                             </td>
 
                             <td class="px-3 text-center space-x-2">
+
+                                <!-- Tombol Edit Konser -->
                                 <a href="{{ route('eo.concerts.edit', $c->id) }}"
                                     class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md text-xs">
-                                    Edit
+                                    Edit Konser
                                 </a>
 
-                                <a href="{{ route('eo.concerts.tickets.index',$c->id) }}"
+                                <!-- Tombol Kelola Tiket -->
+                                <a href="{{ route('eo.concerts.tickets.index', $c->id) }}"
                                     class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs">
-                                    Tiket
+                                    Kelola Tiket
+                                </a>
+
+                                <!-- Optional: Preview Halaman Publik -->
+                                <a href="{{ route('concerts.show', $c->id) }}"
+                                    class="px-3 py-1 bg-gray-700 hover:bg-gray-800 text-white rounded-md text-xs"
+                                    target="_blank">
+                                    Preview
                                 </a>
 
                             </td>
+
                         </tr>
 
                         @empty
