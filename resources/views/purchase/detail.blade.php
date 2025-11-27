@@ -48,32 +48,60 @@
                     <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
                         <i class="fa-solid fa-user"></i>
                     </div>
-                    <h2 class="text-xl font-semibold text-gray-900">Data Pemesan</h2>
+                    <h2 class="text-xl font-semibold text-gray-900">Order Data</h2>
                 </div>
 
-                {{-- NAMA --}}
-                <div class="mb-5">
-                    <label class="font-medium text-gray-700">Nama Lengkap</label>
-                    <div class="w-full mt-2 p-3 border rounded-xl bg-gray-50">
-                        {{ auth()->user()->name }}
+                <form id="orderDataForm" class="space-y-5">
+                    {{-- NAMA LENGKAP --}}
+                    <div>
+                        <label class="font-medium text-gray-700">Full Name <span class="text-red-500">*</span></label>
+                        <input type="text" id="fullName" placeholder="Enter your full name" 
+                            class="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            value="{{ auth()->user()->name }}" required>
                     </div>
-                </div>
 
-                {{-- EMAIL --}}
-                <div class="mb-5">
-                    <label class="font-medium text-gray-700">Email</label>
-                    <div class="w-full mt-2 p-3 border rounded-xl bg-gray-50">
-                        {{ auth()->user()->email }}
+                    {{-- IDENTITY TYPE & NUMBER --}}
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="font-medium text-gray-700">Identity Type <span class="text-red-500">*</span></label>
+                            <select id="identityType" class="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                <option value="">Select your identity type</option>
+                                <option value="ktp">KTP</option>
+                                <option value="passport">Passport</option>
+                                <option value="sim">SIM</option>
+                                <option value="kartu_pelajar">Kartu Pelajar</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="font-medium text-gray-700">Identity Number <span class="text-red-500">*</span></label>
+                            <input type="text" id="identityNumber" placeholder="Enter your identity number (minimum 5 digits)"
+                                class="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required minlength="5" pattern="[0-9]{5,}">
+                            <p id="identityNumberError" class="mt-1 text-sm text-red-500 hidden">Nomor identitas minimal 5 karakter</p>
+                        </div>
                     </div>
-                </div>
 
-                {{-- NOMOR WHATSAPP --}}
-                <div class="mb-5">
-                    <label class="font-medium text-gray-700">No. WhatsApp</label>
-                    <div class="w-full mt-2 p-3 border rounded-xl bg-gray-50">
-                        {{ auth()->user()->phone ?? '-' }}
+                    {{-- EMAIL --}}
+                    <div>
+                        <label class="font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
+                        <input type="email" id="email" placeholder="Enter your email"
+                            class="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            value="{{ auth()->user()->email }}" required>
                     </div>
-                </div>
+
+                    {{-- WHATSAPP NUMBER --}}
+                    <div>
+                        <label class="font-medium text-gray-700">WhatsApp Number <span class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-2 mt-2">
+                            <div class="flex items-center gap-2 px-3 py-3 border border-gray-200 rounded-xl bg-gray-50">
+                                <img src="https://flagcdn.com/w40/id.png" alt="Indonesia" class="w-6 h-4">
+                                <span class="text-gray-700">+62</span>
+                            </div>
+                            <input type="text" id="whatsappNumber" placeholder="812345678"
+                                class="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                value="{{ ltrim(auth()->user()->phone ?? '', '+62') }}" required>
+                        </div>
+                    </div>
+                </form>
 
             </div>
 
@@ -121,9 +149,11 @@
 
                 <form id="orderDetailForm" action="{{ route('purchase.processDetail', $order->id) }}" method="POST" class="flex-1 ml-3">
                     @csrf
-                    <input type="hidden" name="name" value="{{ auth()->user()->name }}">
-                    <input type="hidden" name="email" value="{{ auth()->user()->email }}">
-                    <input type="hidden" name="phone" value="{{ auth()->user()->phone ?? '' }}">
+                    <input type="hidden" id="hiddenName" name="name" value="">
+                    <input type="hidden" id="hiddenEmail" name="email" value="">
+                    <input type="hidden" id="hiddenPhone" name="phone" value="">
+                    <input type="hidden" id="hiddenIdentityType" name="identity_type" value="">
+                    <input type="hidden" id="hiddenIdentityNumber" name="identity_number" value="">>
                     <button id="openConfirmModal" type="button"
                         class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold">
                         Lanjutkan
@@ -209,12 +239,36 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmBtn = document.getElementById('confirmContinueBtn');
     const form = document.getElementById('orderDetailForm');
 
+    // Form fields
+    const fullNameInput = document.getElementById('fullName');
+    const identityTypeInput = document.getElementById('identityType');
+    const identityNumberInput = document.getElementById('identityNumber');
+    const emailInput = document.getElementById('email');
+    const whatsappInput = document.getElementById('whatsappNumber');
+
+    // Hidden inputs
+    const hiddenName = document.getElementById('hiddenName');
+    const hiddenEmail = document.getElementById('hiddenEmail');
+    const hiddenPhone = document.getElementById('hiddenPhone');
+    const hiddenIdentityType = document.getElementById('hiddenIdentityType');
+    const hiddenIdentityNumber = document.getElementById('hiddenIdentityNumber');
+    const identityNumberError = document.getElementById('identityNumberError');
+
     if (!modal || !openBtn || !confirmBtn || !form) return;
+
+    // Real-time identity number validation
+    identityNumberInput.addEventListener('input', function() {
+        const value = this.value.trim();
+        if (value.length > 0 && value.length < 5) {
+            identityNumberError.classList.remove('hidden');
+        } else {
+            identityNumberError.classList.add('hidden');
+        }
+    });
 
     function showModal() {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        // focus the confirm button for keyboard users
         confirmBtn.focus();
         document.body.style.overflow = 'hidden';
     }
@@ -228,6 +282,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     openBtn.addEventListener('click', function (e) {
         e.preventDefault();
+        // Validate form before showing modal
+        if (!fullNameInput.value.trim()) {
+            alert('Please enter your full name');
+            return;
+        }
+        if (!identityTypeInput.value) {
+            alert('Please select an identity type');
+            return;
+        }
+        if (!identityNumberInput.value.trim()) {
+            alert('Please enter your identity number');
+            return;
+        }
+        if (!/^\d{5,}$/.test(identityNumberInput.value.trim())) {
+            alert('Identity number must contain at least 5 digits');
+            return;
+        }
+        if (!emailInput.value.trim()) {
+            alert('Please enter your email');
+            return;
+        }
+        if (!whatsappInput.value.trim()) {
+            alert('Please enter your WhatsApp number');
+            return;
+        }
         showModal();
     });
 
@@ -247,9 +326,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // when user confirms, submit the form
+    // when user confirms, populate hidden inputs and submit the form
     confirmBtn.addEventListener('click', function (e) {
-        // optionally disable button to avoid double submits
+        hiddenName.value = fullNameInput.value.trim();
+        hiddenEmail.value = emailInput.value.trim();
+        hiddenPhone.value = '+62' + whatsappInput.value.trim();
+        hiddenIdentityType.value = identityTypeInput.value;
+        hiddenIdentityNumber.value = identityNumberInput.value.trim();
+        
         confirmBtn.disabled = true;
         form.submit();
     });

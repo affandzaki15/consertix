@@ -60,6 +60,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // Payment step
     Route::get('/purchase/{order}/payment', [PurchaseController::class, 'payment'])->name('purchase.payment');
     Route::post('/purchase/{order}/pay', [PurchaseController::class, 'pay'])->name('purchase.pay');
+    // Payment confirmation
+    Route::get('/purchase/{order}/confirmation', [PurchaseController::class, 'confirmation'])->name('purchase.confirmation');
 });
 
 
