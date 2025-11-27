@@ -53,6 +53,12 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         return view('history');
     })->name('history');
 
+    // Cart routes
+    Route::get('/cart', [PurchaseController::class, 'cart'])->name('cart.show');
+    Route::post('/cart/add', [PurchaseController::class, 'cartAdd'])->name('cart.add');
+    Route::post('/cart/remove/{ticket_type_id}', [PurchaseController::class, 'cartRemove'])->name('cart.remove');
+    Route::post('/cart/clear', [PurchaseController::class, 'cartClear'])->name('cart.clear');
+
     Route::get('/concerts/{concert}/buy', [PurchaseController::class, 'show'])->name('purchase.show');
     Route::post('/concerts/{concert}/buy', [PurchaseController::class, 'store'])->name('purchase.store');
     Route::get('/purchase/{order}/detail', [PurchaseController::class, 'detail'])->name('purchase.detail');
@@ -62,6 +68,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/purchase/{order}/pay', [PurchaseController::class, 'pay'])->name('purchase.pay');
     // Payment confirmation
     Route::get('/purchase/{order}/confirmation', [PurchaseController::class, 'confirmation'])->name('purchase.confirmation');
+    // Mark payment complete (called from confirmation modal)
+    Route::post('/purchase/{order}/complete', [PurchaseController::class, 'completePayment'])->name('purchase.complete');
 });
 
 

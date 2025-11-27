@@ -52,31 +52,31 @@
 
                     <div id="bank-transfer" class="payment-method-content hidden border-t px-6 py-6">
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bca">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bca">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/BCA_logo.svg/1200px-BCA_logo.svg.png" alt="BCA" class="h-12">
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bjb">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bjb">
                                 <span class="font-bold text-sm">bank bjb</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bni">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bni">
                                 <span class="font-bold text-sm">BNI</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bri">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bri">
                                 <span class="font-bold text-sm">BANK BRI</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bsi">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bsi">
                                 <span class="font-bold text-sm">BSI</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="sampoerna">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="sampoerna">
                                 <span class="font-bold text-sm">Bank Sampoerna</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="cimb">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="cimb">
                                 <span class="font-bold text-sm">CIMB NIAGA</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="mandiri">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="mandiri">
                                 <span class="font-bold text-sm">mandiri</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="permata">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="permata">
                                 <span class="font-bold text-sm">Permata Bank</span>
                             </div>
                         </div>
@@ -100,28 +100,28 @@
 
                     <div id="ewallet" class="payment-method-content hidden border-t px-6 py-6">
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="ovo">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="ovo">
                                 <span class="font-bold text-sm">OVO</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="dana">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="dana">
                                 <span class="font-bold text-sm">DANA</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="qris">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="qris">
                                 <span class="font-bold text-sm">QRIS</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="gopay">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="gopay">
                                 <span class="font-bold text-sm">Gopay</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="linkaja">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="linkaja">
                                 <span class="font-bold text-sm">Link Aja!</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="astrapay">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="astrapay">
                                 <span class="font-bold text-sm">AstraPay</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="jeniuspay">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="jeniuspay">
                                 <span class="font-bold text-sm">Jenius Pay</span>
                             </div>
-                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="shopeepay">
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="shopeepay">
                                 <span class="font-bold text-sm">ShopeePay</span>
                             </div>
                         </div>
@@ -145,13 +145,13 @@
 
                     <div id="card" class="payment-method-content hidden border-t px-6 py-6">
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="border rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option" data-method="visa">
+                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="visa">
                                 <span class="font-bold">VISA</span>
                             </div>
-                            <div class="border rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option" data-method="mastercard">
+                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="mastercard">
                                 <span class="font-bold">Mastercard</span>
                             </div>
-                            <div class="border rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option" data-method="jcb">
+                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="jcb">
                                 <span class="font-bold">JCB</span>
                             </div>
                         </div>
@@ -240,6 +240,91 @@
                 </div>
             </div>
 
+            <!-- Midtrans-like Payment Modal -->
+            <div id="midtransModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4" aria-hidden="true">
+                <div class="fixed inset-0 bg-black/50 transition-opacity"></div>
+
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-auto z-10 overflow-hidden">
+                    <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-2xl font-bold">Payment Gateway</h2>
+                            <i class="fa-solid fa-lock text-2xl"></i>
+                        </div>
+                    </div>
+
+                    <div class="p-6 space-y-6">
+                        <!-- Payment Method Display -->
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <p class="text-sm text-gray-600 mb-2">Payment Method</p>
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-building-columns text-indigo-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-900 capitalize" id="selectedMethodName">-</p>
+                                    <p class="text-xs text-gray-500">Secure Payment</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Amount Display -->
+                        <div class="border-t border-b py-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span class="font-medium" id="modalSubtotal">Rp0</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-gray-600">Tax & Fee</span>
+                                <span class="font-medium" id="modalTaxFee">Rp0</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-2 border-t">
+                                <span class="font-bold text-gray-900">Total</span>
+                                <span class="font-bold text-xl text-indigo-600" id="modalTotal">Rp0</span>
+                            </div>
+                        </div>
+
+                        <!-- Processing Animation -->
+                        <div id="processingState" class="text-center space-y-4">
+                            <div class="flex justify-center">
+                                <div class="inline-block">
+                                    <i class="fa-solid fa-spinner text-4xl text-indigo-600 animate-spin"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-900">Processing Payment</p>
+                                <p class="text-sm text-gray-500 mt-1">Please wait while we process your payment...</p>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                                <div id="progressBar" class="bg-indigo-600 h-2 rounded-full" style="width: 0%; transition: width 2s ease;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Success State -->
+                        <div id="successState" class="text-center space-y-4 hidden">
+                            <div class="flex justify-center">
+                                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fa-solid fa-check text-3xl text-green-600"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-900">Payment Successful!</p>
+                                <p class="text-sm text-gray-500 mt-1">Your payment has been processed</p>
+                            </div>
+                            <p id="transactionId" class="text-xs text-gray-400">Transaction ID: -</p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div id="processingButtons" class="flex gap-3">
+                            <button id="cancelPaymentBtn" type="button" class="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50">Cancel</button>
+                        </div>
+
+                        <div id="successButtons" class="hidden">
+                            <button id="completePaymentBtn" type="button" class="w-full px-4 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700">Continue to Confirmation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="mt-4">
                 <div class="mb-3">
                     <label class="inline-flex items-center">
@@ -285,6 +370,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelVoucherBtn = document.getElementById('cancelVoucherBtn');
 
     let selectedMethod = null;
+    let methodMap = {
+        'bca': 'BCA',
+        'bjb': 'Bank BJB',
+        'bni': 'BNI',
+        'bri': 'BANK BRI',
+        'bsi': 'BSI',
+        'sampoerna': 'Bank Sampoerna',
+        'cimb': 'CIMB NIAGA',
+        'mandiri': 'Mandiri',
+        'permata': 'Permata Bank',
+        'ovo': 'OVO',
+        'dana': 'DANA',
+        'qris': 'QRIS',
+        'gopay': 'Gopay',
+        'linkaja': 'Link Aja!',
+        'astrapay': 'AstraPay',
+        'jeniuspay': 'Jenius Pay',
+        'shopeepay': 'ShopeePay',
+        'visa': 'VISA',
+        'mastercard': 'Mastercard',
+        'jcb': 'JCB'
+    };
 
     // Payment method toggle functionality
     const toggleButtons = document.querySelectorAll('.payment-method-toggle');
@@ -304,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const bankOptions = document.querySelectorAll('.bank-option');
     bankOptions.forEach(option => {
         option.addEventListener('click', function() {
-            selectPaymentMethod(this.getAttribute('data-method'));
+            selectPaymentMethod(this.getAttribute('data-method'), this);
         });
     });
 
@@ -312,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const walletOptions = document.querySelectorAll('.wallet-option');
     walletOptions.forEach(option => {
         option.addEventListener('click', function() {
-            selectPaymentMethod(this.getAttribute('data-method'));
+            selectPaymentMethod(this.getAttribute('data-method'), this);
         });
     });
 
@@ -320,14 +427,23 @@ document.addEventListener('DOMContentLoaded', function () {
     const cardOptions = document.querySelectorAll('.card-option');
     cardOptions.forEach(option => {
         option.addEventListener('click', function() {
-            selectPaymentMethod(this.getAttribute('data-method'));
+            selectPaymentMethod(this.getAttribute('data-method'), this);
         });
     });
 
-    function selectPaymentMethod(method) {
+    function selectPaymentMethod(method, element) {
+        // Remove previous selection
+        document.querySelectorAll('.bank-option, .wallet-option, .card-option').forEach(opt => {
+            opt.classList.remove('border-indigo-600', 'bg-indigo-50');
+            opt.classList.add('border-gray-300');
+        });
+
+        // Highlight selected
+        element.classList.remove('border-gray-300');
+        element.classList.add('border-indigo-600', 'bg-indigo-50', 'border-2');
+
         selectedMethod = method;
         updatePayState();
-        // Optional: show visual feedback
         console.log('Selected method:', method);
     }
 
@@ -335,10 +451,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (selectedMethod && agreeTerms.checked && agreePrivacy.checked) {
             payBtn.disabled = false;
             payBtn.classList.remove('bg-indigo-200');
-            payBtn.classList.add('bg-indigo-600');
+            payBtn.classList.add('bg-indigo-600', 'cursor-pointer');
         } else {
             payBtn.disabled = true;
-            payBtn.classList.remove('bg-indigo-600');
+            payBtn.classList.remove('bg-indigo-600', 'cursor-pointer');
             payBtn.classList.add('bg-indigo-200');
         }
     }
@@ -379,9 +495,85 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Please enter a voucher code');
             return;
         }
-        // TODO: Validate voucher code with backend
         alert('Voucher "' + code + '" applied (stub)');
         hideVoucherModal();
+    });
+
+    // Midtrans modal handlers
+    function showMidtransModal() {
+        midtransModal.classList.remove('hidden');
+        midtransModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+
+        // Display selected method name
+        const methodName = methodMap[selectedMethod] || selectedMethod.toUpperCase();
+        document.getElementById('selectedMethodName').textContent = methodName;
+
+        // Display amounts
+        const subtotal = parseFloat(document.getElementById('subtotalAmount').textContent.replace(/[^\d]/g, ''));
+        const tax = subtotal * 0.20;
+        const fee = subtotal * 0.05;
+        const total = subtotal + tax + fee;
+
+        document.getElementById('modalSubtotal').textContent = 'Rp' + Number(subtotal).toLocaleString('id-ID');
+        document.getElementById('modalTaxFee').textContent = 'Rp' + Number(tax + fee).toLocaleString('id-ID');
+        document.getElementById('modalTotal').textContent = 'Rp' + Number(total).toLocaleString('id-ID');
+
+        // Reset progress bar and states
+        document.getElementById('progressBar').style.width = '0%';
+        processingState.classList.remove('hidden');
+        successState.classList.add('hidden');
+        processingButtons.classList.remove('hidden');
+        successButtons.classList.add('hidden');
+
+        // Start payment processing simulation
+        startPaymentProcessing();
+    }
+
+    function hideMidtransModal() {
+        midtransModal.classList.add('hidden');
+        midtransModal.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    function startPaymentProcessing() {
+        // Simulate payment processing with progress bar
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 30;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                completePaymentProcessing();
+            }
+            document.getElementById('progressBar').style.width = progress + '%';
+        }, 300);
+    }
+
+    function completePaymentProcessing() {
+        // Show success state after 2 seconds
+        setTimeout(() => {
+            processingState.classList.add('hidden');
+            successState.classList.remove('hidden');
+            processingButtons.classList.add('hidden');
+            successButtons.classList.remove('hidden');
+
+            // Generate fake transaction ID
+            const transactionId = 'TXN' + Date.now();
+            document.getElementById('transactionId').textContent = 'Transaction ID: ' + transactionId;
+        }, 1000);
+    }
+
+    cancelPaymentBtn.addEventListener('click', hideMidtransModal);
+
+    completePaymentBtn.addEventListener('click', function() {
+        // Create hidden input for payment method and submit form
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'payment_method';
+        input.value = selectedMethod;
+        form.appendChild(input);
+        form.submit();
     });
 
     payBtn.addEventListener('click', function () {

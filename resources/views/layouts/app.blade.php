@@ -43,30 +43,32 @@
                                 <a href="#" class="hover:text-indigo-300">Singers</a>
                             </nav>
 
-                            <div class="flex items-center space-x-3">
-                                <button class="text-white hover:text-indigo-300">
-                                    <!-- Cart Icon -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
-                                        class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
-                                    </svg>
-                                </button>
+                        <!-- LOGIN + CART -->
+                        <div class="flex items-center space-x-3">
 
-                                @guest
-                                    <a href="{{ route('login') }}"
-                                        class="bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium">
-                                        Login / Register
-                                    </a>
-                                @else
-                                    <x-dropdown align="right" width="48">
-                                        <x-slot name="trigger">
-                                            <button
-                                                class="flex items-center space-x-1 bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100">
-                                                <span>{{ Auth::user()->name }}</span>
-                                            </button>
-                                        </x-slot>
+                            <!-- Cart -->
+                            <button class="text-white hover:text-indigo-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
+                                    class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
+                                </svg>
+                            </button>
+
+                            @guest
+                            <a href="{{ route('login') }}"
+                                class="bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium">
+                                Login / Register
+                            </a>
+                            @else
+                            <x-dropdown align="right" width="48">
+                                <x-slot name="trigger">
+                                    <button
+                                        class="flex items-center space-x-1 bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100">
+                                        <span>{{ Auth::user()->name }}</span>
+                                    </button>
+                                </x-slot>
 
                                         <x-slot name="content">
                                             <x-dropdown-link :href="route('history')">History</x-dropdown-link>
@@ -98,15 +100,18 @@
                             </a>
                         </div>
 
-                        <div class="flex items-center space-x-4 order-3">
-                            <button class="text-white hover:text-indigo-300 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
-                                    class="w-7 h-7 md:w-8 md:h-8">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
-                                </svg>
-                            </button>
+                    <!-- LOGIN + CART RIGHT -->
+                    <div class="flex items-center space-x-4 order-3">
+
+                        <!-- Cart -->
+                        <button class="text-white hover:text-indigo-300 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
+                                class="w-7 h-7 md:w-8 md:h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
+                            </svg>
+                        </button>
 
                             @guest
                                 <a href="{{ route('login') }}"

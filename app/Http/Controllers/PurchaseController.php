@@ -150,6 +150,23 @@ class PurchaseController extends Controller
 
     public function confirmation(Order $order)
     {
+        // Add order items to cart for easy resumption
+        $cart = session()->get('cart', []);
+        
+        if (!isset($cart[$order->concert_id])) {
+            $cart[$order->concert_id] = [];
+        }
+
+        foreach ($order->items as $item) {
+            if (isset($cart[$order->concert_id][$item->ticket_type_id])) {
+                $cart[$order->concert_id][$item->ticket_type_id] += $item->quantity;
+            } else {
+                $cart[$order->concert_id][$item->ticket_type_id] = $item->quantity;
+            }
+        }
+
+        session()->put('cart', $cart);
+
         // Show payment confirmation page with timer and instructions
         return view('purchase.confirmation', [
             'order' => $order,
@@ -168,5 +185,112 @@ class PurchaseController extends Controller
         ]);
 
         return redirect()->route('purchase.payment', $order->id);
+    }
+
+    // ===== CART MANAGEMENT =====
+    
+    public function cart()
+    {
+        $cart = session()->get('cart', []);
+        $cartItems = [];
+        $total = 0;
+
+        foreach ($cart as $concertId => $tickets) {
+            $concert = Concert::find($concertId);
+            if ($concert) {
+                foreach ($tickets as $ticketTypeId => $qty) {
+                    $ticketType = TicketType::find($ticketTypeId);
+                    if ($ticketType) {
+                        $itemTotal = $ticketType->price * $qty;
+                        $cartItems[] = [
+                            'concert' => $concert,
+                            'ticketType' => $ticketType,
+                            'quantity' => $qty,
+                            'price' => $ticketType->price,
+                            'total' => $itemTotal,
+                            'concertId' => $concertId,
+                            'ticketTypeId' => $ticketTypeId,
+                        ];
+                        $total += $itemTotal;
+                    }
+                }
+            }
+        }
+
+        return view('cart', [
+            'cartItems' => $cartItems,
+            'total' => $total
+        ]);
+    }
+
+    public function cartAdd(Request $request)
+    {
+        $concert_id = $request->input('concert_id');
+        $ticket_type_id = $request->input('ticket_type_id');
+        $quantity = (int) $request->input('quantity', 1);
+
+        // Get or initialize cart
+        $cart = session()->get('cart', []);
+
+        // Add to cart
+        if (!isset($cart[$concert_id])) {
+            $cart[$concert_id] = [];
+        }
+
+        if (isset($cart[$concert_id][$ticket_type_id])) {
+            $cart[$concert_id][$ticket_type_id] += $quantity;
+        } else {
+            $cart[$concert_id][$ticket_type_id] = $quantity;
+        }
+
+        session()->put('cart', $cart);
+
+        return back()->with('success', 'Added to cart');
+    }
+
+    public function cartRemove($ticket_type_id)
+    {
+        $cart = session()->get('cart', []);
+
+        foreach ($cart as $concertId => &$tickets) {
+            if (isset($tickets[$ticket_type_id])) {
+                unset($tickets[$ticket_type_id]);
+                if (empty($tickets)) {
+                    unset($cart[$concertId]);
+                }
+            }
+        }
+
+        session()->put('cart', $cart);
+
+        return back()->with('success', 'Removed from cart');
+    }
+
+    public function cartClear()
+    {
+        session()->forget('cart');
+        return back()->with('success', 'Cart cleared');
+    }
+
+    /**
+     * Mark an order as paid (called from confirmation modal)
+     */
+    public function completePayment(Request $request, Order $order)
+    {
+        // Ensure the current user owns the order
+        if ($order->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $order->status = 'paid';
+        // optional: set paid timestamp if you have a 'paid_at' column
+        // e.g. $order->paid_at = now();
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'status' => $order->status,
+            'updated_at' => $order->updated_at->toDateTimeString(),
+        ]);
     }
 }
