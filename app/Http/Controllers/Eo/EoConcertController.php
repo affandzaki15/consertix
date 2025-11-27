@@ -58,7 +58,7 @@ class EoConcertController extends Controller
             'description'     => $request->description, // ✔ simpan
         ]);
 
-        return redirect()->route('eo.concerts.edit', $concert->id)
+        return redirect()->route('eo.concerts.tickets.index', $concert->id)
             ->with('success', 'Konser berhasil dibuat! Tambahkan tipe tiket.');
     }
 
@@ -92,13 +92,33 @@ class EoConcertController extends Controller
         return back()->with('success', 'Konser berhasil diperbarui!');
     }
 
+    public function approvalPage($id)
+    {
+        $concert = Concert::where('organizer_id', auth()->user()->organizer->id)
+            ->findOrFail($id);
+
+        return view('eo.concerts.approval', compact('concert'));
+    }
+
+    public function submitApproval($id)
+    {
+        $concert = Concert::where('organizer_id', auth()->user()->organizer->id)
+            ->findOrFail($id);
+
+        $concert->approval_status = 'pending';
+        $concert->save();
+
+        return redirect()->route('eo.dashboard')
+            ->with('success', 'Berhasil diajukan! Menunggu persetujuan admin 👌');
+    }
+
+
     public function destroy($id)
     {
         $organizerId = auth()->user()->organizer->id;
         $concert = Concert::where('organizer_id', $organizerId)->findOrFail($id);
 
         $concert->delete();
-
-        return redirect()->route('eo.concerts.index')->with('success', 'Concert deleted!');
+        return redirect()->route('eo.dashboard')->with('success', 'Concert deleted!');
     }
 }

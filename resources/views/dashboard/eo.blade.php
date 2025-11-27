@@ -112,14 +112,26 @@
                                     Kelola Tiket
                                 </a>
 
-                                <!-- Optional: Preview Halaman Publik -->
-                                <a href="{{ route('concerts.show', $c->id) }}"
-                                    class="px-3 py-1 bg-gray-700 hover:bg-gray-800 text-white rounded-md text-xs"
-                                    target="_blank">
+                                <!-- Tombol Preview -->
+                                <a href="{{ route('concerts.show', $c->id) }}" target="_blank"
+                                    class="px-3 py-1 bg-gray-700 hover:bg-gray-800 text-white rounded-md text-xs">
                                     Preview
                                 </a>
 
+                                <!-- Tombol Hapus -->
+                                <form action="{{ route('eo.concerts.destroy', $c->id) }}" method="POST"
+                                    class="inline-block"
+                                    onsubmit="return confirm('Yakin ingin menghapus konser ini? Data tiket juga akan terhapus!')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs">
+                                        Hapus
+                                    </button>
+                                </form>
+
                             </td>
+
 
                         </tr>
 

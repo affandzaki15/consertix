@@ -49,8 +49,9 @@ class TicketTypeController extends Controller
         $concert->updatePriceFromTickets();
         $concert->updateSellingStatus();
 
-        return redirect()->route('eo.concerts.tickets.index', $concert->id)
-            ->with('success', 'Tipe tiket berhasil ditambahkan!');
+        // ⬇⬇⬇ Redirect ke halaman request approval
+        return redirect()->route('eo.concerts.approval', $concert->id)
+            ->with('success', 'Tipe tiket berhasil ditambahkan! Silakan ajukan untuk disetujui admin.');
     }
 
     public function edit(TicketType $ticket)

@@ -75,6 +75,18 @@ Route::middleware(['auth', 'role:eo'])->prefix('eo')->name('eo.')->group(functio
     Route::resource('concerts.tickets', TicketTypeController::class)
         ->shallow()
         ->except(['show']);
+
+    Route::get(
+        '/eo/concerts/{id}/approval',
+        [EoConcertController::class, 'approvalPage']
+    )
+        ->name('eo.concerts.approval');
+
+    Route::post(
+        '/eo/concerts/{id}/submit-approval',
+        [EoConcertController::class, 'submitApproval']
+    )
+        ->name('eo.concerts.submitApproval');
 });
 
 
@@ -82,7 +94,7 @@ Route::middleware(['auth', 'role:eo'])->prefix('eo')->name('eo.')->group(functio
 // ============================
 // ADMIN AREA
 // ============================
-Route::prefix('admin')->name('admin.')->middleware(['auth','role:admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -123,7 +135,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','role:admin'])->group
 });
 
 // Toggle active/inactive user
-Route::middleware(['auth','admin'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('admin/users/{user}/toggle', [UsersController::class, 'toggle'])
         ->name('admin.users.toggle');
 });
@@ -137,4 +149,4 @@ Route::middleware('auth')->group(function () {
 
 
 // AUTH ROUTES
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
