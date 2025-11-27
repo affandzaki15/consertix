@@ -32,64 +32,65 @@ class EoConcertController extends Controller
     /**
      * STORE concert baru
      */
-public function store(Request $request)
-{
-    $request->validate([
-        'title'     => 'required|max:255',
-        'location'  => 'required',
-        'date'      => 'required|date',
-        'image_url' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title'     => 'required|max:255',
+            'location'  => 'required',
+            'date'      => 'required|date',
+            'image_url' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    // Pastikan EO punya organizer (kalau belum, buat)
-    $organizer = auth()->user()->organizer
-        ?? Organizer::firstOrCreate(
-            ['user_id' => auth()->id()],
-            ['organization_name' => auth()->user()->name]
-        );
+        // Pastikan EO punya organizer (kalau belum, buat)
+        $organizer = auth()->user()->organizer
+            ?? Organizer::firstOrCreate(
+                ['user_id' => auth()->id()],
+                ['organization_name' => auth()->user()->name]
+            );
 
-    // Upload gambar
-    $imagePath = $request->file('image_url')->store('concerts', 'public');
+        // Upload gambar
+        $imagePath = $request->file('image_url')->store('concerts', 'public');
 
-    // Simpan concert
-    $concert = Concert::create([
-        'title'        => $request->title,
-        'location'     => $request->location,
-        'date'         => $request->date,
-        'price'        => 0,
-        'image_url'    => $imagePath,
-        'status'       => 'draft',
-        'organizer_id' => $organizer->id,   // 🔥 ini yang penting
-    ]);
+        // Simpan concert
+        // Simpan concert (awal = coming_soon)
+        $concert = Concert::create([
+            'title'        => $request->title,
+            'location'     => $request->location,
+            'date'         => $request->date,
+            'price'        => 0,
+            'image_url'    => $imagePath,
+            'status'       => 'coming_soon', // 👈 ganti
+            'organizer_id' => $organizer->id,
+        ]);
 
-    return redirect()
-        ->route('eo.concerts.edit', $concert->id)
-        ->with('success', 'Konser berhasil dibuat! Tambahkan tipe tiket.');
-}
+        return redirect()
+            ->route('eo.concerts.edit', $concert->id)
+            ->with('success', 'Konser berhasil dibuat! Tambahkan tipe tiket.');
+    }
 
-public function edit($id)
-{
-    $concert = Concert::where('organizer_id', auth()->user()->organizer()->first()->id)
-        ->findOrFail($id);
+    public function edit($id)
+    {
+        $concert = Concert::where('organizer_id', auth()->user()->organizer()->first()->id)
+            ->findOrFail($id);
 
-    return view('eo.concerts.edit', compact('concert'));
-}
+        return view('eo.concerts.edit', compact('concert'));
+    }
 
-public function update(Request $request, $id)
-{
-    $concert = Concert::where('organizer_id', auth()->user()->organizer()->first()->id)
-        ->findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $concert = Concert::where('organizer_id', auth()->user()->organizer()->first()->id)
+            ->findOrFail($id);
 
-    $request->validate([
-        'title' => 'required|max:255',
-        'location' => 'required',
-        'date' => 'required|date',
-    ]);
+        $request->validate([
+            'title' => 'required|max:255',
+            'location' => 'required',
+            'date' => 'required|date',
+        ]);
 
-    $concert->update($request->only('title', 'location', 'date'));
+        $concert->update($request->only('title', 'location', 'date'));
 
-    return back()->with('success', 'Konser berhasil diperbarui!');
-}
+        return back()->with('success', 'Konser berhasil diperbarui!');
+    }
 
 
     /**
