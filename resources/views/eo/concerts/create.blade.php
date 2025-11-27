@@ -12,21 +12,21 @@
 
         {{-- SUCCESS ALERT --}}
         @if(session('success'))
-            <div class="bg-green-100 text-green-800 px-4 py-2 rounded-lg mb-4">
-                {{ session('success') }}
-            </div>
+        <div class="bg-green-100 text-green-800 px-4 py-2 rounded-lg mb-4">
+            {{ session('success') }}
+        </div>
         @endif
 
         {{-- FORM --}}
-       <form action="{{ route('eo.concerts.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('eo.concerts.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             {{-- JUDUL --}}
             <div class="mb-4">
                 <label class="block font-semibold mb-1 text-gray-700">Judul Konser</label>
                 <input type="text" name="title" value="{{ old('title') }}"
-                       class="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:ring-indigo-500 focus:border-indigo-500"
-                       placeholder="Masukkan nama konser" required>
+                    class="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Masukkan nama konser" required>
                 @error('title')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
             </div>
 
@@ -34,8 +34,8 @@
             <div class="mb-4">
                 <label class="block font-semibold mb-1 text-gray-700">Lokasi</label>
                 <input type="text" name="location" value="{{ old('location') }}"
-                       class="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:ring-indigo-500 focus:border-indigo-500"
-                       placeholder="Contoh: Jakarta Convention Center" required>
+                    class="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Contoh: Jakarta Convention Center" required>
                 @error('location')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
             </div>
 
@@ -43,10 +43,18 @@
             <div class="mb-4">
                 <label class="block font-semibold mb-1 text-gray-700">Tanggal</label>
                 <input type="date" name="date" value="{{ old('date') }}"
-                       class="w-full border border-gray-300 rounded-lg p-3 focus:ring-indigo-500 focus:border-indigo-500"
-                       required>
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-indigo-500 focus:border-indigo-500"
+                    required>
                 @error('date')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
             </div>
+
+            <div class="mb-4">
+                <label class="block font-medium">Deskripsi Konser</label>
+                <textarea name="description" rows="4"
+                    class="w-full border rounded-lg p-2 focus:ring focus:ring-indigo-300"
+                    placeholder="Masukkan detail konser seperti artis, tema acara, dsb"></textarea>
+            </div>
+
 
             {{-- GAMBAR --}}
             <div class="mb-6">
@@ -60,8 +68,8 @@
 
                 {{-- PREVIEW --}}
                 <img id="preview"
-                     class="mt-3 hidden w-40 rounded-lg shadow border border-gray-200"
-                     alt="Preview">
+                    class="mt-3 hidden w-40 rounded-lg shadow border border-gray-200"
+                    alt="Preview">
             </div>
 
             {{-- SUBMIT BUTTON --}}
@@ -80,11 +88,11 @@
 
 {{-- PREVIEW JAVASCRIPT --}}
 <script>
-function previewImage(event) {
-    const preview = document.getElementById('preview');
-    preview.classList.remove('hidden');
-    preview.src = URL.createObjectURL(event.target.files[0]);
-}
+    function previewImage(event) {
+        const preview = document.getElementById('preview');
+        preview.classList.remove('hidden');
+        preview.src = URL.createObjectURL(event.target.files[0]);
+    }
 </script>
 
 @endsection

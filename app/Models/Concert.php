@@ -15,6 +15,8 @@ class Concert extends Model
         'selling_status',   // coming_soon / available / sold_out
         'approval_status',  // pending / approved / rejected
         'organizer_id',
+        'description',
+        'notes',
     ];
 
     protected $casts = [

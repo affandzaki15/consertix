@@ -31,10 +31,11 @@ class EoConcertController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'     => 'required|max:255',
-            'location'  => 'required',
-            'date'      => 'required|date',
-            'image_url' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'title'       => 'required|max:255',
+            'location'    => 'required',
+            'date'        => 'required|date',
+            'image_url'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'description' => 'nullable|string', // ✔ description
         ]);
 
         $organizer = auth()->user()->organizer
@@ -43,7 +44,6 @@ class EoConcertController extends Controller
                 'organization_name' => auth()->user()->name,
             ]);
 
-        // Upload image
         $imagePath = $request->file('image_url')->store('concerts', 'public');
 
         $concert = Concert::create([
@@ -52,9 +52,10 @@ class EoConcertController extends Controller
             'date'            => $request->date,
             'price'           => 0,
             'image_url'       => $imagePath,
-            'selling_status'  => 'coming_soon', // sebelum ada tiket
-            'approval_status' => 'draft', // default sebelum submit
+            'selling_status'  => 'coming_soon',
+            'approval_status' => 'pending', // ✔ dikirim ke admin untuk approval
             'organizer_id'    => $organizer->id,
+            'description'     => $request->description, // ✔ simpan
         ]);
 
         return redirect()->route('eo.concerts.edit', $concert->id)
@@ -64,7 +65,6 @@ class EoConcertController extends Controller
     public function edit($id)
     {
         $organizerId = auth()->user()->organizer->id;
-
         $concert = Concert::where('organizer_id', $organizerId)->findOrFail($id);
 
         return view('eo.concerts.edit', compact('concert'));
@@ -73,16 +73,21 @@ class EoConcertController extends Controller
     public function update(Request $request, $id)
     {
         $organizerId = auth()->user()->organizer->id;
-
         $concert = Concert::where('organizer_id', $organizerId)->findOrFail($id);
 
         $request->validate([
-            'title'    => 'required|max:255',
-            'location' => 'required',
-            'date'     => 'required|date',
+            'title'       => 'required|max:255',
+            'location'    => 'required',
+            'date'        => 'required|date',
+            'description' => 'nullable|string', // ✔ tambahkan validasi
         ]);
 
-        $concert->update($request->only('title', 'location', 'date'));
+        $concert->update([
+            'title'       => $request->title,
+            'location'    => $request->location,
+            'date'        => $request->date,
+            'description' => $request->description, // ✔ bisa diupdate juga
+        ]);
 
         return back()->with('success', 'Konser berhasil diperbarui!');
     }
@@ -90,8 +95,8 @@ class EoConcertController extends Controller
     public function destroy($id)
     {
         $organizerId = auth()->user()->organizer->id;
-
         $concert = Concert::where('organizer_id', $organizerId)->findOrFail($id);
+
         $concert->delete();
 
         return redirect()->route('eo.concerts.index')->with('success', 'Concert deleted!');
