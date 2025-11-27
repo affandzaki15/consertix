@@ -139,14 +139,22 @@ class PurchaseController extends Controller
             return back()->with('error', 'Pilih metode pembayaran terlebih dahulu.');
         }
 
-        // Save chosen payment method and mark as processing (simple stub)
+        // Save chosen payment method and mark as processing
         $order->payment_method = $method;
         $order->status = 'processing';
         $order->save();
 
-        // Redirect to a placeholder payments page or the order detail — adjust as needed
-        return redirect()->route('purchase.payment', $order->id)
-            ->with('success', 'Metode pembayaran dipilih. Lanjutkan proses pembayaran.');
+        // Redirect to confirmation page
+        return redirect()->route('purchase.confirmation', $order->id);
+    }
+
+    public function confirmation(Order $order)
+    {
+        // Show payment confirmation page with timer and instructions
+        return view('purchase.confirmation', [
+            'order' => $order,
+            'concert' => $order->concert
+        ]);
     }
 
     public function processDetail(Request $request, Order $order)
@@ -155,6 +163,8 @@ class PurchaseController extends Controller
             'buyer_name' => $request->name,
             'buyer_email' => $request->email,
             'buyer_phone' => $request->phone,
+            'identity_type' => $request->identity_type,
+            'identity_number' => $request->identity_number,
         ]);
 
         return redirect()->route('purchase.payment', $order->id);

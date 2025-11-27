@@ -36,79 +36,125 @@
                 @csrf
 
                 <!-- Bank Transfer -->
-                <div class="bg-white rounded-2xl p-6 border">
-                    <div class="flex items-center justify-between">
+                <div class="bg-white rounded-2xl border overflow-hidden">
+                    <button type="button" class="payment-method-toggle w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50" data-target="bank-transfer">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
                                 <i class="fa-solid fa-building-columns"></i>
                             </div>
-                            <div>
+                            <div class="text-left">
                                 <div class="font-semibold">Bank Transfer</div>
                                 <div class="text-sm text-gray-500">Transfer via bank</div>
                             </div>
                         </div>
-                        <div>
-                            <button type="button" data-method="bank_transfer" class="select-method inline-flex items-center gap-2 px-3 py-2 border rounded-lg">
-                                Pilih
-                            </button>
-                        </div>
-                    </div>
+                        <i class="fa-solid fa-chevron-down toggle-icon transition-transform"></i>
+                    </button>
 
-                    <div class="mt-4 flex gap-3 items-center text-sm text-gray-600">
-                        <img src="/logo/bca.png" alt="bca" class="h-6" />
-                        <img src="/logo/bni.png" alt="bni" class="h-6" />
-                        <img src="/logo/mandiri.png" alt="mandiri" class="h-6" />
-                        <!-- logos as available -->
+                    <div id="bank-transfer" class="payment-method-content hidden border-t px-6 py-6">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bca">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/BCA_logo.svg/1200px-BCA_logo.svg.png" alt="BCA" class="h-12">
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bjb">
+                                <span class="font-bold text-sm">bank bjb</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bni">
+                                <span class="font-bold text-sm">BNI</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bri">
+                                <span class="font-bold text-sm">BANK BRI</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="bsi">
+                                <span class="font-bold text-sm">BSI</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="sampoerna">
+                                <span class="font-bold text-sm">Bank Sampoerna</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="cimb">
+                                <span class="font-bold text-sm">CIMB NIAGA</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="mandiri">
+                                <span class="font-bold text-sm">mandiri</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option" data-method="permata">
+                                <span class="font-bold text-sm">Permata Bank</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- E-Wallet / QRIS -->
-                <div class="bg-white rounded-2xl p-6 border">
-                    <div class="flex items-center justify-between">
+                <div class="bg-white rounded-2xl border overflow-hidden mt-6">
+                    <button type="button" class="payment-method-toggle w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50" data-target="ewallet">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
                                 <i class="fa-solid fa-wallet"></i>
                             </div>
-                            <div>
+                            <div class="text-left">
                                 <div class="font-semibold">E-Wallet / QRIS</div>
                                 <div class="text-sm text-gray-500">OVO, DANA, Gopay, etc.</div>
                             </div>
                         </div>
-                        <div>
-                            <button type="button" data-method="ewallet" class="select-method inline-flex items-center gap-2 px-3 py-2 border rounded-lg">
-                                Pilih
-                            </button>
-                        </div>
-                    </div>
+                        <i class="fa-solid fa-chevron-down toggle-icon transition-transform"></i>
+                    </button>
 
-                    <div class="mt-4 flex gap-3 items-center">
-                        <img src="/logo/ovo.png" alt="ovo" class="h-6" />
-                        <img src="/logo/dana.png" alt="dana" class="h-6" />
-                        <img src="/logo/gopay.png" alt="gopay" class="h-6" />
+                    <div id="ewallet" class="payment-method-content hidden border-t px-6 py-6">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="ovo">
+                                <span class="font-bold text-sm">OVO</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="dana">
+                                <span class="font-bold text-sm">DANA</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="qris">
+                                <span class="font-bold text-sm">QRIS</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="gopay">
+                                <span class="font-bold text-sm">Gopay</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="linkaja">
+                                <span class="font-bold text-sm">Link Aja!</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="astrapay">
+                                <span class="font-bold text-sm">AstraPay</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="jeniuspay">
+                                <span class="font-bold text-sm">Jenius Pay</span>
+                            </div>
+                            <div class="border rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option" data-method="shopeepay">
+                                <span class="font-bold text-sm">ShopeePay</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Credit Card -->
-                <div class="bg-white rounded-2xl p-6 border">
-                    <div class="flex items-center justify-between">
+                <div class="bg-white rounded-2xl border overflow-hidden mt-6">
+                    <button type="button" class="payment-method-toggle w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50" data-target="card">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
                                 <i class="fa-regular fa-credit-card"></i>
                             </div>
-                            <div>
+                            <div class="text-left">
                                 <div class="font-semibold">Credit Card</div>
                                 <div class="text-sm text-gray-500">Visa, Mastercard, JCB</div>
                             </div>
                         </div>
-                        <div>
-                            <button type="button" data-method="card" class="select-method inline-flex items-center gap-2 px-3 py-2 border rounded-lg">
-                                Pilih
-                            </button>
-                        </div>
-                    </div>
+                        <i class="fa-solid fa-chevron-down toggle-icon transition-transform"></i>
+                    </button>
 
-                    <div class="mt-4">
-                        <div class="p-4 border rounded-lg text-center text-sm text-gray-600">Credit Card</div>
+                    <div id="card" class="payment-method-content hidden border-t px-6 py-6">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="border rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option" data-method="visa">
+                                <span class="font-bold">VISA</span>
+                            </div>
+                            <div class="border rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option" data-method="mastercard">
+                                <span class="font-bold">Mastercard</span>
+                            </div>
+                            <div class="border rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option" data-method="jcb">
+                                <span class="font-bold">JCB</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -138,26 +184,74 @@
 
             <div class="flex justify-between text-gray-600 text-sm mb-2">
                 <span>Subtotal</span>
-                <span>Rp{{ number_format($order->total_amount) }}</span>
+                <span id="subtotalAmount">Rp{{ number_format($order->total_amount) }}</span>
             </div>
+
+            <div class="flex justify-between text-gray-600 text-sm mb-2">
+                <span>Local Tax</span>
+                <span id="taxAmount">Rp{{ number_format($order->total_amount * 0.20) }}</span>
+            </div>
+
+            <div class="flex justify-between text-gray-600 text-sm mb-4">
+                <span>Service Fee</span>
+                <span id="serviceFeeAmount">Rp{{ number_format($order->total_amount * 0.05) }}</span>
+            </div>
+
+            <hr class="my-4">
 
             <div class="flex justify-between font-semibold text-gray-900 text-lg mb-4">
                 <span>Grand Total</span>
-                <span>Rp{{ number_format($order->total_amount) }}</span>
+                <span id="grandTotalAmount">Rp{{ number_format($order->total_amount * 1.25) }}</span>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Add Voucher Button -->
+            <button id="openVoucherModal" type="button" class="w-full mb-4 py-3 border-2 border-indigo-600 text-indigo-600 rounded-xl font-semibold hover:bg-indigo-50 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-tag"></i>
+                Add Voucher
+            </button>
+
+            <!-- Voucher Modal -->
+            <div id="voucherModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4" aria-hidden="true">
+                <div class="fixed inset-0 bg-black/40 transition-opacity" data-voucher-backdrop></div>
+
+                <div class="bg-white rounded-2xl shadow-lg max-w-2xl w-full mx-auto z-10 overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-ticket text-indigo-600 text-2xl"></i>
+                                <h2 class="text-2xl font-semibold">Add Voucher</h2>
+                            </div>
+                            <button id="closeVoucherModal" class="text-gray-400 hover:text-gray-600 text-2xl">×</button>
+                        </div>
+
+                        <div>
+                            <label class="font-medium text-gray-700">Enter Voucher Code</label>
+                            <input type="text" id="voucherCodeInput" placeholder="Masukkan kode voucher"
+                                class="w-full mt-3 px-4 py-3 border-2 border-indigo-600 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <div class="mt-6 flex justify-end gap-3">
+                            <button id="cancelVoucherBtn" class="px-6 py-2 text-gray-700 font-semibold hover:bg-gray-100 rounded-lg">Cancel</button>
+                            <button id="applyVoucherBtn" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">Apply</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-4">
                 <div class="mb-3">
                     <label class="inline-flex items-center">
-                        <input id="agreeTerms" type="checkbox" class="mr-2">
-                        <span class="text-sm text-gray-600">I agree <a href="#" class="text-indigo-600">Terms & Conditions</a></span>
+                        <input id="agreeTerms" type="checkbox" class="mr-2 w-4 h-4 accent-indigo-600">
+                        <span class="text-sm text-gray-600">I agree <a href="#" class="text-indigo-600 font-semibold">Terms & Conditions</a> that applies in Artatix</span>
                     </label>
                 </div>
 
                 <div class="mb-3">
                     <label class="inline-flex items-center">
-                        <input id="agreePrivacy" type="checkbox" class="mr-2">
-                        <span class="text-sm text-gray-600">I agree <a href="#" class="text-indigo-600">Privacy Policy & Data Processing</a></span>
+                        <input id="agreePrivacy" type="checkbox" class="mr-2 w-4 h-4 accent-indigo-600">
+                        <span class="text-sm text-gray-600">I agree <a href="#" class="text-indigo-600 font-semibold">Privacy Policy & Data Processing</a> that applies in Artatix</span>
                     </label>
                 </div>
 
@@ -176,13 +270,66 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const methodButtons = document.querySelectorAll('.select-method');
     const payBtn = document.getElementById('payNowBtn');
     const agreeTerms = document.getElementById('agreeTerms');
     const agreePrivacy = document.getElementById('agreePrivacy');
     const form = document.getElementById('paymentSelectionForm');
 
+    // Voucher modal elements
+    const openVoucherBtn = document.getElementById('openVoucherModal');
+    const voucherModal = document.getElementById('voucherModal');
+    const closeVoucherBtn = document.getElementById('closeVoucherModal');
+    const voucherBackdrop = voucherModal.querySelector('[data-voucher-backdrop]');
+    const voucherCodeInput = document.getElementById('voucherCodeInput');
+    const applyVoucherBtn = document.getElementById('applyVoucherBtn');
+    const cancelVoucherBtn = document.getElementById('cancelVoucherBtn');
+
     let selectedMethod = null;
+
+    // Payment method toggle functionality
+    const toggleButtons = document.querySelectorAll('.payment-method-toggle');
+    toggleButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('data-target');
+            const content = document.getElementById(target);
+            const icon = this.querySelector('.toggle-icon');
+            
+            content.classList.toggle('hidden');
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    });
+
+    // Bank option selection
+    const bankOptions = document.querySelectorAll('.bank-option');
+    bankOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            selectPaymentMethod(this.getAttribute('data-method'));
+        });
+    });
+
+    // Wallet option selection
+    const walletOptions = document.querySelectorAll('.wallet-option');
+    walletOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            selectPaymentMethod(this.getAttribute('data-method'));
+        });
+    });
+
+    // Card option selection
+    const cardOptions = document.querySelectorAll('.card-option');
+    cardOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            selectPaymentMethod(this.getAttribute('data-method'));
+        });
+    });
+
+    function selectPaymentMethod(method) {
+        selectedMethod = method;
+        updatePayState();
+        // Optional: show visual feedback
+        console.log('Selected method:', method);
+    }
 
     function updatePayState() {
         if (selectedMethod && agreeTerms.checked && agreePrivacy.checked) {
@@ -196,18 +343,46 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    methodButtons.forEach(btn => {
-        btn.addEventListener('click', function () {
-            // clear previous selection styling
-            methodButtons.forEach(b => b.classList.remove('bg-indigo-600','text-white'));
-            btn.classList.add('bg-indigo-600','text-white');
-            selectedMethod = btn.getAttribute('data-method');
-            updatePayState();
-        });
-    });
-
     agreeTerms.addEventListener('change', updatePayState);
     agreePrivacy.addEventListener('change', updatePayState);
+
+    // Voucher modal handlers
+    function showVoucherModal() {
+        voucherModal.classList.remove('hidden');
+        voucherModal.classList.add('flex');
+        voucherCodeInput.focus();
+        document.body.style.overflow = 'hidden';
+    }
+
+    function hideVoucherModal() {
+        voucherModal.classList.add('hidden');
+        voucherModal.classList.remove('flex');
+        document.body.style.overflow = '';
+        voucherCodeInput.value = '';
+    }
+
+    openVoucherBtn.addEventListener('click', showVoucherModal);
+    closeVoucherBtn.addEventListener('click', hideVoucherModal);
+    voucherBackdrop.addEventListener('click', hideVoucherModal);
+    cancelVoucherBtn.addEventListener('click', hideVoucherModal);
+
+    // Close voucher modal on ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !voucherModal.classList.contains('hidden')) {
+            hideVoucherModal();
+        }
+    });
+
+    applyVoucherBtn.addEventListener('click', function() {
+        const code = voucherCodeInput.value.trim();
+        if (!code) {
+            alert('Please enter a voucher code');
+            return;
+        }
+        // TODO: Validate voucher code with backend
+        alert('Voucher "' + code + '" applied (stub)');
+        hideVoucherModal();
+    });
 
     payBtn.addEventListener('click', function () {
         if (!selectedMethod) return alert('Pilih metode pembayaran dulu.');

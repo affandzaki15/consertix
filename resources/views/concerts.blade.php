@@ -27,7 +27,7 @@
             <a href="{{ route('concerts.show', $concert->id) }}" class="block border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
                 <img src="{{ asset('storage/' . $concert->image_url) }}" class="w-full h-56 object-cover rounded-t-xl" />
 
-                < class="p-4">
+                
                     <div class="flex items-center text-gray-600 text-sm space-x-2">
                         <span>📍 {{ $concert->location }}</span>
                     </div>

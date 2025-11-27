@@ -139,12 +139,9 @@
 
             <div id="orderDetailContainer" class="hidden">
 
-                <div class="flex justify-between font-medium text-gray-900 mb-1">
-                    <span id="ticketName">-</span>
-                    <span id="ticketPrice">Rp0</span>
+                <div id="ticketItemsList" class="space-y-3 mb-3">
+                    {{-- Items will be inserted here --}}
                 </div>
-
-                <p class="text-sm text-gray-500 mb-3">x1</p>
 
                 <hr class="my-4">
 
@@ -154,7 +151,7 @@
                 </div>
 
                 <div class="flex justify-between font-semibold text-gray-900 text-lg mb-4">
-                    <span>Total 1 Tiket</span>
+                    <span id="totalLabel">Total</span>
                     <span id="totalValue">Rp0</span>
                 </div>
 
@@ -183,10 +180,10 @@
         const bayarBtn = document.getElementById("bayarBtn");
         const form = document.getElementById("paymentForm");
         const detailBox = document.getElementById("orderDetailContainer");
-        const ticketName = document.getElementById("ticketName");
-        const ticketPrice = document.getElementById("ticketPrice");
+        const ticketItemsList = document.getElementById("ticketItemsList");
         const subtotalValue = document.getElementById("subtotalValue");
         const totalValue = document.getElementById("totalValue");
+        const totalLabel = document.getElementById("totalLabel");
 
         // Handle tombol +
         document.querySelectorAll('.qty-plus').forEach(btn => {
@@ -223,7 +220,7 @@
         function updateAllQty() {
             let totalQty = 0;
             let totalPrice = 0;
-            let selectedName = null;
+            const selectedItems = [];
 
             document.querySelectorAll('.qty-display').forEach(display => {
                 const qty = parseInt(display.value) || 0;
@@ -231,9 +228,8 @@
                     totalQty += qty;
                     const price = parseInt(display.dataset.price) || 0;
                     totalPrice += price * qty;
-                    if(!selectedName) {
-                        selectedName = display.closest('.relative').querySelector('h3').innerText;
-                    }
+                    const ticketName = display.closest('.relative').querySelector('h3').innerText;
+                    selectedItems.push({ name: ticketName, qty, price });
                 }
             });
 
@@ -262,11 +258,25 @@
                     }
                 });
 
+                // Update display with all items
+                ticketItemsList.innerHTML = '';
+                selectedItems.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'mb-3';
+                    itemDiv.innerHTML = `
+                        <div class="flex justify-between font-medium text-gray-900">
+                            <span>${item.name}</span>
+                            <span>Rp${(item.price * item.qty).toLocaleString()}</span>
+                        </div>
+                        <p class="text-sm text-gray-500">x${item.qty}</p>
+                    `;
+                    ticketItemsList.appendChild(itemDiv);
+                });
+
                 detailBox.classList.remove("hidden");
-                ticketName.textContent = selectedName || '-';
-                ticketPrice.textContent = "Rp" + totalPrice.toLocaleString();
                 subtotalValue.textContent = "Rp" + totalPrice.toLocaleString();
                 totalValue.textContent = "Rp" + totalPrice.toLocaleString();
+                totalLabel.textContent = "Total " + totalQty + " Tiket";
                 bayarBtn.disabled = false;
             } else {
                 // Remove hidden inputs when no qty selected

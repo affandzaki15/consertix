@@ -23,9 +23,9 @@
 
         {{-- SUCCESS MESSAGE --}}
         @if(session('success'))
-            <div class="bg-green-100 text-green-700 p-3 rounded mb-3">
-                {{ session('success') }}
-            </div>
+        <div class="bg-green-100 text-green-700 p-3 rounded mb-3">
+            {{ session('success') }}
+        </div>
         @endif
 
         {{-- EDIT FORM --}}
@@ -36,24 +36,30 @@
             <div class="mb-4">
                 <label class="font-semibold mb-1 block">Judul</label>
                 <input type="text" name="title" value="{{ $concert->title }}"
-                       class="w-full p-3 border border-gray-300 rounded-lg" required>
+                    class="w-full p-3 border border-gray-300 rounded-lg" required>
             </div>
 
             <div class="mb-4">
                 <label class="font-semibold mb-1 block">Lokasi</label>
                 <input type="text" name="location" value="{{ $concert->location }}"
-                       class="w-full p-3 border border-gray-300 rounded-lg" required>
+                    class="w-full p-3 border border-gray-300 rounded-lg" required>
             </div>
 
             <div class="mb-4">
                 <label class="font-semibold mb-1 block">Tanggal</label>
                 <input type="date" name="date" value="{{ $concert->date }}"
-                       class="w-full p-3 border border-gray-300 rounded-lg" required>
+                    class="w-full p-3 border border-gray-300 rounded-lg" required>
             </div>
+            <div class="mb-4">
+                <label class="block font-medium">Deskripsi Konser</label>
+                <textarea name="description" rows="4"
+                    class="w-full border rounded-lg p-2 focus:ring focus:ring-indigo-300">{{ $concert->description }}</textarea>
+            </div>
+
 
             <div class="text-right">
                 <button type="submit"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
                     Simpan Perubahan
                 </button>
             </div>
