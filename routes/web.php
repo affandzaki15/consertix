@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConcertController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PagesController;
 
 // Controllers EO
 use App\Http\Controllers\Eo\EoDashboardController;
@@ -38,6 +39,8 @@ Route::get('/concerts/search', [ConcertController::class, 'search'])
     ->name('concerts.search');
 
 Route::get('/concerts/{concert}', [ConcertController::class, 'show'])->name('concerts.show');
+
+Route::get('/about', [PagesController::class, 'about'])->name('about');
 
 
 // ============================

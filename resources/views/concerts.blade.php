@@ -21,9 +21,13 @@
         </div>
 
         <!-- Page Info -->
-        @if($concerts->count() > 0)
+        @if($concerts->count() > 0 && $concerts->lastPage() > 1)
         <div class="text-sm text-gray-600 mb-4">
-            Menampilkan <strong>{{ ($concerts->currentPage() - 1) * 12 + 1 }}</strong> hingga <strong>{{ min($concerts->currentPage() * 12, $concerts->total()) }}</strong> dari <strong>{{ $concerts->total() }}</strong> konser
+            Menampilkan <strong>{{ ($concerts->currentPage() - 1) * 12 + 1 }}</strong>–<strong>{{ min($concerts->currentPage() * 12, $concerts->total()) }}</strong> dari <strong>{{ $concerts->total() }}</strong> konser
+        </div>
+        @elseif($concerts->count() > 0)
+        <div class="text-sm text-gray-600 mb-4">
+            Menampilkan <strong>{{ $concerts->total() }}</strong> konser
         </div>
         @endif
 

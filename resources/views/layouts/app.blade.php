@@ -40,20 +40,32 @@
                             <nav class="flex items-center space-x-4 text-sm font-medium">
                                 <a href="{{ url('/') }}" class="hover:text-indigo-300">Home</a>
                                 <a href="{{ route('concerts.index') }}" class="hover:text-indigo-300">Concerts</a>
-                                <a href="#" class="hover:text-indigo-300">Singers</a>
+                                <a href="{{ route('about') }}" class="hover:text-indigo-300">About</a>
                             </nav>
 
                         <!-- LOGIN + CART -->
                         <div class="flex items-center space-x-3">
 
                             <!-- Cart -->
-                            <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300">
+                            <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300 relative">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                     viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
                                     class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
                                 </svg>
+                                @php
+                                    $cart = session()->get('cart', []);
+                                    $count = 0;
+                                    foreach($cart as $items) {
+                                        foreach($items as $qty) {
+                                            $count += (int) $qty;
+                                        }
+                                    }
+                                @endphp
+                                @if($count > 0)
+                                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ $count }}</span>
+                                @endif
                             </a>
 
                             @guest
@@ -91,7 +103,7 @@
                         <nav class="flex items-center space-x-8 text-sm lg:text-lg font-medium order-1">
                             <a href="{{ url('/') }}" class="hover:text-indigo-300 transition">Home</a>
                             <a href="{{ route('concerts.index') }}" class="hover:text-indigo-300 transition">Concerts</a>
-                            <a href="#" class="hover:text-indigo-300 transition">Singers</a>
+                            <a href="{{ route('about') }}" class="hover:text-indigo-300 transition">About</a>
                         </nav>
 
                         <div class="flex-1 flex justify-center order-2">
@@ -104,13 +116,25 @@
                     <div class="flex items-center space-x-4 order-3">
 
                         <!-- Cart -->
-                        <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300 transition">
+                        <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300 transition relative">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                 viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
                                 class="w-7 h-7 md:w-8 md:h-8">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
                             </svg>
+                            @php
+                                $cart = session()->get('cart', []);
+                                $count = 0;
+                                foreach($cart as $items) {
+                                    foreach($items as $qty) {
+                                        $count += (int) $qty;
+                                    }
+                                }
+                            @endphp
+                            @if($count > 0)
+                            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ $count }}</span>
+                            @endif
                         </a>
 
                             @guest

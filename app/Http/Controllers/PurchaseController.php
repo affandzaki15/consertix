@@ -165,12 +165,11 @@ class PurchaseController extends Controller
         }
 
         foreach ($order->items as $item) {
-            // Add (accumulate) quantity instead of max, so buying same item again increases qty
-            if (isset($cart[$order->concert_id][$item->ticket_type_id])) {
-                $cart[$order->concert_id][$item->ticket_type_id] += $item->quantity;
-            } else {
-                $cart[$order->concert_id][$item->ticket_type_id] = $item->quantity;
-            }
+            // Make sync idempotent: don't add repeatedly if the client already
+            // synced the cart (eg. via iframe). Use max(existing, item.quantity)
+            // so repeated visits won't increase the stored quantity.
+            $existingQty = $cart[$order->concert_id][$item->ticket_type_id] ?? 0;
+            $cart[$order->concert_id][$item->ticket_type_id] = max($existingQty, $item->quantity);
         }
 
         session()->put('cart', $cart);
@@ -189,12 +188,10 @@ class PurchaseController extends Controller
         }
 
         foreach ($order->items as $item) {
-            // Accumulate quantity (add to existing)
-            if (isset($cart[$order->concert_id][$item->ticket_type_id])) {
-                $cart[$order->concert_id][$item->ticket_type_id] += $item->quantity;
-            } else {
-                $cart[$order->concert_id][$item->ticket_type_id] = $item->quantity;
-            }
+            // Idempotent sync for confirmation page as well — prefer max so
+            // the cart doesn't grow on repeated views.
+            $existingQty = $cart[$order->concert_id][$item->ticket_type_id] ?? 0;
+            $cart[$order->concert_id][$item->ticket_type_id] = max($existingQty, $item->quantity);
         }
 
         session()->put('cart', $cart);
