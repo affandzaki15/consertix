@@ -304,6 +304,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
     bayarSekarangBtn.addEventListener('click', showMidtransModal);
     cancelPaymentBtn.addEventListener('click', hideMidtransModal);
+    
+    // Cancel Order button (bottom section)
+    const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+    if (cancelOrderBtn) {
+        cancelOrderBtn.addEventListener('click', function() {
+            if (!confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')) {
+                return;
+            }
+
+            const url = "{{ route('purchase.cancel', $order->id) }}";
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            fetch(url, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token || ''
+                },
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success) {
+                    // Stop countdown timer
+                    try { clearInterval(timer); } catch(e) {}
+                    
+                    // Redirect to home page
+                    window.location.href = '/';
+                } else {
+                    alert('Gagal membatalkan pesanan: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Terjadi kesalahan saat membatalkan pesanan.');
+            });
+        });
+    }
+    
     completePaymentBtn.addEventListener('click', function() {
         // Send request to mark order as paid
         const url = "{{ route('purchase.complete', $order->id) }}";

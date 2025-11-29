@@ -1,207 +1,112 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+<div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <!-- Header -->
     <div class="mb-6">
-        <a href="{{ route('history') }}" class="text-blue-600 hover:text-blue-800 flex items-center gap-1 mb-4">
+        <a href="{{ route('history') }}" class="text-indigo-600 hover:text-indigo-800 flex items-center gap-1 mb-4">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            Kembali ke Riwayat
+            Kembali
         </a>
-        <h1 class="text-3xl font-bold text-gray-900">Detail Tiket</h1>
+        <h1 class="text-3xl font-bold text-gray-900">{{ $order->concert->name }}</h1>
+        <p class="text-gray-600 mt-1">{{ \Carbon\Carbon::parse($order->concert->date)->format('d F Y') }}</p>
     </div>
 
     <!-- Main Card -->
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <!-- Concert Header -->
-        <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6">
-            <h2 class="text-2xl font-bold">{{ $order->concert->name }}</h2>
-            <p class="text-purple-100 mt-1">{{ $order->concert->location ?? 'Lokasi tidak tersedia' }}</p>
-            <p class="text-purple-100 mt-2">
-                📅 {{ \Carbon\Carbon::parse($order->concert->date)->format('l, d F Y') }} 
-                🕐 {{ \Carbon\Carbon::parse($order->concert->date)->format('H:i') }}
-            </p>
-        </div>
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <!-- QR Code Section -->
+        <div class="p-8 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6 text-center">QR Code Tiket</h2>
 
-        <!-- Ticket Info Section -->
-        <div class="p-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Left: Ticket Details -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Informasi Tiket</h3>
+            @php
+                $uniqueQrUrls = isset($tickets) ? $tickets->pluck('qr_code_url')->filter()->unique() : collect();
+            @endphp
 
-                    <!-- Reference Code -->
-                    <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <label class="text-sm font-medium text-gray-700">Reference Code (Nomor Tiket)</label>
-                        <p class="text-2xl font-mono font-bold text-blue-600 mt-2 break-all">{{ $referenceCode }}</p>
-                        <p class="text-xs text-gray-500 mt-2">Gunakan kode ini untuk masuk ke acara</p>
-                    </div>
-
-                    <!-- Buyer Details -->
-                    <div class="space-y-4 mb-6">
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Nama Pembeli</label>
-                            <p class="text-gray-900 font-medium mt-1">{{ $order->buyer_name }}</p>
-                        </div>
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Email</label>
-                            <p class="text-gray-900 font-medium mt-1">{{ $order->buyer_email }}</p>
-                        </div>
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Telepon</label>
-                            <p class="text-gray-900 font-medium mt-1">{{ $order->buyer_phone ?? '-' }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Order Status -->
-                    <div class="p-4 bg-green-50 rounded-lg border border-green-200">
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span class="font-medium text-green-800">Pembayaran Berhasil</span>
-                        </div>
-                        <p class="text-sm text-green-700 mt-2">
-                            Tanggal Pembayaran: {{ $order->paid_at->format('d M Y H:i') ?? 'N/A' }}
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Right: QR Code & Summary -->
+            @if(isset($tickets) && $tickets->count() > 0)
                 <div class="flex flex-col items-center">
-                    <!-- QR Code Section -->
-                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6 w-full">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4 text-center">QR Code Tiket</h3>
-
-                        @php
-                            $uniqueQrUrls = isset($tickets) ? $tickets->pluck('qr_code_url')->filter()->unique() : collect();
-                        @endphp
-
-                        @if(isset($tickets) && $tickets->count() > 0)
-                            @if($uniqueQrUrls->count() === 1)
-                                {{-- Single combined QR for this order --}}
-                                <div class="flex flex-col items-center">
-                                    <img src="{{ $uniqueQrUrls->first() }}" alt="QR for order {{ $order->reference_code }}" class="w-48 h-48 object-contain mx-auto" />
-                                    <p class="text-sm text-gray-600 mt-2">Tunjukkan QR Code ini saat masuk acara</p>
-
-                                    <div class="mt-4 space-y-2 w-full">
-                                        @foreach($tickets as $ticket)
-                                            <div class="flex justify-between items-center bg-white p-2 rounded border">
-                                                <div class="font-mono text-sm">{{ $ticket->ticket_code }}</div>
-                                                <div class="text-xs text-gray-600">{{ optional($ticket->orderItem)->ticket_type->name ?? 'Ticket' }}</div>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                    @if($uniqueQrUrls->count() === 1)
+                        <img src="{{ $uniqueQrUrls->first() }}" alt="QR for order {{ $order->reference_code }}" class="w-56 h-56 object-contain mb-6" />
+                    @else
+                        <img src="{{ $uniqueQrUrls->first() }}" alt="QR for order {{ $order->reference_code }}" class="w-56 h-56 object-contain mb-6" />
+                    @endif
+                    
+                    <p class="text-sm text-gray-600 mb-4">Tunjukkan QR Code ini saat check-in</p>
+                    
+                    <!-- Daftar Jenis Tiket -->
+                    <div class="w-full mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <p class="text-sm font-medium text-gray-700 mb-3">Jenis Tiket:</p>
+                        <div class="space-y-2">
+                            @foreach($order->items as $item)
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-700">{{ $item->ticketType->name }}</span>
+                                    <span class="font-semibold text-gray-900">{{ $item->quantity }} tiket</span>
                                 </div>
-                            @else
-                                {{-- Multiple QR images or mixed; show per-ticket QR card --}}
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    @foreach($tickets as $ticket)
-                                        <div class="flex flex-col items-center bg-white p-3 rounded border">
-                                            @if($ticket->qr_code_url)
-                                                <img src="{{ $ticket->qr_code_url }}" alt="QR {{ $ticket->ticket_code }}" class="w-40 h-40 object-contain" />
-                                            @else
-                                                <div class="w-40 h-40">{!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(160)->generate($ticket->ticket_code) !!}</div>
-                                            @endif
-                                            <p class="text-xs text-gray-600 mt-2 font-mono">{{ $ticket->ticket_code }}</p>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
-                        @else
-                            <div class="flex justify-center bg-white p-4 rounded border border-gray-200">
-                                <p class="text-sm text-gray-600">Tiket belum tersedia.</p>
-                            </div>
-                        @endif
-
-                    </div>
-
-                    <!-- Order Summary -->
-                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 w-full">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Ringkasan Pesanan</h3>
-                        
-                        <div class="space-y-3 mb-4 max-h-60 overflow-y-auto">
-                            @foreach ($order->items as $item)
-                                <div class="flex justify-between items-start text-sm">
-                                    <div>
-                                        <p class="font-medium text-gray-900">{{ $item->ticketType->name }}</p>
-                                        <p class="text-gray-500">Jumlah: {{ $item->quantity }} tiket</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="font-medium">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</p>
-                                        <p class="text-gray-500 text-xs">Rp {{ number_format($item->price, 0, ',', '.') }}/tiket</p>
-                                    </div>
-                                </div>
-                                <div class="border-t border-gray-200"></div>
                             @endforeach
                         </div>
-
-                        <div class="flex justify-between items-center pt-2 text-lg font-bold text-gray-900">
-                            <span>Total:</span>
-                            <span class="text-green-600">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
-                        </div>
                     </div>
                 </div>
+            @endif
+        </div>
+
+        <!-- Order Summary -->
+        <div class="p-8 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Rincian Pesanan</h2>
+            
+            <div class="space-y-3 mb-6">
+                @foreach ($order->items as $item)
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-medium text-gray-900">{{ $item->ticketType->name }}</p>
+                            <p class="text-sm text-gray-600">{{ $item->quantity }} x Rp {{ number_format($item->price, 0, ',', '.') }}</p>
+                        </div>
+                        <p class="font-semibold text-gray-900">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</p>
+                    </div>
+                @endforeach
             </div>
+
+            <div class="border-t border-gray-200 pt-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700">Subtotal</span>
+                    <span class="font-semibold">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between items-center text-sm text-gray-600 mt-2">
+                    <span>Tax & Fee (25%)</span>
+                    <span>Rp {{ number_format($order->total_amount * 0.25, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between items-center text-lg font-bold text-gray-900 mt-4 pt-4 border-t border-gray-200">
+                    <span>Total Bayar</span>
+                    <span class="text-indigo-600">Rp {{ number_format($order->total_amount * 1.25, 0, ',', '.') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reference Code -->
+        <div class="p-8 bg-indigo-50 border-b border-indigo-200">
+            <p class="text-sm text-gray-700">Nomor Referensi Pesanan</p>
+            <p class="text-2xl font-mono font-bold text-indigo-600 mt-2">{{ $order->reference_code }}</p>
         </div>
 
         <!-- Actions Section -->
-        <div class="border-t border-gray-200 bg-gray-50 p-6">
-            <div class="flex flex-col md:flex-row gap-3">
-                <button onclick="window.print()" 
-                        class="flex-1 inline-flex justify-center items-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4H7a2 2 0 01-2-2v-4a2 2 0 012-2h10a2 2 0 012 2v4a2 2 0 01-2 2zm-6-4a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                    Cetak Tiket
-                </button>
+        <div class="p-6 flex gap-3">
+            <a href="{{ route('history.print', $order->id) }}" target="_blank"
+               class="flex-1 inline-flex justify-center items-center px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4H7a2 2 0 01-2-2v-4a2 2 0 012-2h10a2 2 0 012 2v4a2 2 0 01-2 2zm-6-4a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                Cetak Tiket
+            </a>
 
-                <a href="{{ route('purchase.detail', $order->id) }}"
-                   class="flex-1 inline-flex justify-center items-center px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-medium">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Detail Pesanan
-                </a>
-
-                <a href="{{ route('history') }}"
-                   class="flex-1 inline-flex justify-center items-center px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Kembali
-                </a>
-            </div>
+            <a href="{{ route('history') }}"
+               class="flex-1 inline-flex justify-center items-center px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Kembali
+            </a>
         </div>
-    </div>
-
-    <!-- Important Notes -->
-    <div class="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <h3 class="text-lg font-semibold text-yellow-900 flex items-center gap-2">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-            </svg>
-            Informasi Penting
-        </h3>
-        <ul class="mt-3 text-sm text-yellow-800 space-y-2">
-            <li>✓ Simpan reference code Anda dengan baik</li>
-            <li>✓ Tunjukkan QR code ini saat check-in di acara</li>
-            <li>✓ Jika ada masalah, hubungi customer service dengan reference code Anda</li>
-            <li>✓ Tiket tidak bisa ditransfer atau dikembalikan</li>
-        </ul>
     </div>
 </div>
 
-<style>
-    @media print {
-        body {
-            background: white;
-        }
-        .no-print {
-            display: none;
-        }
-    }
-</style>
 @endsection

@@ -3,95 +3,149 @@
 @section('title', $concert->title)
 
 @section('content')
-<div class="max-w-4xl mx-auto py-10 px-6">
-    <div class="bg-white rounded-xl shadow overflow-hidden">
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left: Event Image -->
+        <div class="lg:col-span-1">
+            <div class="rounded-lg overflow-hidden shadow-md sticky top-8">
+                <img src="{{ asset('storage/' . $concert->image_url) }}" alt="{{ $concert->title }}"
+                     class="w-full h-96 object-cover">
+            </div>
+        </div>
 
-        <img src="{{ asset('storage/' . $concert->image_url) }}" alt="{{ $concert->title }}"
-             class="w-full h-96 object-cover">
+        <!-- Right: Event Info -->
+        <div class="lg:col-span-2">
+            <!-- Title and Basic Info -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">
+                        🎵 Music
+                    </span>
+                </div>
 
-        <div class="p-6">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ $concert->title }}</h1>
 
-            <h1 class="text-3xl font-bold mb-2">{{ $concert->title }}</h1>
+                <div class="space-y-3 text-gray-700 mb-6">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span>{{ $concert->date->format('d F Y') }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>{{ $concert->date->format('H:i') }} - 23:00</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <span>{{ $concert->location }}</span>
+                    </div>
+                </div>
 
-            <!-- Info Lokasi + Tanggal + Status -->
-            <div class="flex items-center space-x-4 text-gray-600 mb-4">
-                <div>📍 {{ $concert->location }}</div>
-                <div>📅 {{ $concert->date->format('d M Y') }}</div>
+                <!-- Creator Info -->
+                <div class="flex items-center gap-3 mb-8 pb-8 border-b border-gray-200">
+                    <div>
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($concert->organizer->organization_name ?? 'Unknown') }}" 
+                             alt="Creator" class="w-12 h-12 rounded-full">
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Creator</p>
+                        <p class="font-semibold text-gray-900">{{ $concert->organizer->organization_name ?? 'Unknown' }}</p>
+                    </div>
+                </div>
 
-                {{-- STATUS TAMPIL --}}
-                @if($concert->approval_status !== 'approved')
-                    <div class="text-yellow-600 font-medium text-sm">Coming Soon ⏳</div>
-                @else
-                    @if($concert->selling_status === 'sold_out')
-                        <div class="text-red-600 font-medium text-sm">Sold Out ❌</div>
-                    @elseif($concert->selling_status === 'coming_soon')
-                        <div class="text-yellow-600 font-medium text-sm">Coming Soon ⏳</div>
+                <!-- Price Starts From -->
+                <div class="mb-8">
+                    <p class="text-sm text-gray-600 mb-2">Price starts from</p>
+                    <p class="text-3xl font-bold text-indigo-600">Rp{{ number_format($concert->price, 0, ',', '.') }}</p>
+                </div>
+
+                <!-- Buy Ticket Button -->
+                <div class="mb-8">
+                    @if ($concert->approval_status !== 'approved')
+                        <button disabled class="w-full bg-gray-400 text-white py-3 rounded-lg font-semibold cursor-not-allowed">
+                            Coming Soon
+                        </button>
+                    @elseif ($concert->selling_status === 'sold_out')
+                        <button disabled class="w-full bg-gray-400 text-white py-3 rounded-lg font-semibold cursor-not-allowed">
+                            Sold Out
+                        </button>
+                    @elseif ($concert->selling_status === 'coming_soon')
+                        <button disabled class="w-full bg-yellow-500 text-white py-3 rounded-lg font-semibold cursor-not-allowed">
+                            Coming Soon
+                        </button>
                     @else
-                        <div class="text-green-600 font-medium text-sm">Tiket Tersedia ✔</div>
+                        @guest
+                            <a href="{{ route('login') }}" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold text-center transition-colors">
+                                Buy Ticket
+                            </a>
+                        @else
+                            <a href="{{ route('purchase.show', $concert->id) }}" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold text-center transition-colors">
+                                Buy Ticket
+                            </a>
+                        @endguest
                     @endif
+                </div>
+
+                <!-- Description Section -->
+                @if($concert->description)
+                    <div class="mb-8">
+                        <h2 class="text-xl font-bold text-gray-900 mb-4">Description</h2>
+                        <p class="text-gray-700 leading-relaxed">{{ $concert->description }}</p>
+                    </div>
                 @endif
-            </div>
 
-            <p class="text-gray-700 mb-6">
-                Organizer: <strong>{{ $concert->organizer->organization_name ?? 'Unknown' }}</strong>
-            </p>
+                <!-- Terms & Conditions -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Terms & Conditions</h2>
+                    
+                    <div class="space-y-6 text-sm text-gray-700">
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-2">{{ $concert->title }}</h3>
+                            <p class="text-gray-600">{{ $concert->location }} | {{ $concert->date->format('F Y') }}</p>
+                        </div>
 
-            <div class="text-gray-800 mb-6">
-                <div class="text-xs text-gray-500">Mulai dari</div>
-                <div class="text-3xl font-extrabold text-orange-500">
-                    Rp {{ number_format($concert->price, 0, ',', '.') }}
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-2">GENERAL</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>Tickets are for personal use only - not for resale, giveaways, or business purposes.</li>
+                                <li>Misused or resold tickets are invalid - no refund, no entry.</li>
+                                <li>You are responsible for your own safety, health, and belongings. The promoter/artist/sponsors aren't liable for any loss or damage.</li>
+                                <li>All sales are final - no refunds or exchanges unless the event is officially cancelled.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-2">TICKETING</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>Tickets sold only via official promoter partners.</li>
+                                <li>Prices exclude 10% government tax + platform fees.</li>
+                                <li>Max 6 tickets per transaction on per category.</li>
+                                <li>Ticket name must match a valid ID (ID/Passport/Driver's License).</li>
+                                <li>Entry only allowed to the area matching your ticket category.</li>
+                                <li>Cancellations: refunds follow promoter's policy (extra costs not covered).</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-2">WRISTBAND</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>E-vouchers must be exchanged for wristbands (details announced on promoter's social/website).</li>
+                                <li>Redemption requires valid photo ID + official e-voucher.</li>
+                                <li>If someone redeems on your behalf: printed e-voucher & copy of buyer's ID + signed authorization letter with Rp10,000 duty stamp.</li>
+                                <li>Lost/damaged wristbands = no replacement.</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            {{-- Deskripsi Event --}}
-            @if($concert->description)
-                <div class="bg-gray-50 rounded-lg p-4 mb-6">
-                    <h3 class="text-lg font-semibold mb-2">Tentang Event</h3>
-                    <p class="text-gray-700 leading-relaxed">{{ $concert->description }}</p>
-                </div>
-            @endif
-
-            {{-- Tombol Buy Ticket --}}
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('concerts.index') }}"
-                   class="inline-flex items-center bg-gray-200 px-4 py-2 rounded-lg">
-                    Back
-                </a>
-
-                @if ($concert->approval_status !== 'approved')
-                    <button disabled
-                        class="inline-flex items-center bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed">
-                        Coming Soon
-                    </button>
-
-                @elseif ($concert->selling_status === 'sold_out')
-                    <button disabled
-                        class="inline-flex items-center bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed">
-                        Sold Out
-                    </button>
-
-                @elseif ($concert->selling_status === 'coming_soon')
-                    <button disabled
-                        class="inline-flex items-center bg-yellow-500 text-white px-4 py-2 rounded-lg cursor-not-allowed">
-                        Coming Soon
-                    </button>
-
-                @else {{-- AVAILABLE & APPROVED --}}
-                    @guest
-                        <a href="{{ route('login') }}"
-                           class="inline-flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                            Buy Ticket
-                        </a>
-                    @else
-                        <a href="{{ route('purchase.show', $concert->id) }}"
-                           class="inline-flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                            Buy Ticket
-                        </a>
-                    @endguest
-                @endif
-            </div>
-
         </div>
     </div>
 </div>
+
 @endsection

@@ -95,4 +95,34 @@ class HistoryController extends Controller
             }),
         ]);
     }
+
+    /**
+     * Halaman cetak tiket
+     */
+    public function print(Order $order)
+    {
+        // Pastikan hanya owner yang bisa cetak
+        if ($order->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Pastikan order sudah dibayar
+        if ($order->status !== 'paid') {
+            return redirect()->route('history')->with('error', 'Pesanan belum dibayar');
+        }
+
+        $order->load(['concert', 'items.ticketType']);
+
+        // Load tickets associated with this order via order items
+        $orderItemIds = $order->items->pluck('id')->toArray();
+        $tickets = [];
+        if (!empty($orderItemIds)) {
+            $tickets = \App\Models\Ticket::whereIn('order_item_id', $orderItemIds)->get();
+        }
+
+        return view('history.print', [
+            'order' => $order,
+            'tickets' => $tickets,
+        ]);
+    }
 }

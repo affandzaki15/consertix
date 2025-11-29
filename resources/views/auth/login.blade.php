@@ -37,7 +37,12 @@
 
                 <div>
                     <label for="password" class="text-sm font-medium text-gray-700">Password</label>
-                    <input id="password" name="password" type="password" required autocomplete="current-password" class="mt-1 block w-full rounded-full px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-indigo-300" />
+                    <div class="relative mt-1">
+                        <input id="password" name="password" type="password" required autocomplete="current-password" class="block w-full rounded-full px-4 py-3 pr-12 border border-gray-200 focus:ring-2 focus:ring-indigo-300" />
+                        <button type="button" id="togglePassword" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none" title="Toggle password visibility">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
 
@@ -62,4 +67,29 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    if (togglePasswordBtn) {
+        togglePasswordBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            
+            const icon = this.querySelector('i');
+            if (isPassword) {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    }
+});
+</script>
+
 @endsection

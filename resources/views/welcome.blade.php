@@ -21,7 +21,7 @@
     <div class="max-w-7xl mx-auto px-4">
 
         <!-- Slider Container -->
-        <div class="swiper myHeroSwiper relative">
+        <div class="swiper myHeroSwiper relative group">
 
             <div class="swiper-wrapper">
 
@@ -59,7 +59,7 @@
 
             </div>
 
-            <!-- LEFT Arrow -->
+            <!-- LEFT Arrow (hidden by default, visible on hover) -->
             <div
                 class="swiper-button-prev
                !left-2 sm:!left-4
@@ -70,10 +70,11 @@
                !rounded-full
                !w-8 !h-8 sm:!w-10 sm:!h-10
                shadow-lg
-               !z-10">
+               !z-10
+               opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             </div>
 
-            <!-- RIGHT Arrow -->
+            <!-- RIGHT Arrow (hidden by default, visible on hover) -->
             <div
                 class="swiper-button-next
                !right-2 sm:!right-4
@@ -84,7 +85,8 @@
                !rounded-full
                !w-8 !h-8 sm:!w-10 sm:!h-10
                shadow-lg
-               !z-10">
+               !z-10
+               opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             </div>
 
             <!-- PAGINATION -->

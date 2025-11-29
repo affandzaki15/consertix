@@ -56,6 +56,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // History & Tickets routes
     Route::get('/history', [HistoryController::class, 'index'])->name('history');
     Route::get('/history/{order}', [HistoryController::class, 'show'])->name('history.show');
+    Route::get('/history/{order}/print', [HistoryController::class, 'print'])->name('history.print');
     Route::get('/history/{order}/download', [HistoryController::class, 'downloadTicket'])->name('history.download');
 
     // Cart routes
@@ -78,6 +79,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/purchase/{order}/confirmation', [PurchaseController::class, 'confirmation'])->name('purchase.confirmation');
     // Mark payment complete (called from confirmation modal)
     Route::post('/purchase/{order}/complete', [PurchaseController::class, 'completePayment'])->name('purchase.complete');
+    // Cancel order
+    Route::post('/purchase/{order}/cancel', [PurchaseController::class, 'cancelOrder'])->name('purchase.cancel');
 });
 
 

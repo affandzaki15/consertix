@@ -597,4 +597,38 @@ class PurchaseController extends Controller
             'cart_count' => $cartCount,
         ]);
     }
+
+    public function cancelOrder(Request $request, Order $order)
+    {
+        // Ensure the current user owns the order
+        if ($order->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Only allow cancellation of pending/processing orders, not paid ones
+        if ($order->status === 'paid') {
+            return response()->json(['error' => 'Cannot cancel paid orders'], 400);
+        }
+
+        // Restore sold counts for all items in this order
+        foreach ($order->items as $item) {
+            TicketType::where('id', $item->ticket_type_id)
+                ->decrement('sold', $item->quantity);
+        }
+
+        // Remove order items
+        $order->items()->delete();
+
+        // Delete the order
+        $order->delete();
+
+        // Remove this order's items from session cart
+        $cart = session()->get('cart', []);
+        if (isset($cart[$order->concert_id])) {
+            unset($cart[$order->concert_id]);
+        }
+        session()->put('cart', $cart);
+
+        return response()->json(['success' => true, 'message' => 'Order cancelled successfully']);
+    }
 }
