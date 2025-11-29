@@ -10,7 +10,7 @@
 
     {{-- 🔥 TOMBOL LIHAT DETAIL PESANAN (PAKAI existingOrder, BUKAN SESSION) --}}
     @if($existingOrder)
-        <div class="max-w-6xl mx-auto px-6 mb-4">
+        <div class="max-w-6xl mx-auto px-6 mb-4 flex items-center gap-3">
             <a href="{{ route('purchase.detail', $existingOrder->id) }}"
                class="text-indigo-600 underline font-semibold">
                Lihat Detail Pesanan Anda →
@@ -128,11 +128,11 @@
         </div>
 
         {{-- RIGHT: TOTAL --}}
-        <div class="bg-white shadow-lg rounded-2xl p-6 h-fit border border-gray-200">
+        <div class="bg-white shadow-lg rounded-3xl p-6 border h-fit">
 
             <div class="flex items-center gap-2 mb-5">
                 <div class="w-7 h-7 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-lg">
-                    <i class="fa-solid fa-bag-shopping text-base"></i>
+                    <i class="fa-solid fa-bag-shopping"></i>
                 </div>
                 <h3 class="text-lg font-semibold text-gray-900">Rincian Pesanan</h3>
             </div>
@@ -185,6 +185,9 @@
         const totalValue = document.getElementById("totalValue");
         const totalLabel = document.getElementById("totalLabel");
 
+        // Store quantities in an object instead of relying on DOM
+        const quantities = {};
+
         // Handle tombol +
         document.querySelectorAll('.qty-plus').forEach(btn => {
             btn.addEventListener('click', function(e){
@@ -195,6 +198,7 @@
                 if(qty < 5) {
                     qty++;
                     display.value = qty;
+                    quantities[id] = qty;
                     updateAllQty();
                 } else {
                     alert('Maksimal 5 tiket per kategori');
@@ -212,6 +216,7 @@
                 if(qty > 0) {
                     qty--;
                     display.value = qty;
+                    quantities[id] = qty;
                     updateAllQty();
                 }
             });
@@ -221,41 +226,55 @@
             let totalQty = 0;
             let totalPrice = 0;
             const selectedItems = [];
+            const ticketTypesMap = {};
 
+            // Build ticket types map
             document.querySelectorAll('.qty-display').forEach(display => {
-                const qty = parseInt(display.value) || 0;
+                const id = display.dataset.id;
+                const price = parseInt(display.dataset.price) || 0;
+                const name = display.closest('.relative').querySelector('h3').innerText;
+                ticketTypesMap[id] = { name, price };
+            });
+
+            // Calculate from quantities object
+            Object.keys(quantities).forEach(id => {
+                const qty = quantities[id];
                 if(qty > 0) {
                     totalQty += qty;
-                    const price = parseInt(display.dataset.price) || 0;
-                    totalPrice += price * qty;
-                    const ticketName = display.closest('.relative').querySelector('h3').innerText;
-                    selectedItems.push({ name: ticketName, qty, price });
+                    const ticketType = ticketTypesMap[id];
+                    if(ticketType) {
+                        totalPrice += ticketType.price * qty;
+                        selectedItems.push({ 
+                            id, 
+                            name: ticketType.name, 
+                            qty, 
+                            price: ticketType.price 
+                        });
+                    }
                 }
             });
 
             if(totalQty > 0) {
-                // Remove old hidden inputs (keep CSRF token)
+                // Remove old hidden inputs
                 form.querySelectorAll('input[name^="ticket_type_id"], input[name^="quantity"]').forEach(el => {
                     el.remove();
                 });
                 
-                // Add inputs for each selected ticket
-                document.querySelectorAll('.qty-display').forEach(display => {
-                    const qty = parseInt(display.value) || 0;
-                    if(qty > 0) {
-                        const id = display.dataset.id;
-                        const input1 = document.createElement('input');
-                        input1.type = 'hidden';
-                        input1.name = 'ticket_type_id[]';
-                        input1.value = id;
-                        form.appendChild(input1);
-                        
-                        const input2 = document.createElement('input');
-                        input2.type = 'hidden';
-                        input2.name = 'quantity[]';
-                        input2.value = qty;
-                        form.appendChild(input2);
-                    }
+                // Add inputs for each selected ticket from quantities object
+                selectedItems.forEach(item => {
+                    const input1 = document.createElement('input');
+                    input1.type = 'hidden';
+                    input1.name = 'ticket_type_id[]';
+                    input1.value = item.id;
+                    form.appendChild(input1);
+                    
+                    const input2 = document.createElement('input');
+                    input2.type = 'hidden';
+                    input2.name = 'quantity[]';
+                    input2.value = item.qty;
+                    form.appendChild(input2);
+                    
+                    console.log('Added to form:', { ticket_type_id: item.id, quantity: item.qty });
                 });
 
                 // Update display with all items
@@ -266,7 +285,7 @@
                     itemDiv.innerHTML = `
                         <div class="flex justify-between font-medium text-gray-900">
                             <span>${item.name}</span>
-                            <span>Rp${(item.price * item.qty).toLocaleString()}</span>
+                            <span>Rp${(item.price * item.qty).toLocaleString('id-ID')}</span>
                         </div>
                         <p class="text-sm text-gray-500">x${item.qty}</p>
                     `;
@@ -274,8 +293,8 @@
                 });
 
                 detailBox.classList.remove("hidden");
-                subtotalValue.textContent = "Rp" + totalPrice.toLocaleString();
-                totalValue.textContent = "Rp" + totalPrice.toLocaleString();
+                subtotalValue.textContent = "Rp" + totalPrice.toLocaleString('id-ID');
+                totalValue.textContent = "Rp" + totalPrice.toLocaleString('id-ID');
                 totalLabel.textContent = "Total " + totalQty + " Tiket";
                 bayarBtn.disabled = false;
             } else {
@@ -291,14 +310,21 @@
         // Use native form submit; validate before submitting
         form.addEventListener('submit', function(e) {
             let totalQty = 0;
-            document.querySelectorAll('.qty-display').forEach(display => {
-                totalQty += parseInt(display.value) || 0;
+            Object.keys(quantities).forEach(id => {
+                totalQty += quantities[id] || 0;
             });
 
             if (totalQty === 0) {
                 e.preventDefault();
                 alert('Pilih jumlah tiket terlebih dahulu');
                 return;
+            }
+
+            // DEBUG: Log form data
+            console.log('Form Data Before Submit:');
+            const formData = new FormData(form);
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
             }
 
             // Allow native submit (browser will follow redirects or auth)

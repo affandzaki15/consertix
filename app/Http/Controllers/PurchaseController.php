@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Concert;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -13,36 +14,44 @@ class PurchaseController extends Controller
 {
     public function show(Concert $concert)
     {
-      // Ambil order sebelumnya (kalau ada)
-    $existingOrder = Order::where('user_id', Auth::id())
-        ->where('concert_id', $concert->id)
-        ->first();
+        // Ambil order sebelumnya (kalau ada)
+        $existingOrder = Order::where('user_id', Auth::id())
+            ->where('concert_id', $concert->id)
+            ->latest()
+            ->first();
 
-    // Jika ada existingOrder, sync items ke session cart
-    if ($existingOrder) {
-        $cart = session()->get('cart', []);
-        if (!isset($cart[$concert->id])) {
-            $cart[$concert->id] = [];
+        // Jika ada order yang belum selesai (pending/processing), hapus otomatis
+        // sehingga ketika user kembali ke halaman pemesanan, mereka mulai dari kosong.
+        if ($existingOrder && in_array($existingOrder->status, ['pending', 'processing'])) {
+            // restore sold counts
+            foreach ($existingOrder->items as $item) {
+                TicketType::where('id', $item->ticket_type_id)
+                    ->decrement('sold', $item->quantity);
+            }
+
+            // hapus order items lalu order
+            $existingOrder->items()->delete();
+            $existingOrder->delete();
+
+            $existingOrder = null;
         }
 
-        foreach ($existingOrder->items as $item) {
-            $existingQty = $cart[$concert->id][$item->ticket_type_id] ?? 0;
-            $cart[$concert->id][$item->ticket_type_id] = max($existingQty, $item->quantity);
-        }
-
-        session()->put('cart', $cart);
-    }
-
-    return view('purchase.show', [
-        'concert'       => $concert,
-        'ticketTypes'   => $concert->ticketTypes,
-        'user'          => Auth::user(),
-        'existingOrder' => $existingOrder
-    ]);
+        return view('purchase.show', [
+            'concert'       => $concert,
+            'ticketTypes'   => $concert->ticketTypes,
+            'user'          => Auth::user(),
+            'existingOrder' => $existingOrder
+        ]);
     }
 
     public function store(Request $request, Concert $concert)
     {
+        // DEBUG: Log request data
+        Log::info('Purchase Store Request', [
+            'ticket_type_id' => $request->ticket_type_id,
+            'quantity' => $request->quantity,
+        ]);
+
         // Cek apakah user sudah punya order untuk konser ini
         $existingOrder = Order::where('user_id', Auth::id())
             ->where('concert_id', $concert->id)
@@ -124,8 +133,31 @@ class PurchaseController extends Controller
 
         return redirect()->route('purchase.detail', $order->id);
     }
+
+    public function clearCurrent(Request $request)
+    {
+        $concert_id = $request->input('concert_id');
+        
+        // Delete all pending/processing orders for this concert
+        Order::where('user_id', Auth::id())
+            ->where('concert_id', $concert_id)
+            ->whereIn('status', ['pending', 'processing'])
+            ->each(function($order) {
+                // Restore sold count
+                foreach($order->items as $item) {
+                    TicketType::where('id', $item->ticket_type_id)
+                        ->decrement('sold', $item->quantity);
+                }
+                $order->items()->delete();
+                $order->delete();
+            });
+
+        return back()->with('success', 'Pesanan sebelumnya telah dihapus. Silakan buat pesanan baru.');
+    }
+
     public function detail(Order $order)
     {
+        $order->load('items.ticketType');
         return view('purchase.detail', [
             'order' => $order,
             'concert' => $order->concert
@@ -352,8 +384,7 @@ class PurchaseController extends Controller
         }
 
         $order->status = 'paid';
-        // optional: set paid timestamp if you have a 'paid_at' column
-        // e.g. $order->paid_at = now();
+        $order->paid_at = now();
         $order->save();
 
         // Remove or decrement the paid items from session cart so they disappear

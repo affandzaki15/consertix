@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 // Controllers User & Public
 use App\Http\Controllers\ConcertController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PagesController;
 
@@ -52,9 +53,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         return view('dashboard.user');
     })->name('user.dashboard');
 
-    Route::get('/history', function () {
-        return view('history');
-    })->name('history');
+    // History & Tickets routes
+    Route::get('/history', [HistoryController::class, 'index'])->name('history');
+    Route::get('/history/{order}', [HistoryController::class, 'show'])->name('history.show');
+    Route::get('/history/{order}/download', [HistoryController::class, 'downloadTicket'])->name('history.download');
 
     // Cart routes
     Route::get('/cart', [PurchaseController::class, 'cart'])->name('cart.show');
@@ -65,6 +67,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::get('/concerts/{concert}/buy', [PurchaseController::class, 'show'])->name('purchase.show');
     Route::post('/concerts/{concert}/buy', [PurchaseController::class, 'store'])->name('purchase.store');
+    Route::post('/purchase/clear-current', [PurchaseController::class, 'clearCurrent'])->name('purchase.clearCurrent');
     Route::get('/purchase/{order}/detail', [PurchaseController::class, 'detail'])->name('purchase.detail');
     Route::post('/purchase/{order}/detail', [PurchaseController::class, 'processDetail'])->name('purchase.processDetail');
     // Payment step
