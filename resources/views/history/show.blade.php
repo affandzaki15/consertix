@@ -3,17 +3,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <!-- Header -->
-    <div class="mb-6">
-        <a href="{{ route('history') }}" class="text-indigo-600 hover:text-indigo-800 flex items-center gap-1 mb-4">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-            Kembali
-        </a>
-        <h1 class="text-3xl font-bold text-gray-900">{{ $order->concert->name }}</h1>
-        <p class="text-gray-600 mt-1">{{ \Carbon\Carbon::parse($order->concert->date)->format('d F Y') }}</p>
-    </div>
-
+    
     <!-- Main Card -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <!-- QR Code Section -->
@@ -31,9 +21,15 @@
                     @else
                         <img src="{{ $uniqueQrUrls->first() }}" alt="QR for order {{ $order->reference_code }}" class="w-56 h-56 object-contain mb-6" />
                     @endif
-                    
-                    <p class="text-sm text-gray-600 mb-4">Tunjukkan QR Code ini saat check-in</p>
-                    
+
+                    <p class="text-sm text-gray-600 mb-2">Tunjukkan QR Code ini saat check-in</p>
+
+                    <!-- Judul Tiket (gunakan nama konser) -->
+                    <div class="w-full mt-3 p-3 bg-white rounded-lg border border-gray-100 text-center">
+                        <p class="text-xs text-gray-500">Judul Tiket</p>
+                        <p class="text-lg font-semibold text-gray-900 mt-1">{{ $order->concert->name }}</p>
+                    </div>
+
                     <!-- Daftar Jenis Tiket -->
                     <div class="w-full mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                         <p class="text-sm font-medium text-gray-700 mb-3">Jenis Tiket:</p>

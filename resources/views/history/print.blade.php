@@ -145,9 +145,15 @@
 
         @if(isset($tickets) && $tickets->count() > 0)
             <div class="qr-section">
+                <!-- Judul Tiket -->
+                <div style="text-align:center; margin-bottom:18px;">
+                    <div style="font-size:12px;color:#6b7280;">Judul Tiket</div>
+                    <div style="font-size:20px;font-weight:700;color:#111;margin-top:6px;">{{ $order->concert->name }}</div>
+                </div>
+
                 <img src="{{ $uniqueQrUrls->first() ?? '' }}" alt="QR Code">
                 <div class="qr-label">Tunjukkan QR Code ini saat check-in</div>
-                
+
                 <!-- Daftar Jenis Tiket -->
                 <div style="margin-top: 20px; padding: 12px; background: #f3f4f6; border-radius: 6px; border: 1px solid #e5e7eb;">
                     <div style="font-size: 12px; color: #4b5563; margin-bottom: 10px; font-weight: 600;">Jenis Tiket:</div>

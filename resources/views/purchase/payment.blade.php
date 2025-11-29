@@ -53,31 +53,22 @@
                     <div id="bank-transfer" class="payment-method-content hidden border-t px-6 py-6">
                         <div class="grid grid-cols-3 gap-4">
                             <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bca">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/BCA_logo.svg/1200px-BCA_logo.svg.png" alt="BCA" class="h-12">
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bjb">
-                                <span class="font-bold text-sm">bank bjb</span>
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbca.png&w=320&q=50" alt="BCA" class="h-12">
                             </div>
                             <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bni">
-                                <span class="font-bold text-sm">BNI</span>
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbni.png&w=320&q=50" alt="BNI" class="h-12">
                             </div>
                             <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bri">
-                                <span class="font-bold text-sm">BANK BRI</span>
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bsi">
-                                <span class="font-bold text-sm">BSI</span>
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="sampoerna">
-                                <span class="font-bold text-sm">Bank Sampoerna</span>
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="cimb">
-                                <span class="font-bold text-sm">CIMB NIAGA</span>
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbri.png&w=320&q=50" alt="BRI" class="h-12">
                             </div>
                             <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="mandiri">
-                                <span class="font-bold text-sm">mandiri</span>
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fmandiri.png&w=320&q=50" alt="Mandiri" class="h-12">
                             </div>
-                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="permata">
-                                <span class="font-bold text-sm">Permata Bank</span>
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="bsi">
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbsi.png&w=320&q=50" alt="BSI" class="h-12">
+                            </div>
+                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 bank-option transition-all" data-method="CimbNiaga">
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fcimb.png&w=320&q=50" alt="CimbNiaga" class="h-12">
                             </div>
                         </div>
                     </div>
@@ -101,34 +92,25 @@
                     <div id="ewallet" class="payment-method-content hidden border-t px-6 py-6">
                         <div class="grid grid-cols-3 gap-4">
                             <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="ovo">
-                                <span class="font-bold text-sm">OVO</span>
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fovo.png&w=320&q=50" alt="OVO" class="h-12">
                             </div>
                             <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="dana">
-                                <span class="font-bold text-sm">DANA</span>
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fdana.png&w=320&q=50" alt="Dana" class="h-12">
                             </div>
                             <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="qris">
-                                <span class="font-bold text-sm">QRIS</span>
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fqris.png&w=320&q=50" alt="Qris" class="h-12">
                             </div>
                             <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="gopay">
-                                <span class="font-bold text-sm">Gopay</span>
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="linkaja">
-                                <span class="font-bold text-sm">Link Aja!</span>
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="astrapay">
-                                <span class="font-bold text-sm">AstraPay</span>
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="jeniuspay">
-                                <span class="font-bold text-sm">Jenius Pay</span>
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fgopay.png&w=320&q=50" alt="Gopay" class="h-12">
                             </div>
                             <div class="border border-gray-300 rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 wallet-option transition-all" data-method="shopeepay">
-                                <span class="font-bold text-sm">ShopeePay</span>
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fshopeepay.png&w=320&q=50" alt="Shopeepay" class="h-12">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Credit Card -->
+                <!-- Payment Point-->
                 <div class="bg-white rounded-2xl border overflow-hidden mt-6">
                     <button type="button" class="payment-method-toggle w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50" data-target="card">
                         <div class="flex items-center gap-3">
@@ -136,8 +118,7 @@
                                 <i class="fa-regular fa-credit-card"></i>
                             </div>
                             <div class="text-left">
-                                <div class="font-semibold">Credit Card</div>
-                                <div class="text-sm text-gray-500">Visa, Mastercard, JCB</div>
+                                <div class="font-semibold">Payment Point</div>
                             </div>
                         </div>
                         <i class="fa-solid fa-chevron-down toggle-icon transition-transform"></i>
@@ -145,14 +126,11 @@
 
                     <div id="card" class="payment-method-content hidden border-t px-6 py-6">
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="visa">
-                                <span class="font-bold">VISA</span>
+                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="Indomaret">
+                                <img src="" alt="Indomaret" class="h-12">
                             </div>
-                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="mastercard">
-                                <span class="font-bold">Mastercard</span>
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="jcb">
-                                <span class="font-bold">JCB</span>
+                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="Alfamaret">
+                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fshopeepay.png&w=320&q=50" alt="Alfamaret" class="h-12">
                             </div>
                         </div>
                     </div>
