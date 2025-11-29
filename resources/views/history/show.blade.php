@@ -74,12 +74,48 @@
                     <!-- QR Code Section -->
                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6 w-full">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4 text-center">QR Code Tiket</h3>
-                        <div class="flex justify-center bg-white p-4 rounded border border-gray-200">
-                            {!! $qrCode !!}
-                        </div>
-                        <p class="text-center text-sm text-gray-600 mt-3">
-                            Tunjukkan QR Code ini saat masuk acara
-                        </p>
+
+                        @php
+                            $uniqueQrUrls = isset($tickets) ? $tickets->pluck('qr_code_url')->filter()->unique() : collect();
+                        @endphp
+
+                        @if(isset($tickets) && $tickets->count() > 0)
+                            @if($uniqueQrUrls->count() === 1)
+                                {{-- Single combined QR for this order --}}
+                                <div class="flex flex-col items-center">
+                                    <img src="{{ $uniqueQrUrls->first() }}" alt="QR for order {{ $order->reference_code }}" class="w-48 h-48 object-contain mx-auto" />
+                                    <p class="text-sm text-gray-600 mt-2">Tunjukkan QR Code ini saat masuk acara</p>
+
+                                    <div class="mt-4 space-y-2 w-full">
+                                        @foreach($tickets as $ticket)
+                                            <div class="flex justify-between items-center bg-white p-2 rounded border">
+                                                <div class="font-mono text-sm">{{ $ticket->ticket_code }}</div>
+                                                <div class="text-xs text-gray-600">{{ optional($ticket->orderItem)->ticket_type->name ?? 'Ticket' }}</div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @else
+                                {{-- Multiple QR images or mixed; show per-ticket QR card --}}
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    @foreach($tickets as $ticket)
+                                        <div class="flex flex-col items-center bg-white p-3 rounded border">
+                                            @if($ticket->qr_code_url)
+                                                <img src="{{ $ticket->qr_code_url }}" alt="QR {{ $ticket->ticket_code }}" class="w-40 h-40 object-contain" />
+                                            @else
+                                                <div class="w-40 h-40">{!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(160)->generate($ticket->ticket_code) !!}</div>
+                                            @endif
+                                            <p class="text-xs text-gray-600 mt-2 font-mono">{{ $ticket->ticket_code }}</p>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        @else
+                            <div class="flex justify-center bg-white p-4 rounded border border-gray-200">
+                                <p class="text-sm text-gray-600">Tiket belum tersedia.</p>
+                            </div>
+                        @endif
+
                     </div>
 
                     <!-- Order Summary -->

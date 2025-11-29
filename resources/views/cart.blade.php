@@ -22,13 +22,14 @@
                 </a>
             </div>
         @else
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 gap-8">
                 <!-- Cart Items -->
-                <div class="lg:col-span-2 space-y-4">
+                <div class="space-y-4">
                     @foreach($cartItems as $item)
                         @php
-                            // choose target: confirmation if order exists, otherwise buy page
-                            $targetUrl = $item['orderId'] ? route('purchase.confirmation', $item['orderId']) : route('purchase.show', $item['concertId']);
+                            // choose target: confirmation if order exists, otherwise create/resume order from cart
+                            // pass ticketTypeId so clicking a specific cart item checks out just that ticket type
+                            $targetUrl = $item['orderId'] ? route('purchase.confirmation', $item['orderId']) : route('cart.checkout', [$item['concertId'], $item['ticketTypeId']]);
                         @endphp
 
                         <a href="{{ $targetUrl }}" class="block">
@@ -59,49 +60,7 @@
                     @endforeach
                 </div>
 
-                <!-- Order Summary -->
-                <div class="lg:col-span-1">
-                    <div class="bg-white rounded-2xl shadow p-6 h-fit">
-                        <h2 class="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
-
-                        <div class="space-y-3 mb-6">
-                            <div class="flex justify-between text-gray-600">
-                                <span>Subtotal</span>
-                                <span>Rp{{ number_format($total) }}</span>
-                            </div>
-                            <div class="flex justify-between text-gray-600">
-                                <span>Tax (20%)</span>
-                                <span>Rp{{ number_format($total * 0.20) }}</span>
-                            </div>
-                            <div class="flex justify-between text-gray-600">
-                                <span>Service Fee (5%)</span>
-                                <span>Rp{{ number_format($total * 0.05) }}</span>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <div class="flex justify-between font-bold text-lg text-gray-900 mb-6">
-                            <span>Total</span>
-                            <span>Rp{{ number_format($total * 1.25) }}</span>
-                        </div>
-
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold mb-3">
-                            Proceed to Checkout
-                        </button>
-
-                        <form action="{{ route('cart.clear') }}" method="POST" class="inline-block w-full">
-                            @csrf
-                            <button type="submit" class="w-full bg-red-50 hover:bg-red-100 text-red-600 py-3 rounded-xl font-semibold">
-                                Clear Cart
-                            </button>
-                        </form>
-
-                        <a href="{{ route('concerts.index') }}" class="block text-center mt-3 text-indigo-600 hover:text-indigo-700 font-semibold">
-                            ← Continue Shopping
-                        </a>
-                    </div>
-                </div>
+                <!-- Order Summary removed as requested -->
             </div>
         @endif
     </div>

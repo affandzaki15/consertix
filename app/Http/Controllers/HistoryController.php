@@ -40,22 +40,16 @@ class HistoryController extends Controller
 
         $order->load(['concert', 'items.ticketType', 'user']);
 
-        // Generate QR code data berisi reference code dan order details
-        $qrData = json_encode([
-            'reference_code' => $order->reference_code,
-            'order_id' => $order->id,
-            'concert' => $order->concert->name,
-            'date' => $order->concert->date,
-            'buyer' => $order->buyer_name,
-            'email' => $order->buyer_email,
-        ]);
-
-        // Generate QR code sebagai SVG
-        $qrCode = QrCode::format('svg')->size(300)->generate($qrData);
+        // Load tickets associated with this order via order items
+        $orderItemIds = $order->items->pluck('id')->toArray();
+        $tickets = [];
+        if (!empty($orderItemIds)) {
+            $tickets = \App\Models\Ticket::whereIn('order_item_id', $orderItemIds)->get();
+        }
 
         return view('history.show', [
             'order' => $order,
-            'qrCode' => $qrCode,
+            'tickets' => $tickets,
             'referenceCode' => $order->reference_code,
         ]);
     }

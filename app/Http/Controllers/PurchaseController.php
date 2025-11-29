@@ -276,7 +276,8 @@ class PurchaseController extends Controller
                             'total' => $itemTotal,
                             'concertId' => $concertId,
                             'ticketTypeId' => $ticketTypeId,
-                            'orderId' => $existingOrder ? $existingOrder->id : null,
+                            // Only link to an existing order if that order already contains this ticket type.
+                            'orderId' => ($existingOrder && $existingOrder->items()->where('ticket_type_id', $ticketTypeId)->exists()) ? $existingOrder->id : null,
                         ];
                         $total += $itemTotal;
                     }
@@ -288,6 +289,101 @@ class PurchaseController extends Controller
             'cartItems' => $cartItems,
             'total' => $total
         ]);
+    }
+
+    /**
+     * Create or resume an order from the cart for the given concert and
+     * redirect user to the confirmation page.
+     */
+    public function checkoutFromCart(Concert $concert, $ticket_type_id = null)
+    {
+        $cart = session()->get('cart', []);
+
+        $concertCart = $cart[$concert->id] ?? [];
+        if (empty($concertCart)) {
+            return back()->with('error', 'Tidak ada item di keranjang untuk konser ini.');
+        }
+
+        // If there's an existing non-paid order, reuse it
+        $existingOrder = Order::where('user_id', Auth::id())
+            ->where('concert_id', $concert->id)
+            ->latest()
+            ->first();
+
+        if ($existingOrder && $existingOrder->status !== 'paid') {
+            // If user requested a specific ticket type, only reuse existing order
+            // when it already contains that ticket type. Otherwise create a new order
+            // so the user can pay for the specific item they clicked.
+            if ($ticket_type_id) {
+                $hasType = $existingOrder->items->where('ticket_type_id', $ticket_type_id)->isNotEmpty();
+                if ($hasType) {
+                    return redirect()->route('purchase.confirmation', $existingOrder->id);
+                }
+                // else fall through and create a new order for the requested type
+            } else {
+                return redirect()->route('purchase.confirmation', $existingOrder->id);
+            }
+        }
+
+        // Build items from cart data and create a new order.
+        // If $ticket_type_id is provided, build only that item (if present in cart),
+        // otherwise include all ticket types for this concert.
+        $items = [];
+        $total = 0;
+
+        if ($ticket_type_id) {
+            if (!isset($concertCart[$ticket_type_id])) {
+                return back()->with('error', 'Tiket yang diminta tidak ada di keranjang.');
+            }
+
+            $type = TicketType::find($ticket_type_id);
+            if ($type) {
+                $qty = (int) $concertCart[$ticket_type_id];
+                $items[] = [
+                    'ticket_type_id' => $type->id,
+                    'quantity' => $qty,
+                    'price' => $type->price,
+                ];
+                $total += $type->price * $qty;
+            }
+        } else {
+            foreach ($concertCart as $ticketTypeId => $qty) {
+                $type = TicketType::find($ticketTypeId);
+                if (!$type) continue;
+                $items[] = [
+                    'ticket_type_id' => $type->id,
+                    'quantity' => (int) $qty,
+                    'price' => $type->price,
+                ];
+                $total += $type->price * (int) $qty;
+            }
+        }
+
+        if (empty($items)) {
+            return back()->with('error', 'Tidak ada tiket valid di keranjang untuk konser ini.');
+        }
+
+        $order = Order::create([
+            'user_id' => Auth::id(),
+            'concert_id' => $concert->id,
+            'buyer_name' => Auth::user()->name,
+            'buyer_email' => Auth::user()->email,
+            'total_amount' => $total,
+            'status' => 'pending',
+        ]);
+
+        foreach ($items as $it) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'ticket_type_id' => $it['ticket_type_id'],
+                'quantity' => $it['quantity'],
+                'price' => $it['price'],
+            ]);
+
+            TicketType::where('id', $it['ticket_type_id'])->increment('sold', $it['quantity']);
+        }
+
+        return redirect()->route('purchase.confirmation', $order->id);
     }
 
     public function cartAdd(Request $request)
@@ -387,31 +483,102 @@ class PurchaseController extends Controller
         $order->paid_at = now();
         $order->save();
 
-        // Remove or decrement the paid items from session cart so they disappear
+        // Create Tickets for each order item (one ticket row per quantity)
         $order->load('items');
-        $cart = session()->get('cart', []);
-        $concertId = $order->concert_id;
 
-        if (isset($cart[$concertId])) {
+        try {
+            // deferred imports
+            \Illuminate\Support\Facades\Storage::makeDirectory('public/tickets');
+        } catch (\Throwable $e) {
+            // ignore if directory already exists or can't be created
+        }
+
+        // Check if tickets for this order already exist (avoid duplicates)
+        $orderItemIds = $order->items->pluck('id')->toArray();
+        $existingTickets = \App\Models\Ticket::whereIn('order_item_id', $orderItemIds)->get();
+
+        $createdTicketIds = [];
+        $createdTicketCodes = [];
+
+        if ($existingTickets->isEmpty()) {
+            // Create ticket rows (without QR url yet) and collect codes
             foreach ($order->items as $item) {
-                $ticketId = $item->ticket_type_id;
-                if (isset($cart[$concertId][$ticketId])) {
-                    $cart[$concertId][$ticketId] -= $item->quantity;
-                    if ($cart[$concertId][$ticketId] <= 0) {
-                        unset($cart[$concertId][$ticketId]);
+                for ($i = 0; $i < $item->quantity; $i++) {
+                    $ticketCode = strtoupper('TKT-' . $order->reference_code . '-' . strtoupper(substr(uniqid(), -6)));
+
+                    $ticket = \App\Models\Ticket::create([
+                        'order_item_id' => $item->id,
+                        'ticket_code' => $ticketCode,
+                        'qr_code_url' => null,
+                        'status' => 'active',
+                        'issued_at' => now(),
+                    ]);
+
+                    $createdTicketIds[] = $ticket->id;
+                    $createdTicketCodes[] = $ticketCode;
+                }
+            }
+        } else {
+            // Use existing tickets
+            $createdTicketIds = $existingTickets->pluck('id')->toArray();
+            $createdTicketCodes = $existingTickets->pluck('ticket_code')->toArray();
+        }
+
+        // Generate a single combined QR for the order containing all ticket codes
+        if (!empty($createdTicketCodes)) {
+            $qrPayload = json_encode([
+                'order_id' => $order->id,
+                'reference' => $order->reference_code,
+                'tickets' => $createdTicketCodes,
+            ]);
+
+            try {
+                $pngBinary = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(400)->generate($qrPayload);
+                // Use a filename per order reference to keep it consistent
+                $filename = 'tickets/order-' . $order->reference_code . '.png';
+                // add timestamp suffix if file already exists to avoid caching overwrites
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($filename)) {
+                    $filename = 'tickets/order-' . $order->reference_code . '-' . time() . '.png';
+                }
+
+                \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $pngBinary);
+                $qrUrl = \Illuminate\Support\Facades\Storage::url($filename);
+
+                // update all tickets for this order to reference the single QR image
+                \App\Models\Ticket::whereIn('id', $createdTicketIds)->update(['qr_code_url' => $qrUrl]);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Combined QR generation failed', ['error' => $e->getMessage()]);
+            }
+        }
+
+        // Subtract only the purchased quantities for this order from the session cart
+        $cart = session()->get('cart', []);
+        if (isset($cart[$order->concert_id]) && is_array($cart[$order->concert_id])) {
+            foreach ($order->items as $item) {
+                $typeId = $item->ticket_type_id;
+                $qtyToRemove = (int) $item->quantity;
+
+                if (isset($cart[$order->concert_id][$typeId])) {
+                    $currentQty = (int) $cart[$order->concert_id][$typeId];
+                    $newQty = $currentQty - $qtyToRemove;
+                    if ($newQty > 0) {
+                        $cart[$order->concert_id][$typeId] = $newQty;
+                    } else {
+                        // remove this ticket type from cart completely
+                        unset($cart[$order->concert_id][$typeId]);
                     }
                 }
             }
 
-            // If no ticket types left for this concert, remove the concert key
-            if (empty($cart[$concertId])) {
-                unset($cart[$concertId]);
+            // If no ticket types remain for this concert, remove the concert entry
+            if (empty($cart[$order->concert_id])) {
+                unset($cart[$order->concert_id]);
             }
 
             session()->put('cart', $cart);
         }
 
-        // Return updated cart count to allow frontend to refresh badge
+        // Recalculate the remaining cart count to return to the client
         $cartCount = 0;
         foreach (session()->get('cart', []) as $c) {
             foreach ($c as $q) {

@@ -60,6 +60,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     // Cart routes
     Route::get('/cart', [PurchaseController::class, 'cart'])->name('cart.show');
+    Route::get('/cart/checkout/{concert}/{ticket_type_id?}', [PurchaseController::class, 'checkoutFromCart'])->name('cart.checkout');
     Route::get('/cart/count', [PurchaseController::class, 'cartCount'])->name('cart.count');
     Route::post('/cart/add', [PurchaseController::class, 'cartAdd'])->name('cart.add');
     Route::post('/cart/remove/{ticket_type_id}', [PurchaseController::class, 'cartRemove'])->name('cart.remove');
