@@ -42,12 +42,19 @@
                     </p>
 
                     <div class="space-y-3">
-                        <button id="bayarSekarangBtn" type="button" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold">
-                            Bayar Sekarang
-                        </button>
-                        <button id="cancelOrderBtn" type="button" class="w-full py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl font-semibold">
-                            Batalkan Pesanan
-                        </button>
+                        @if(strtolower($order->status) !== 'paid')
+                            <button id="bayarSekarangBtn" type="button" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold">
+                                Bayar Sekarang
+                            </button>
+                            <button id="cancelOrderBtn" type="button" class="w-full py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl font-semibold">
+                                Batalkan Pesanan
+                            </button>
+                        @else
+                            <div class="w-full py-3 rounded-xl bg-green-50 border border-green-200 text-green-700 font-semibold text-center">
+                                Pesanan Sudah Dibayar
+                            </div>
+                            <a href="{{ route('history.show', $order->id) }}" class="block w-full py-3 text-center rounded-xl bg-white border border-gray-200 text-indigo-600 font-semibold">Lihat Tiket</a>
+                        @endif
                     </div>
                 </div>
 
@@ -315,6 +322,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
                 if (data && data.success) {
+                // update cart badge immediately with remaining cart count
+                if (typeof updateCartBadge === 'function' && data.cart_count !== undefined) {
+                    updateCartBadge(data.cart_count);
+                }
+
                 // update status text and color
                 const statusEl = document.getElementById('orderStatus');
                 if (statusEl) {

@@ -74,10 +74,48 @@
                 @endforeach
             </div>
 
-            <!-- Pagination -->
-            <div class="mt-6">
-                {{ $orders->links() }}
-            </div>
+            <!-- Pagination (numbered with jump by 5) -->
+            @if($orders->hasPages())
+                @php
+                    $current = $orders->currentPage();
+                    $last = $orders->lastPage();
+                    $start = max(1, min($current - 2, max(1, $last - 4)));
+                    $end = min($last, max($current + 2, min(5, $last)));
+                @endphp
+
+                <nav class="mt-6 flex items-center justify-center gap-2 text-sm" aria-label="Pagination">
+                    {{-- jump back 5 --}}
+                    @php $jumpBack = max(1, $current - 5); @endphp
+                    <a href="{{ $orders->url($jumpBack) }}" class="text-gray-500 hover:text-gray-700 px-2 py-1 rounded">««</a>
+
+                    {{-- previous --}}
+                    @if($orders->onFirstPage())
+                        <span class="text-gray-300 px-2 py-1">‹</span>
+                    @else
+                        <a href="{{ $orders->previousPageUrl() }}" class="text-gray-500 hover:text-gray-700 px-2 py-1 rounded">‹</a>
+                    @endif
+
+                    {{-- page numbers --}}
+                    @for($i = $start; $i <= $end; $i++)
+                        @if($i == $current)
+                            <span class="px-3 py-1 font-medium text-gray-900">{{ $i }}</span>
+                        @else
+                            <a href="{{ $orders->url($i) }}" class="text-gray-600 hover:bg-gray-100 px-3 py-1 rounded">{{ $i }}</a>
+                        @endif
+                    @endfor
+
+                    {{-- next --}}
+                    @if($orders->hasMorePages())
+                        <a href="{{ $orders->nextPageUrl() }}" class="text-gray-500 hover:text-gray-700 px-2 py-1 rounded">›</a>
+                    @else
+                        <span class="text-gray-300 px-2 py-1">›</span>
+                    @endif
+
+                    {{-- jump forward 5 --}}
+                    @php $jumpForward = min($last, $current + 5); @endphp
+                    <a href="{{ $orders->url($jumpForward) }}" class="text-gray-500 hover:text-gray-700 px-2 py-1 rounded">»»</a>
+                </nav>
+            @endif
         @else
             <div class="text-center py-12">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -20,11 +20,15 @@
 <body class="font-sans antialiased">
     <div id="app" class="{{ request()->is('admin*') ? 'min-h-screen' : '' }}">
 
+        {{-- Header: hide on authentication pages (login/register/password) --}}
+        @php
+            $isAuthPage = request()->routeIs('login') || request()->routeIs('register') || request()->is('password/*');
+        @endphp
         {{-- Header --}}
         @if (request()->is('admin*'))
             {{-- Admin Header + Menu --}}
             @includeWhen(View::exists('admin.partials.menu'), 'admin.partials.menu')
-        @else
+        @elseif(!$isAuthPage)
             {{-- User Header --}}
             <header class="w-full bg-gradient-to-b from-[#0d0f55] to-[#0a0c38] text-white py-4">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6">

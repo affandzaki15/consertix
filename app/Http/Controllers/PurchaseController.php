@@ -212,21 +212,25 @@ class PurchaseController extends Controller
 
     public function confirmation(Order $order)
     {
-        // Add order items to cart for easy resumption
-        $cart = session()->get('cart', []);
-        
-        if (!isset($cart[$order->concert_id])) {
-            $cart[$order->concert_id] = [];
-        }
+        // Only add order items to cart for resumption if the order is not already paid.
+        // This prevents a paid order from being re-added to the session when the
+        // user refreshes the confirmation page after payment.
+        if (strtolower($order->status) !== 'paid') {
+            $cart = session()->get('cart', []);
 
-        foreach ($order->items as $item) {
-            // Idempotent sync for confirmation page as well — prefer max so
-            // the cart doesn't grow on repeated views.
-            $existingQty = $cart[$order->concert_id][$item->ticket_type_id] ?? 0;
-            $cart[$order->concert_id][$item->ticket_type_id] = max($existingQty, $item->quantity);
-        }
+            if (!isset($cart[$order->concert_id])) {
+                $cart[$order->concert_id] = [];
+            }
 
-        session()->put('cart', $cart);
+            foreach ($order->items as $item) {
+                // Idempotent sync for confirmation page as well — prefer max so
+                // the cart doesn't grow on repeated views.
+                $existingQty = $cart[$order->concert_id][$item->ticket_type_id] ?? 0;
+                $cart[$order->concert_id][$item->ticket_type_id] = max($existingQty, $item->quantity);
+            }
+
+            session()->put('cart', $cart);
+        }
 
         // Show payment confirmation page with timer and instructions
         return view('purchase.confirmation', [
