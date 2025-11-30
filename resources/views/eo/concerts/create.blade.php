@@ -7,7 +7,7 @@
 
         {{-- TITLE --}}
         <h2 class="text-2xl font-bold text-gray-800 mb-6">
-            Buat Konser Baru 
+            Buat Konser Baru
         </h2>
 
         {{-- SUCCESS ALERT --}}
@@ -47,6 +47,18 @@
                     required>
                 @error('date')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
             </div>
+
+            {{-- WAKTU --}}
+            <div class="mb-4">
+                <label class="block font-semibold mb-1 text-gray-700">Waktu Mulai</label>
+                <input type="time" name="time" value="{{ old('time') }}"
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-indigo-500 focus:border-indigo-500"
+                    required>
+                @error('time')<p class="text-red-600 text-sm">{{ $message }}</p>@enderror
+            </div>
+
+
+
 
             <div class="mb-4">
                 <label class="block font-medium">Deskripsi Konser</label>

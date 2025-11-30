@@ -34,6 +34,7 @@ class EoConcertController extends Controller
             'title'       => 'required|max:255',
             'location'    => 'required',
             'date'        => 'required|date',
+            'time'        => 'required',
             'image_url'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'description' => 'nullable|string',
         ]);
@@ -51,6 +52,7 @@ class EoConcertController extends Controller
             'title'           => $request->title,
             'location'        => $request->location,
             'date'            => $request->date,
+            'time'            => $request->time,
             'price'           => 0,
             'image_url'       => $imagePath,
             'selling_status'  => 'coming_soon',
@@ -80,6 +82,7 @@ class EoConcertController extends Controller
             'title'       => 'required|max:255',
             'location'    => 'required',
             'date'        => 'required|date',
+            'time'        => 'required',
             'description' => 'nullable|string',
         ]);
 
@@ -87,6 +90,7 @@ class EoConcertController extends Controller
             'title'       => $request->title,
             'location'    => $request->location,
             'date'        => $request->date,
+            'time'        => $request->time,
             'description' => $request->description,
         ]);
 
