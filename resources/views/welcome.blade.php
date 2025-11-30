@@ -414,8 +414,8 @@
         <div>
             <h3 class="font-semibold text-lg mb-3">Tentang Kami</h3>
             <ul class="space-y-2 text-gray-300 text-sm">
-                <li><a href="#" class="hover:text-white transition">Tentang Kami</a></li>
-                <li><a href="#" class="hover:text-white transition">Hubungi Kami</a></li>
+                <li><a href="{{ route('about') }}" class="hover:text-white transition">Tentang Kami</a></li>
+                <li><a href="{{ route('contact') }}" class="hover:text-white transition">Hubungi Kami</a></li>
             </ul>
         </div>
 

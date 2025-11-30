@@ -11,15 +11,23 @@
             <h2 class="text-xl font-semibold text-gray-900 mb-6 text-center">QR Code Tiket</h2>
 
             @php
-                $uniqueQrUrls = isset($tickets) ? $tickets->pluck('qr_code_url')->filter()->unique() : collect();
+                $uniqueQrUrls = isset($tickets) && count($tickets) > 0 ? $tickets->pluck('qr_code_url')->filter()->unique() : collect();
+                $qrUrl = $uniqueQrUrls->count() > 0 ? $uniqueQrUrls->first() : null;
             @endphp
 
-            @if(isset($tickets) && $tickets->count() > 0)
+            @if(isset($order) && $order)
                 <div class="flex flex-col items-center">
-                    @if($uniqueQrUrls->count() === 1)
-                        <img src="{{ $uniqueQrUrls->first() }}" alt="QR for order {{ $order->reference_code }}" class="w-56 h-56 object-contain mb-6" />
+                    @if($qrUrl && !empty($qrUrl))
+                        <!-- Display stored QR code -->
+                        <img src="{{ $qrUrl }}" alt="QR for order {{ $order->reference_code }}" class="w-56 h-56 object-contain mb-6" onerror="this.parentElement.style.display='none'; document.getElementById('dynamicQr').style.display='flex';" />
+                        <div id="dynamicQr" class="w-56 h-56 items-center justify-center bg-gray-100 rounded-lg mb-6" style="display: none;">
+                            <div id="qrCode" style="width: 224px; height: 224px;"></div>
+                        </div>
                     @else
-                        <img src="{{ $uniqueQrUrls->first() }}" alt="QR for order {{ $order->reference_code }}" class="w-56 h-56 object-contain mb-6" />
+                        <!-- Generate QR code dynamically if not stored -->
+                        <div class="w-56 h-56 flex items-center justify-center bg-gray-100 rounded-lg mb-6">
+                            <div id="qrCode" style="width: 224px; height: 224px;"></div>
+                        </div>
                     @endif
 
                     <p class="text-sm text-gray-600 mb-2">Tunjukkan QR Code ini saat check-in</p>
@@ -27,7 +35,7 @@
                     <!-- Judul Tiket (gunakan nama konser) -->
                     <div class="w-full mt-3 p-3 bg-white rounded-lg border border-gray-100 text-center">
                         <p class="text-xs text-gray-500">Judul Tiket</p>
-                        <p class="text-lg font-semibold text-gray-900 mt-1">{{ $order->concert->name }}</p>
+                        <p class="text-lg font-semibold text-gray-900 mt-1">{{ $order->concert->title ?? 'N/A' }}</p>
                     </div>
 
                     <!-- Daftar Jenis Tiket -->
@@ -43,6 +51,31 @@
                         </div>
                     </div>
                 </div>
+                
+                @if(!$qrUrl || empty($qrUrl))
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const qrContainer = document.getElementById('qrCode');
+                        if (qrContainer && qrContainer.children.length === 0) {
+                            const qrData = JSON.stringify({
+                                reference_code: '{{ $order->reference_code }}',
+                                order_id: {{ $order->id }},
+                                concert: '{{ $order->concert->title ?? '' }}',
+                            });
+                            
+                            new QRCode(qrContainer, {
+                                text: qrData,
+                                width: 224,
+                                height: 224,
+                                colorDark: '#000000',
+                                colorLight: '#ffffff',
+                                correctLevel: QRCode.CorrectLevel.H
+                            });
+                        }
+                    });
+                </script>
+                @endif
             @endif
         </div>
 
