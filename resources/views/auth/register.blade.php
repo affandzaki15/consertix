@@ -46,7 +46,7 @@
                     <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                 </div>
 
-                {{-- role selection removed as requested --}}
+                {{-- role selection removed --}}
 
                 <div>
                     <label for="password" class="text-sm font-medium text-gray-700">Password</label>

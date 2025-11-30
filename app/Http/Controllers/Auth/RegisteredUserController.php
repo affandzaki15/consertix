@@ -31,7 +31,6 @@ class RegisteredUserController extends Controller
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role'     => ['required', 'in:user,eo,admin'],
             'phone'    => ['required', 'string', 'max:20'],
         ]);
 
@@ -39,7 +38,7 @@ class RegisteredUserController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role'     => $request->role,
+            'role'     => 'user',  // Default role
             'phone'    => $request->phone,
         ]);
         // Jika user mendaftar sebagai EO → buatkan organizer otomatis
@@ -52,13 +51,8 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        // Redirect by role after register: admin/eo -> their dashboards, others -> welcome
-        return match ($user->role) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'eo'    => redirect()->route('eo.dashboard'),
-            default => redirect('/'),
-        };
+        // Don't auto-login, redirect to login page instead
+        return redirect()->route('login')
+            ->with('success', 'Registration successful! Please log in.');
     }
 }
