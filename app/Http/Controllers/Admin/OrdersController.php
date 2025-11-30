@@ -23,23 +23,18 @@ class OrdersController extends Controller
     }
 
         public function generateTickets(Request $request, Order $order)
-    {
-        // Cek apakah status sudah "completed"
-        if ($order->status !== 'completed') {
-            return redirect()->back()->with('error', 'Tiket hanya bisa digenerate setelah status order menjadi "completed".');
-        }
-
-        // Jika sudah completed, generate tiket
-        if (Schema::hasColumn('orders', 'tickets_generated')) {
-            $order->tickets_generated = 1;
-        }
-        if (Schema::hasColumn('orders', 'tickets_generated_at')) {
-            $order->tickets_generated_at = now();
-        }
-
-        $order->save();
-
-        return redirect()->back()->with('success', 'Tiket telah berhasil digenerate.');
+{
+    if ($order->status !== 'paid') {
+        return redirect()->back()->with('error', 'Hanya order yang sudah dibayar yang bisa digenerate.');
     }
+
+    // Generate tiket
+    $order->tickets_generated = 1;
+    $order->tickets_generated_at = now();
+    $order->status = 'completed'; // ← ubah status jadi completed
+    $order->save();
+
+    return redirect()->back()->with('success', 'Tiket berhasil digenerate. Status diubah ke "Selesai".');
+}
 
 }

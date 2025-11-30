@@ -42,21 +42,27 @@
                 </div>
 
                 <div class="mt-6">
-                    <h3 class="font-semibold mb-2">Actions</h3>
-                    @if($order->status === 'completed' && !$order->tickets_generated)
-                        <form action="{{ route('admin.orders.generate-tickets', $order) }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                                onclick="return confirm('Generate tiket untuk order ini?')">
-                                Generate Tiket
-                            </button>
-                        </form>
-                    @elseif($order->tickets_generated)
-                        <span class="text-green-600 font-medium">✅ Tiket sudah digenerate</span>
-                    @else
-                        <span class="text-yellow-600">⚠️ Status belum "Selesai". Tidak bisa generate tiket.</span>
-                    @endif
-                </div>
+    <h3 class="font-semibold mb-2">Actions</h3>
+    @if($order->status === 'paid' && !$order->tickets_generated)
+        <form action="{{ route('admin.orders.generate-tickets', $order) }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                onclick="return confirm('Generate tiket untuk order ini?')">
+                Generate Tiket
+            </button>
+        </form>
+    @elseif($order->tickets_generated)
+        <span class="text-green-600 font-medium">✅ Tiket sudah digenerate</span>
+    @else
+        <span class="text-yellow-600">
+            @if($order->status === 'processing')
+                ⚠️ Menunggu pembayaran selesai
+            @else
+                ⚠️ Status: {{ ucfirst($order->status ?? 'unknown') }}
+            @endif
+        </span>
+    @endif
+</div>
             </div>
         </div>
     </div>
