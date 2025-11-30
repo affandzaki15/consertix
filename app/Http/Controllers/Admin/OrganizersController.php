@@ -3,70 +3,122 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class OrganizersController extends Controller
 {
+    // Tampilkan semua organizer
+    public function index()
+    {
+        $organizers = User::where('role', 'eo')
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('admin.organizers.index', compact('organizers'));
+    }
+
+    // Form tambah organizer
+    public function create()
+    {
+        return view('admin.organizers.create');
+    }
+
+    // Simpan organizer baru
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+        ]);
+
+        User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => 'eo',
+            'status'   => 'pending', // default pending
+        ]);
+
+        return redirect()->route('admin.organizers.index')
+            ->with('success', 'Organizer berhasil ditambahkan.');
+    }
+
+    // Tampilkan pending organizer
     public function pending()
     {
-        $query = User::query();
-
-        // Filter dasar: role = 'eo' jika kolom role ada
-        if (Schema::hasColumn('users', 'role')) {
-            $query->where('role', 'eo');
-        }
-
-        // Jika ada kolom status, pilih hanya yang pending
-        if (Schema::hasColumn('users', 'status')) {
-            $query->where('status', 'pending');
-        }
-
-        $pending = $query->orderBy('created_at', 'desc')->paginate(20);
+        $pending = User::where('role', 'eo')
+            ->where('status', 'pending') // pastikan kolom `status` ada di migration
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
 
         return view('admin.organizers.pending', compact('pending'));
     }
 
-    public function show(User $user)
+    // Detail organizer
+    public function show(User $organizer)
     {
-        return view('admin.organizers.show', compact('user'));
+        return view('admin.organizers.show', compact('organizer'));
     }
 
-    public function approve(Request $request, User $user)
+    // Form edit organizer
+    public function edit(User $organizer)
     {
-        if (Schema::hasColumn('users', 'status')) {
-            $user->status = 'approved';
-        }
-        if (Schema::hasColumn('users', 'role')) {
-            $user->role = 'eo';
-        }
-        if (Schema::hasColumn('users', 'approved_at')) {
-            $user->approved_at = now();
-        }
-        $user->save();
-
-        return redirect()->route('admin.organizers.pending')->with('success', 'Organizer disetujui.');
+        return view('admin.organizers.edit', compact('organizer'));
     }
 
-    public function reject(Request $request, User $user)
+    // Update organizer
+    public function update(Request $request, User $organizer)
     {
-        $note = $request->input('note');
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $organizer->id,
+        ]);
 
-        if (Schema::hasColumn('users', 'status')) {
-            $user->status = 'rejected';
+        $organizer->update([
+            'name'  => $request->name,
+            'email' => $request->email,
+        ]);
+
+        // Jika admin mengubah password
+        if ($request->filled('password')) {
+            $request->validate(['password' => 'min:6']);
+            $organizer->update(['password' => Hash::make($request->password)]);
         }
 
-        if ($note) {
-            if (Schema::hasColumn('users', 'notes')) {
-                $user->notes = $note;
-            } elseif (Schema::hasColumn('users', 'admin_note')) {
-                $user->admin_note = $note;
-            }
-        }
+        return redirect()->route('admin.organizers.index')
+            ->with('success', 'Organizer berhasil diperbarui.');
+    }
 
-        $user->save();
+    // Approve organizer
+    public function approve(User $organizer)
+    {
+        $organizer->update(['status' => 'approved', 'note' => null]);
 
-        return redirect()->route('admin.organizers.pending')->with('success', 'Organizer ditolak.');
+        return redirect()->route('admin.organizers.pending')
+            ->with('success', 'Organizer berhasil di-approve.');
+    }
+
+    // Reject organizer
+    public function reject(Request $request, User $organizer)
+    {
+        $organizer->update([
+            'status' => 'rejected',
+            'note'   => $request->note,
+        ]);
+
+        return redirect()->route('admin.organizers.pending')
+            ->with('success', 'Organizer ditolak.');
+    }
+
+    // Hapus organizer
+    public function destroy(User $organizer)
+    {
+        $organizer->delete();
+
+        return redirect()->route('admin.organizers.index')
+            ->with('success', 'Organizer berhasil dihapus.');
     }
 }

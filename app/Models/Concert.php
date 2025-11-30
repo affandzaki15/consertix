@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ConcertAdminAction; // 👈 Tambahkan ini
 
 class Concert extends Model
 {
@@ -13,8 +14,8 @@ class Concert extends Model
         'time',
         'price',
         'image_url',
-        'selling_status',   // coming_soon / available / sold_out
-        'approval_status',  // pending / approved / rejected
+        'selling_status',
+        'approval_status',
         'organizer_id',
         'description',
         'notes',
@@ -26,27 +27,29 @@ class Concert extends Model
         'price' => 'integer',
     ];
 
-    // Relasi TicketTypes
-    public function ticketTypes()
-    {
-        return $this->hasMany(TicketType::class);
-    }
-
-    // Relasi Organizer
+    // Relasi ke Organizer
     public function organizer()
     {
         return $this->belongsTo(Organizer::class, 'organizer_id');
     }
 
-    /**
-     * Update status penjualan berdasarkan tiket & approval admin
-     */
+    // Relasi ke Tiket
+    public function ticketTypes()
+    {
+        return $this->hasMany(TicketType::class);
+    }
+
+    // ✅ Tambahkan relasi adminActions
+    public function adminActions()
+    {
+        return $this->hasMany(ConcertAdminAction::class);
+    }
+
     public function updateSellingStatus()
     {
         $totalQuota = $this->ticketTypes()->sum('quota');
         $sold = $this->ticketTypes()->sum('sold');
 
-        // 🔥 Admin belum approve → tetap Coming Soon
         if ($this->approval_status !== 'approved') {
             $this->selling_status = 'coming_soon';
         } else {
@@ -62,9 +65,6 @@ class Concert extends Model
         $this->save();
     }
 
-    /**
-     * Label status untuk tampilan User
-     */
     public function getSellingStatusLabelAttribute()
     {
         return match ($this->selling_status) {
@@ -75,9 +75,6 @@ class Concert extends Model
         };
     }
 
-    /**
-     * Update harga berdasarkan harga tiket termurah
-     */
     public function updatePriceFromTickets()
     {
         $lowestPrice = $this->ticketTypes()->min('price');

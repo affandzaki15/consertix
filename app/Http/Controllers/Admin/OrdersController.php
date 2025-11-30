@@ -11,8 +11,17 @@ class OrdersController extends Controller
 {
     public function index()
     {
-        $orders = Order::latest()->paginate(20);
-        return view('admin.orders.index', compact('orders'));
+        $orders = Order::with('user')->latest()->paginate(20);
+
+        // Buat map user by ID untuk akses cepat di blade
+        $usersMap = [];
+        foreach ($orders as $order) {
+            if ($order->user) {
+                $usersMap[$order->user->id] = $order->user;
+            }
+        }
+
+        return view('admin.orders.index', compact('orders', 'usersMap'));
     }
 
     public function show(Order $order)
