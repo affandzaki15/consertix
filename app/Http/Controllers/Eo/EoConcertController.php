@@ -74,28 +74,36 @@ class EoConcertController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $concert = Concert::where('organizer_id', auth()->user()->organizer->id)
-            ->findOrFail($id);
+{
+    $organizerId = auth()->user()->organizer->id;
+    $concert = Concert::where('organizer_id', $organizerId)->findOrFail($id);
 
-        $request->validate([
-            'title'       => 'required|max:255',
-            'location'    => 'required',
-            'date'        => 'required|date',
-            'time'        => 'required',
-            'description' => 'nullable|string',
-        ]);
+    $request->validate([
+        'title' => 'required|max:255',
+        'location' => 'required',
+        'date' => 'nullable|date',
+        'time' => 'nullable',
+        'description' => 'nullable|string',
+        'image_url' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $concert->update([
-            'title'       => $request->title,
-            'location'    => $request->location,
-            'date'        => $request->date,
-            'time'        => $request->time,
-            'description' => $request->description,
-        ]);
+    $data = [
+        'title' => $request->title,
+        'location' => $request->location,
+        'date' => $request->date ?? $concert->date,
+        'time' => $request->time ?? $concert->time,
+        'description' => $request->description ?? $concert->description,
+    ];
 
-        return back()->with('success', 'Konser berhasil diperbarui!');
+    if ($request->hasFile('image_url')) {
+        $data['image_url'] = $request->file('image_url')->store('concerts', 'public');
     }
+
+    $concert->update($data);
+
+    return back()->with('success', 'Konser berhasil diperbarui!');
+}
+
 
     public function review($id)
     {
