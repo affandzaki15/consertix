@@ -16,6 +16,7 @@ use App\Http\Controllers\Eo\EoDashboardController;
 use App\Http\Controllers\Eo\EoConcertController;
 use App\Http\Controllers\Eo\TicketTypeController;
 use App\Http\Controllers\Eo\EoProfileController;
+use App\Http\Controllers\Eo\EoVoucherController;
 
 // Controllers Admin
 use App\Http\Controllers\Admin\DashboardController;
@@ -83,6 +84,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/purchase/{order}/confirmation', [PurchaseController::class, 'confirmation'])->name('purchase.confirmation');
     Route::post('/purchase/{order}/complete', [PurchaseController::class, 'completePayment'])->name('purchase.complete');
     Route::post('/purchase/{order}/cancel', [PurchaseController::class, 'cancelOrder'])->name('purchase.cancel');
+    
+    // Voucher
+    Route::post('/purchase/{order}/apply-voucher', [PurchaseController::class, 'applyVoucher'])->name('purchase.applyVoucher');
+    Route::post('/purchase/{order}/remove-voucher', [PurchaseController::class, 'removeVoucher'])->name('purchase.removeVoucher');
 });
 
 /*
@@ -107,6 +112,10 @@ Route::middleware(['auth', 'role:eo'])
         Route::resource('concerts.tickets', TicketTypeController::class)
             ->shallow()
             ->except(['show']);
+
+        // Vouchers
+        Route::resource('vouchers', EoVoucherController::class);
+        Route::get('/vouchers/{voucher}/stats', [EoVoucherController::class, 'stats'])->name('vouchers.stats');
     });
 
 /*

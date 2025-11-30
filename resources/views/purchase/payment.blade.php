@@ -165,21 +165,16 @@
                 <span id="subtotalAmount">Rp{{ number_format($order->total_amount) }}</span>
             </div>
 
-            <div class="flex justify-between text-gray-600 text-sm mb-2">
-                <span>Local Tax</span>
-                <span id="taxAmount">Rp{{ number_format($order->total_amount * 0.20) }}</span>
-            </div>
-
-            <div class="flex justify-between text-gray-600 text-sm mb-4">
-                <span>Service Fee</span>
-                <span id="serviceFeeAmount">Rp{{ number_format($order->total_amount * 0.05) }}</span>
+            <div id="discountRow" class="flex justify-between text-green-600 text-sm mb-2" @if(!$order->voucher_id)style="display:none" @endif>
+                <span>Discount (Voucher)</span>
+                <span id="discountAmount">-Rp{{ number_format($order->discount_amount ?? 0) }}</span>
             </div>
 
             <hr class="my-4">
 
             <div class="flex justify-between font-semibold text-gray-900 text-lg mb-4">
-                <span>Grand Total</span>
-                <span id="grandTotalAmount">Rp{{ number_format($order->total_amount * 1.25) }}</span>
+                <span>Total</span>
+                <span id="grandTotalAmount">Rp{{ number_format($order->total_amount - ($order->discount_amount ?? 0)) }}</span>
             </div>
 
             <hr class="my-4">
@@ -478,14 +473,50 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    applyVoucherBtn.addEventListener('click', function() {
+    applyVoucherBtn.addEventListener('click', async function() {
         const code = voucherCodeInput.value.trim();
         if (!code) {
             alert('Please enter a voucher code');
             return;
         }
-        alert('Voucher "' + code + '" applied (stub)');
-        hideVoucherModal();
+
+        applyVoucherBtn.disabled = true;
+        applyVoucherBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-2"></i>Applying...';
+
+        try {
+            const response = await fetch('{{ route('purchase.applyVoucher', $order->id) }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ code: code })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update discount display
+                document.getElementById('discountRow').classList.remove('hidden');
+                document.getElementById('discountAmount').textContent = '-Rp' + Number(data.discount_amount).toLocaleString('id-ID');
+
+                // Update grand total
+                const subtotal = parseFloat(document.getElementById('subtotalAmount').textContent.replace(/[^\d]/g, ''));
+                const newTotal = subtotal - data.discount_amount;
+                document.getElementById('grandTotalAmount').textContent = 'Rp' + Number(newTotal).toLocaleString('id-ID');
+
+                alert('✓ Voucher applied successfully!');
+                hideVoucherModal();
+            } else {
+                alert('❌ ' + (data.message || 'Failed to apply voucher'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error applying voucher. Please try again.');
+        } finally {
+            applyVoucherBtn.disabled = false;
+            applyVoucherBtn.textContent = 'Apply';
+        }
     });
 
     // Midtrans modal handlers
@@ -508,12 +539,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Display amounts
         const subtotal = parseFloat(document.getElementById('subtotalAmount').textContent.replace(/[^\d]/g, ''));
-        const tax = subtotal * 0.20;
-        const fee = subtotal * 0.05;
-        const total = subtotal + tax + fee;
+        const discountText = document.getElementById('discountAmount')?.textContent || '';
+        const discount = discountText ? parseFloat(discountText.replace(/[^\d]/g, '')) : 0;
+        const total = subtotal - discount;
 
         document.getElementById('modalSubtotal').textContent = 'Rp' + Number(subtotal).toLocaleString('id-ID');
-        document.getElementById('modalTaxFee').textContent = 'Rp' + Number(tax + fee).toLocaleString('id-ID');
+        
+        // Hide tax/fee row or show discount if applicable
+        const taxFeeRow = document.querySelector('[id="modalTaxFee"]').parentElement;
+        if (discount > 0) {
+            document.getElementById('modalTaxFee').textContent = '-Rp' + Number(discount).toLocaleString('id-ID');
+            taxFeeRow.querySelector('span:first-child').textContent = 'Discount';
+        } else {
+            taxFeeRow.style.display = 'none';
+        }
+        
         document.getElementById('modalTotal').textContent = 'Rp' + Number(total).toLocaleString('id-ID');
 
         // Reset progress bar and states
