@@ -94,39 +94,43 @@
                                 Rp {{ number_format($c->ticketTypes->sum(fn($t) => $t->price * $t->sold), 0, ',', '.') }}
                             </td>
 
-                            <td class="px-3 text-center space-x-2">
+                            <td class="px-3 py-3 text-center">
 
-                                <!-- Tombol Edit Konser -->
-                                <a href="{{ route('eo.concerts.edit', $c->id) }}"
-                                    class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md text-xs">
-                                    Edit Konser
-                                </a>
+                                <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2 justify-center">
 
-                                <!-- Tombol Kelola Tiket -->
-                                <a href="{{ route('eo.concerts.tickets.index', $c->id) }}"
-                                    class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs">
-                                    Kelola Tiket
-                                </a>
+                                    {{-- Edit Konser --}}
+                                    <a href="{{ route('eo.concerts.edit', $c->id) }}"
+                                        class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md text-xs sm:text-sm">
+                                        Edit
+                                    </a>
 
-                                <!-- Tombol Preview -->
-                                <a href="{{ route('concerts.show', $c->id) }}" target="_blank"
-                                    class="px-3 py-1 bg-gray-700 hover:bg-gray-800 text-white rounded-md text-xs">
-                                    Preview
-                                </a>
+                                    {{-- Kelola Tiket --}}
+                                    <a href="{{ route('eo.concerts.tickets.index', $c->id) }}"
+                                        class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs sm:text-sm">
+                                        Tiket
+                                    </a>
 
-                                <!-- Tombol Hapus -->
-                                <form action="{{ route('eo.concerts.destroy', $c->id) }}" method="POST"
-                                    class="inline-block"
-                                    onsubmit="return confirm('Yakin ingin menghapus konser ini? Data tiket juga akan terhapus!')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs">
-                                        Hapus
-                                    </button>
-                                </form>
+                                    {{-- Preview --}}
+                                    <a href="{{ route('concerts.show', $c->id) }}" target="_blank"
+                                        class="px-3 py-1 bg-gray-700 hover:bg-gray-800 text-white rounded-md text-xs sm:text-sm">
+                                        Preview
+                                    </a>
+
+                                    {{-- Hapus Konser --}}
+                                    <form action="{{ route('eo.concerts.destroy', $c->id) }}" method="POST"
+                                        onsubmit="return confirm('Yakin ingin menghapus konser ini? Semua tiket juga akan terhapus!')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs sm:text-sm">
+                                            Hapus
+                                        </button>
+                                    </form>
+
+                                </div>
 
                             </td>
+
 
 
                         </tr>

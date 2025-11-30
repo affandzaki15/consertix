@@ -9,7 +9,7 @@
         <div class="lg:col-span-1">
             <div class="rounded-lg overflow-hidden shadow-md sticky top-8">
                 <img src="{{ asset('storage/' . $concert->image_url) }}" alt="{{ $concert->title }}"
-                     class="w-full h-96 object-cover">
+                    class="w-full h-96 object-cover">
             </div>
         </div>
 
@@ -28,36 +28,46 @@
                 <div class="space-y-3 text-gray-700 mb-6">
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <span>{{ $concert->date->format('d F Y') }}</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>{{ $concert->date->format('H:i') }} - 23:00</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                         <span>{{ $concert->location }}</span>
                     </div>
                 </div>
 
                 <!-- Creator Info -->
-                <div class="flex items-center gap-3 mb-8 pb-8 border-b border-gray-200">
+                <!-- Organizer Info -->
+                <div class="flex items-center gap-4 mb-8 pb-8 border-b border-gray-200">
+
+                    @php
+                    $logo = $concert->organizer->url_logo ?? null;
+                    @endphp
+
+                    <img src="{{ $logo ? asset('storage/'.$logo) : asset('images/default-org.png') }}"
+                        class="w-14 h-14 rounded-full object-cover border shadow-sm"
+                        alt="Organizer Logo">
+
                     <div>
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($concert->organizer->organization_name ?? 'Unknown') }}" 
-                             alt="Creator" class="w-12 h-12 rounded-full">
+                        <p class="text-sm text-gray-500">Organizer</p>
+                        <p class="font-semibold text-gray-900">
+                            {{ $concert->organizer->organization_name ?? 'Unknown Organizer' }}
+                        </p>
                     </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Creator</p>
-                        <p class="font-semibold text-gray-900">{{ $concert->organizer->organization_name ?? 'Unknown' }}</p>
-                    </div>
+
                 </div>
+
 
                 <!-- Price Starts From -->
                 <div class="mb-8">
@@ -68,42 +78,42 @@
                 <!-- Buy Ticket Button -->
                 <div class="mb-8">
                     @if ($concert->approval_status !== 'approved')
-                        <button disabled class="w-full bg-gray-400 text-white py-3 rounded-lg font-semibold cursor-not-allowed">
-                            Coming Soon
-                        </button>
+                    <button disabled class="w-full bg-gray-400 text-white py-3 rounded-lg font-semibold cursor-not-allowed">
+                        Coming Soon
+                    </button>
                     @elseif ($concert->selling_status === 'sold_out')
-                        <button disabled class="w-full bg-gray-400 text-white py-3 rounded-lg font-semibold cursor-not-allowed">
-                            Sold Out
-                        </button>
+                    <button disabled class="w-full bg-gray-400 text-white py-3 rounded-lg font-semibold cursor-not-allowed">
+                        Sold Out
+                    </button>
                     @elseif ($concert->selling_status === 'coming_soon')
-                        <button disabled class="w-full bg-yellow-500 text-white py-3 rounded-lg font-semibold cursor-not-allowed">
-                            Coming Soon
-                        </button>
+                    <button disabled class="w-full bg-yellow-500 text-white py-3 rounded-lg font-semibold cursor-not-allowed">
+                        Coming Soon
+                    </button>
                     @else
-                        @guest
-                            <a href="{{ route('login') }}" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold text-center transition-colors">
-                                Buy Ticket
-                            </a>
-                        @else
-                            <a href="{{ route('purchase.show', $concert->id) }}" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold text-center transition-colors">
-                                Buy Ticket
-                            </a>
-                        @endguest
+                    @guest
+                    <a href="{{ route('login') }}" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold text-center transition-colors">
+                        Buy Ticket
+                    </a>
+                    @else
+                    <a href="{{ route('purchase.show', $concert->id) }}" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold text-center transition-colors">
+                        Buy Ticket
+                    </a>
+                    @endguest
                     @endif
                 </div>
 
                 <!-- Description Section -->
                 @if($concert->description)
-                    <div class="mb-8">
-                        <h2 class="text-xl font-bold text-gray-900 mb-4">Description</h2>
-                        <p class="text-gray-700 leading-relaxed">{{ $concert->description }}</p>
-                    </div>
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Description</h2>
+                    <p class="text-gray-700 leading-relaxed">{{ $concert->description }}</p>
+                </div>
                 @endif
 
                 <!-- Terms & Conditions -->
                 <div class="mb-8">
                     <h2 class="text-xl font-bold text-gray-900 mb-4">Terms & Conditions</h2>
-                    
+
                     <div class="space-y-6 text-sm text-gray-700">
                         <div>
                             <h3 class="font-semibold text-gray-900 mb-2">{{ $concert->title }}</h3>
