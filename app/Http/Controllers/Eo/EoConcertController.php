@@ -45,7 +45,11 @@ class EoConcertController extends Controller
                 'organization_name' => auth()->user()->name,
             ]);
 
-        $imagePath = $request->file('image_url')->store('concerts', 'public');
+        // Save image directly to public/foto/concerts directory
+        $file = $request->file('image_url');
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('foto/concerts'), $filename);
+        $imagePath = 'foto/concerts/' . $filename;
 
         // ⭕ STATUS = Masih DRAFT, BELUM DI AJUKAN
         $concert = Concert::create([
@@ -96,7 +100,11 @@ class EoConcertController extends Controller
     ];
 
     if ($request->hasFile('image_url')) {
-        $data['image_url'] = $request->file('image_url')->store('concerts', 'public');
+        // Save image directly to public/foto/concerts directory
+        $file = $request->file('image_url');
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('foto/concerts'), $filename);
+        $data['image_url'] = 'foto/concerts/' . $filename;
     }
 
     $concert->update($data);

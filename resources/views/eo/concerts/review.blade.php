@@ -15,7 +15,7 @@
 
             {{-- Poster --}}
             <div class="w-full">
-                <img src="{{ asset('storage/' . $concert->image_url) }}"
+                <img src="{{ asset($concert->image_url) }}"
                     class="rounded-xl w-full h-56 sm:h-72 md:h-80 object-cover border shadow-md"
                     alt="{{ $concert->title }}">
             </div>

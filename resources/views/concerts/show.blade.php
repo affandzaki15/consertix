@@ -8,7 +8,7 @@
         <!-- Left: Event Image -->
         <div class="lg:col-span-1">
             <div class="rounded-lg overflow-hidden shadow-md sticky top-8">
-                <img src="{{ asset('storage/' . $concert->image_url) }}" alt="{{ $concert->title }}"
+                <img src="{{ asset($concert->image_url) }}" alt="{{ $concert->title }}"
                     class="w-full h-96 object-cover">
             </div>
         </div>
@@ -50,7 +50,7 @@
                     <p class="text-sm text-gray-500 mb-3">Creator</p>
                     <a href="{{ route('organizers.show', $concert->organizer->id) }}" class="flex items-center gap-4 hover:opacity-75 transition-opacity">
                         @if($concert->organizer->url_logo)
-                        <img src="{{ asset('storage/' . $concert->organizer->url_logo) }}" alt="{{ $concert->organizer->organization_name }}" class="w-16 h-16 object-contain rounded">
+                        <img src="{{ asset('foto/' . $concert->organizer->url_logo) }}" alt="{{ $concert->organizer->organization_name }}" class="w-16 h-16 object-contain rounded">
                         @else
                         <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
                             <span class="text-xs text-gray-500">No Logo</span>

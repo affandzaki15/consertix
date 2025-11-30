@@ -79,7 +79,7 @@
                 <label class="font-semibold text-gray-700 mb-1 block">Poster Konser</label>
 
                 @if($concert->image_url)
-                <img src="{{ asset('storage/'.$concert->image_url) }}"
+                <img src="{{ asset($concert->image_url) }}"
                     class="w-40 rounded-lg mb-3 shadow border">
                 @endif
 

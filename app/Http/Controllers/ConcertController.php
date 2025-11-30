@@ -46,7 +46,7 @@ class ConcertController extends Controller
 
         // Perbaiki image path
         foreach ($concerts as $c) {
-            $c->image_url = asset('storage/' . $c->image_url);
+            $c->image_url = asset($c->image_url);
         }
 
         return response()->json($concerts);

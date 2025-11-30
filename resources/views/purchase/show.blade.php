@@ -67,7 +67,7 @@
             {{-- BANNER --}}
             @php
             $poster = $concert->image_url
-            ? asset('storage/' . $concert->image_url)
+            ? asset($concert->image_url)
             : asset('images/default-concert.jpg');
             @endphp
 
