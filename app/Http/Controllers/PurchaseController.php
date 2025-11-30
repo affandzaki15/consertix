@@ -9,6 +9,8 @@ use App\Models\Concert;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\TicketType;
+use App\Models\Voucher;
+use App\Models\VoucherUsage;
 
 class PurchaseController extends Controller
 {
@@ -627,5 +629,109 @@ class PurchaseController extends Controller
         session()->put('cart', $cart);
 
         return response()->json(['success' => true, 'message' => 'Order cancelled successfully']);
+    }
+
+    /**
+     * Apply voucher code to an order
+     */
+    public function applyVoucher(Request $request, Order $order)
+    {
+        // Ensure the current user owns the order
+        if ($order->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Only allow on pending/processing orders
+        if (!in_array($order->status, ['pending', 'processing'])) {
+            return response()->json(['error' => 'Cannot apply voucher to this order'], 400);
+        }
+
+        $request->validate([
+            'code' => 'required|string'
+        ]);
+
+        $code = strtoupper($request->input('code'));
+
+        // Find voucher by code
+        $voucher = Voucher::where('code', $code)
+            ->where('organizer_id', $order->concert->organizer_id) // Voucher harus milik organizer acara
+            ->first();
+
+        if (!$voucher) {
+            return response()->json(['error' => 'Kode voucher tidak valid atau tidak berlaku untuk acara ini'], 404);
+        }
+
+        // Check if voucher is valid
+        if (!$voucher->isValid()) {
+            return response()->json(['error' => 'Voucher tidak berlaku atau sudah kadaluarsa'], 400);
+        }
+
+        // Check if user can use this voucher
+        if (!$voucher->userCanUse(Auth::id())) {
+            return response()->json(['error' => 'Anda sudah mencapai batas penggunaan voucher ini'], 400);
+        }
+
+        // Calculate discount
+        $discountAmount = $voucher->calculateDiscount($order->total_amount);
+
+        // Update order with voucher
+        $order->update([
+            'voucher_id' => $voucher->id,
+            'discount_amount' => $discountAmount,
+        ]);
+
+        // Increment usage count
+        $voucher->increment('usage_count');
+
+        // Record usage
+        VoucherUsage::create([
+            'voucher_id' => $voucher->id,
+            'user_id' => Auth::id(),
+            'order_id' => $order->id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Voucher berhasil diterapkan',
+            'discount_amount' => $discountAmount,
+            'new_total' => $order->total_amount - $discountAmount
+        ]);
+    }
+
+    /**
+     * Remove voucher from an order
+     */
+    public function removeVoucher(Order $order)
+    {
+        // Ensure the current user owns the order
+        if ($order->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if (!$order->voucher_id) {
+            return response()->json(['error' => 'No voucher applied'], 400);
+        }
+
+        // Decrement voucher usage count
+        $voucher = $order->voucher;
+        if ($voucher) {
+            $voucher->decrement('usage_count');
+            // Remove the usage record
+            VoucherUsage::where('voucher_id', $voucher->id)
+                ->where('order_id', $order->id)
+                ->delete();
+        }
+
+        // Remove voucher from order
+        $order->update([
+            'voucher_id' => null,
+            'discount_amount' => 0,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Voucher berhasil dihapus',
+            'new_total' => number_format($order->total_amount, 0, ',', '.')
+        ]);
     }
 }

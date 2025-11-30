@@ -110,32 +110,7 @@
                     </div>
                 </div>
 
-                <!-- Payment Point-->
-                <div class="bg-white rounded-2xl border overflow-hidden mt-6">
-                    <button type="button" class="payment-method-toggle w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50" data-target="card">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
-                                <i class="fa-regular fa-credit-card"></i>
-                            </div>
-                            <div class="text-left">
-                                <div class="font-semibold">Payment Point</div>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-down toggle-icon transition-transform"></i>
-                    </button>
-
-                    <div id="card" class="payment-method-content hidden border-t px-6 py-6">
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="Indomaret">
-                                <img src="" alt="Indomaret" class="h-12">
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="Alfamaret">
-                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fshopeepay.png&w=320&q=50" alt="Alfamaret" class="h-12">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+             
             </form>
 
         </div>
@@ -146,6 +121,12 @@
                     <i class="fa-solid fa-bag-shopping"></i>
                 </div>
                 <h3 class="text-lg font-semibold text-gray-900">Order Summary</h3>
+            </div>
+
+            <!-- Voucher applied notification (hidden by default) -->
+            <div id="voucherNotification" class="hidden items-center gap-2 bg-green-50 border border-green-200 text-green-800 px-3 py-2 rounded mb-4 text-sm">
+                <i class="fa-solid fa-check-circle"></i>
+                <span id="voucherNotificationText">Voucher applied</span>
             </div>
 
             @foreach($order->items as $item)
@@ -165,21 +146,16 @@
                 <span id="subtotalAmount">Rp{{ number_format($order->total_amount) }}</span>
             </div>
 
-            <div class="flex justify-between text-gray-600 text-sm mb-2">
-                <span>Local Tax</span>
-                <span id="taxAmount">Rp{{ number_format($order->total_amount * 0.20) }}</span>
-            </div>
-
-            <div class="flex justify-between text-gray-600 text-sm mb-4">
-                <span>Service Fee</span>
-                <span id="serviceFeeAmount">Rp{{ number_format($order->total_amount * 0.05) }}</span>
+            <div id="discountRow" class="flex justify-between text-green-600 text-sm mb-2" @if(!$order->voucher_id)style="display:none" @endif>
+                <span>Discount (Voucher)</span>
+                <span id="discountAmount">-Rp{{ number_format($order->discount_amount ?? 0) }}</span>
             </div>
 
             <hr class="my-4">
 
             <div class="flex justify-between font-semibold text-gray-900 text-lg mb-4">
-                <span>Grand Total</span>
-                <span id="grandTotalAmount">Rp{{ number_format($order->total_amount * 1.25) }}</span>
+                <span>Total</span>
+                <span id="grandTotalAmount">Rp{{ number_format($order->total_amount - ($order->discount_amount ?? 0)) }}</span>
             </div>
 
             <hr class="my-4">
@@ -478,14 +454,66 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    applyVoucherBtn.addEventListener('click', function() {
+    applyVoucherBtn.addEventListener('click', async function() {
         const code = voucherCodeInput.value.trim();
         if (!code) {
             alert('Please enter a voucher code');
             return;
         }
-        alert('Voucher "' + code + '" applied (stub)');
-        hideVoucherModal();
+
+        applyVoucherBtn.disabled = true;
+        applyVoucherBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-2"></i>Applying...';
+
+        try {
+            const response = await fetch('{{ route('purchase.applyVoucher', $order->id) }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ code: code })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update discount display (make the discount row visible in the order card)
+                const discountRow = document.getElementById('discountRow');
+                const discountAmountEl = document.getElementById('discountAmount');
+                discountRow.style.display = 'flex';
+                discountAmountEl.textContent = '-Rp' + Number(data.discount_amount).toLocaleString('id-ID');
+
+                // Update grand total
+                const subtotal = parseFloat(document.getElementById('subtotalAmount').textContent.replace(/[^\d]/g, ''));
+                const newTotal = subtotal - data.discount_amount;
+                document.getElementById('grandTotalAmount').textContent = 'Rp' + Number(newTotal).toLocaleString('id-ID');
+
+                // Show success notification in the order summary card
+                const voucherNotify = document.getElementById('voucherNotification');
+                const voucherNotifyText = document.getElementById('voucherNotificationText');
+                voucherNotifyText.textContent = 'Voucher "' + code.toUpperCase() + '" applied — -Rp' + Number(data.discount_amount).toLocaleString('id-ID');
+                voucherNotify.classList.remove('hidden');
+                voucherNotify.classList.add('flex');
+
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    try {
+                        voucherNotify.classList.remove('flex');
+                        voucherNotify.classList.add('hidden');
+                    } catch (e) {}
+                }, 5000);
+
+                hideVoucherModal();
+            } else {
+                alert('❌ ' + (data.message || 'Failed to apply voucher'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error applying voucher. Please try again.');
+        } finally {
+            applyVoucherBtn.disabled = false;
+            applyVoucherBtn.textContent = 'Apply';
+        }
     });
 
     // Midtrans modal handlers
@@ -508,12 +536,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Display amounts
         const subtotal = parseFloat(document.getElementById('subtotalAmount').textContent.replace(/[^\d]/g, ''));
-        const tax = subtotal * 0.20;
-        const fee = subtotal * 0.05;
-        const total = subtotal + tax + fee;
+        const discountText = document.getElementById('discountAmount')?.textContent || '';
+        const discount = discountText ? parseFloat(discountText.replace(/[^\d]/g, '')) : 0;
+        const total = subtotal - discount;
 
         document.getElementById('modalSubtotal').textContent = 'Rp' + Number(subtotal).toLocaleString('id-ID');
-        document.getElementById('modalTaxFee').textContent = 'Rp' + Number(tax + fee).toLocaleString('id-ID');
+        
+        // Hide tax/fee row or show discount if applicable
+        const taxFeeRow = document.querySelector('[id="modalTaxFee"]').parentElement;
+        if (discount > 0) {
+            document.getElementById('modalTaxFee').textContent = '-Rp' + Number(discount).toLocaleString('id-ID');
+            taxFeeRow.querySelector('span:first-child').textContent = 'Discount';
+        } else {
+            taxFeeRow.style.display = 'none';
+        }
+        
         document.getElementById('modalTotal').textContent = 'Rp' + Number(total).toLocaleString('id-ID');
 
         // Reset progress bar and states
