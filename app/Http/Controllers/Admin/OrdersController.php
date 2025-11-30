@@ -11,39 +11,35 @@ class OrdersController extends Controller
 {
     public function index()
     {
-        $orders = Order::with('user')->latest()->paginate(20);
+        // Ambil order tanpa perlu relasi user karena data buyer disimpan langsung di order
+        $orders = Order::latest()->paginate(20);
 
-        // Buat map user by ID untuk akses cepat di blade
-        $usersMap = [];
-        foreach ($orders as $order) {
-            if ($order->user) {
-                $usersMap[$order->user->id] = $order->user;
-            }
-        }
-
-        return view('admin.orders.index', compact('orders', 'usersMap'));
+        return view('admin.orders.index', compact('orders'));
     }
 
-    public function show(Order $order)
+     public function show(Order $order)
     {
         return view('admin.orders.show', compact('order'));
     }
 
-    public function generateTickets(Request $request, Order $order)
+        public function generateTickets(Request $request, Order $order)
     {
-        // safe: set tickets_generated flag if column exists, otherwise mark status -> completed
+        // Cek apakah status sudah "completed"
+        if ($order->status !== 'completed') {
+            return redirect()->back()->with('error', 'Tiket hanya bisa digenerate setelah status order menjadi "completed".');
+        }
+
+        // Jika sudah completed, generate tiket
         if (Schema::hasColumn('orders', 'tickets_generated')) {
             $order->tickets_generated = 1;
-        }
-        // set order status if applicable
-        if (Schema::hasColumn('orders', 'status')) {
-            $order->status = 'completed';
         }
         if (Schema::hasColumn('orders', 'tickets_generated_at')) {
             $order->tickets_generated_at = now();
         }
+
         $order->save();
 
-        return redirect()->back()->with('success', 'Tiket telah di-generate (stub).');
+        return redirect()->back()->with('success', 'Tiket telah berhasil digenerate.');
     }
+
 }

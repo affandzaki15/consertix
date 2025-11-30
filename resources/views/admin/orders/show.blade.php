@@ -1,4 +1,3 @@
-{{-- resources/views/admin/orders/show.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -12,43 +11,39 @@
 
             <div class="bg-white shadow rounded-lg p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div><strong>Reference Code:</strong> {{ $order->reference_code ?? '-' }}</div>
                     <div>
-                        <strong>Reference Code:</strong> {{ $order->reference_code }}
-                    </div>
-                    <div>
-                        <strong>Status:</strong> 
-                        <span class="px-2 py-1 rounded {{ $order->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                            {{ ucfirst($order->status ?? 'pending') }}
+                        <strong>Payment Status:</strong>
+                        <span class="px-2 py-1 rounded text-xs font-medium
+                            @if($order->payment_status === 'paid') bg-green-100 text-green-800
+                            @elseif($order->payment_status === 'pending') bg-yellow-100 text-yellow-800
+                            @else bg-red-100 text-red-800
+                            @endif">
+                            {{ ucfirst($order->payment_status ?? 'unknown') }}
                         </span>
                     </div>
-                    <div>
-                        <strong>Buyer:</strong> {{ $order->buyer_name }}
-                    </div>
-                    <div>
-                        <strong>Email:</strong> {{ $order->buyer_email }}
-                    </div>
-                    <div>
-                        <strong>Total Amount:</strong> Rp {{ number_format($order->total_amount, 0, ',', '.') }}
-                    </div>
-                    <div>
-                        <strong>Concert ID:</strong> {{ $order->concert_id }}
-                    </div>
-                    <div>
-                        <strong>Created At:</strong> {{ $order->created_at->format('d M Y H:i') }}
-                    </div>
-                    <div>
-                        <strong>Tickets Generated:</strong> {{ $order->tickets_generated ? 'Yes' : 'No' }}
-                    </div>
+
+                    <div><strong>Buyer Name:</strong> {{ $order->buyer_name ?? '-' }}</div>
+                    <div><strong>Email:</strong> {{ $order->buyer_email ?? '-' }}</div>
+
+                    <div><strong>Identity Type:</strong> {{ $order->identity_type ?? '-' }}</div>
+                    <div><strong>Identity Number:</strong> {{ $order->identity_number ?? '-' }}</div>
+
+                    <div><strong>Payment Method:</strong> {{ $order->payment_method ?? '-' }}</div>
+                    <div><strong>Total Amount:</strong> Rp {{ number_format($order->total_amount ?? 0, 0, ',', '.') }}</div>
+
+                    <div><strong>Concert ID:</strong> {{ $order->concert_id ?? '-' }}</div>
+                    <div><strong>Created At:</strong> {{ $order->created_at?->format('d M Y H:i') ?? '-' }}</div>
+
+                    <div><strong>Tickets Generated:</strong> {{ $order->tickets_generated ? 'Yes' : 'No' }}</div>
                     @if($order->tickets_generated_at)
-                        <div>
-                            <strong>Generated At:</strong> {{ $order->tickets_generated_at->format('d M Y H:i') }}
-                        </div>
+                        <div><strong>Generated At:</strong> {{ $order->tickets_generated_at->format('d M Y H:i') }}</div>
                     @endif
                 </div>
 
                 <div class="mt-6">
                     <h3 class="font-semibold mb-2">Actions</h3>
-                    @if(!$order->tickets_generated)
+                    @if($order->status === 'completed' && !$order->tickets_generated)
                         <form action="{{ route('admin.orders.generate-tickets', $order) }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
@@ -56,8 +51,10 @@
                                 Generate Tiket
                             </button>
                         </form>
-                    @else
+                    @elseif($order->tickets_generated)
                         <span class="text-green-600 font-medium">✅ Tiket sudah digenerate</span>
+                    @else
+                        <span class="text-yellow-600">⚠️ Status belum "Selesai". Tidak bisa generate tiket.</span>
                     @endif
                 </div>
             </div>

@@ -157,7 +157,10 @@ Route::middleware(['auth', 'role:admin'])
 
         // Tickets
         Route::get('/tickets', [TicketsController::class, 'index'])->name('tickets.index');
-
+        Route::get('/test-payment/{id}', function ($id) {
+            $order = \App\Models\Order::findOrFail($id);
+            return view('admin.payments.show', compact('order'));
+        });
         // Reports
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
         Route::post('/reports/export', [ReportsController::class, 'export'])->name('reports.export');
