@@ -110,32 +110,7 @@
                     </div>
                 </div>
 
-                <!-- Payment Point-->
-                <div class="bg-white rounded-2xl border overflow-hidden mt-6">
-                    <button type="button" class="payment-method-toggle w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50" data-target="card">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
-                                <i class="fa-regular fa-credit-card"></i>
-                            </div>
-                            <div class="text-left">
-                                <div class="font-semibold">Payment Point</div>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-down toggle-icon transition-transform"></i>
-                    </button>
-
-                    <div id="card" class="payment-method-content hidden border-t px-6 py-6">
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="Indomaret">
-                                <img src="" alt="Indomaret" class="h-12">
-                            </div>
-                            <div class="border border-gray-300 rounded-xl p-6 flex items-center justify-center cursor-pointer hover:bg-gray-50 card-option transition-all" data-method="Alfamaret">
-                                <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fshopeepay.png&w=320&q=50" alt="Alfamaret" class="h-12">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+             
             </form>
 
         </div>
@@ -146,6 +121,12 @@
                     <i class="fa-solid fa-bag-shopping"></i>
                 </div>
                 <h3 class="text-lg font-semibold text-gray-900">Order Summary</h3>
+            </div>
+
+            <!-- Voucher applied notification (hidden by default) -->
+            <div id="voucherNotification" class="hidden items-center gap-2 bg-green-50 border border-green-200 text-green-800 px-3 py-2 rounded mb-4 text-sm">
+                <i class="fa-solid fa-check-circle"></i>
+                <span id="voucherNotificationText">Voucher applied</span>
             </div>
 
             @foreach($order->items as $item)
@@ -496,16 +477,32 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
 
             if (data.success) {
-                // Update discount display
-                document.getElementById('discountRow').classList.remove('hidden');
-                document.getElementById('discountAmount').textContent = '-Rp' + Number(data.discount_amount).toLocaleString('id-ID');
+                // Update discount display (make the discount row visible in the order card)
+                const discountRow = document.getElementById('discountRow');
+                const discountAmountEl = document.getElementById('discountAmount');
+                discountRow.style.display = 'flex';
+                discountAmountEl.textContent = '-Rp' + Number(data.discount_amount).toLocaleString('id-ID');
 
                 // Update grand total
                 const subtotal = parseFloat(document.getElementById('subtotalAmount').textContent.replace(/[^\d]/g, ''));
                 const newTotal = subtotal - data.discount_amount;
                 document.getElementById('grandTotalAmount').textContent = 'Rp' + Number(newTotal).toLocaleString('id-ID');
 
-                alert('✓ Voucher applied successfully!');
+                // Show success notification in the order summary card
+                const voucherNotify = document.getElementById('voucherNotification');
+                const voucherNotifyText = document.getElementById('voucherNotificationText');
+                voucherNotifyText.textContent = 'Voucher "' + code.toUpperCase() + '" applied — -Rp' + Number(data.discount_amount).toLocaleString('id-ID');
+                voucherNotify.classList.remove('hidden');
+                voucherNotify.classList.add('flex');
+
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    try {
+                        voucherNotify.classList.remove('flex');
+                        voucherNotify.classList.add('hidden');
+                    } catch (e) {}
+                }, 5000);
+
                 hideVoucherModal();
             } else {
                 alert('❌ ' + (data.message || 'Failed to apply voucher'));
