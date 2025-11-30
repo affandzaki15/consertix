@@ -141,6 +141,7 @@
         <!-- QR Code -->
         @php
             $uniqueQrUrls = isset($tickets) ? $tickets->pluck('qr_code_url')->filter()->unique() : collect();
+            $qrUrl = $uniqueQrUrls->count() > 0 ? $uniqueQrUrls->first() : null;
         @endphp
 
         @if(isset($tickets) && $tickets->count() > 0)
@@ -151,7 +152,12 @@
                     <div style="font-size:20px;font-weight:700;color:#111;margin-top:6px;">{{ $order->concert->name }}</div>
                 </div>
 
-                <img src="{{ $uniqueQrUrls->first() ?? '' }}" alt="QR Code">
+                @if($qrUrl && !empty($qrUrl))
+                    <img src="{{ asset($qrUrl) }}" alt="QR Code" style="width: 280px; height: 280px; margin: 0 auto; display: block;">
+                @else
+                    <!-- Generate QR dynamically if not stored -->
+                    <div id="qrCode" style="width: 280px; height: 280px; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: #f3f4f6; border-radius: 8px;"></div>
+                @endif
                 <div class="qr-label">Tunjukkan QR Code ini saat check-in</div>
 
                 <!-- Daftar Jenis Tiket -->
@@ -194,9 +200,32 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         window.addEventListener('load', function() {
-            window.print();
+            // Generate QR code if needed
+            const qrContainer = document.getElementById('qrCode');
+            if (qrContainer && qrContainer.children.length === 0) {
+                const qrData = JSON.stringify({
+                    reference_code: '{{ $order->reference_code }}',
+                    order_id: {{ $order->id }},
+                    concert: '{{ $order->concert->name ?? '' }}',
+                });
+                
+                new QRCode(qrContainer, {
+                    text: qrData,
+                    width: 280,
+                    height: 280,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+            
+            // Wait a bit for QR to render, then print
+            setTimeout(() => {
+                window.print();
+            }, 500);
         });
     </script>
 </body>

@@ -1,0 +1,20 @@
+# QR Codes Directory
+
+Generated QR codes for ticket orders are stored here.
+
+## Generating QR Codes
+
+Run the artisan command to generate QR codes for all tickets:
+
+```bash
+php artisan qrcode:generate
+```
+
+To generate QR code for a specific order:
+
+```bash
+php artisan qrcode:generate --order-id=1
+```
+
+QR codes are automatically generated when tickets are created during the purchase process and are saved to this directory for GitHub version control.
+

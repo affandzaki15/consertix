@@ -8,7 +8,7 @@
             <!-- Logo -->
             <div class="w-32 h-32 rounded-lg overflow-hidden bg-white shadow flex items-center justify-center flex-shrink-0">
                 @if($organizer->url_logo ?? false)
-                    <img src="{{ asset('storage/' . $organizer->url_logo) }}" alt="{{ $organizer->organization_name }}" class="w-full h-full object-cover">
+                    <img src="{{ asset('foto/' . $organizer->url_logo) }}" alt="{{ $organizer->organization_name }}" class="w-full h-full object-cover">
                 @else
                     <img src="{{ asset('logo/header.png') }}" alt="logo" class="w-full h-full object-contain p-4">
                 @endif
@@ -54,7 +54,7 @@
             @forelse($active as $concert)
                 <a href="{{ route('concerts.show', $concert->id) }}" class="block bg-white border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
                     <div class="relative">
-                        <img src="{{ $concert->image_url ? asset('storage/' . $concert->image_url) : ( $concert->image ?? '') }}" class="w-full h-56 object-cover" />
+                        <img src="{{ $concert->image_url ? asset($concert->image_url) : ( $concert->image ?? '') }}" class="w-full h-56 object-cover" />
 
                         <div class="absolute left-3 top-3 bg-white/80 backdrop-blur-sm text-xs font-semibold text-gray-800 rounded-md px-3 py-1 flex items-center gap-2">
                             <span class="text-sm">📍</span>
@@ -95,7 +95,7 @@
                             $logo = $concert->organizer->url_logo ?? null;
                             @endphp
 
-                            <img src="{{ $logo ? asset('storage/'.$logo) : asset('images/default-org.png') }}"
+                            <img src="{{ $logo ? asset('foto/'.$logo) : asset('images/default-org.png') }}"
                                 class="h-10 w-10 rounded-full object-cover border"
                                 alt="Organizer Logo">
 
@@ -126,7 +126,7 @@
             @forelse($past as $concert)
                 <a href="{{ route('concerts.show', $concert->id) }}" class="block bg-white border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
                     <div class="relative">
-                        <img src="{{ $concert->image_url ? asset('storage/' . $concert->image_url) : ( $concert->image ?? '') }}" class="w-full h-56 object-cover" />
+                        <img src="{{ $concert->image_url ? asset($concert->image_url) : ( $concert->image ?? '') }}" class="w-full h-56 object-cover" />
 
                         <div class="absolute left-3 top-3 bg-white/80 backdrop-blur-sm text-xs font-semibold text-gray-800 rounded-md px-3 py-1 flex items-center gap-2">
                             <span class="text-sm">📍</span>
@@ -167,7 +167,7 @@
                             $logo = $concert->organizer->url_logo ?? null;
                             @endphp
 
-                            <img src="{{ $logo ? asset('storage/'.$logo) : asset('images/default-org.png') }}"
+                            <img src="{{ $logo ? asset('foto/'.$logo) : asset('images/default-org.png') }}"
                                 class="h-10 w-10 rounded-full object-cover border"
                                 alt="Organizer Logo">
 

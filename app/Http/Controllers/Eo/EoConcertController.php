@@ -34,6 +34,7 @@ class EoConcertController extends Controller
             'title'       => 'required|max:255',
             'location'    => 'required',
             'date'        => 'required|date',
+            'time'        => 'required',
             'image_url'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'description' => 'nullable|string',
         ]);
@@ -44,13 +45,18 @@ class EoConcertController extends Controller
                 'organization_name' => auth()->user()->name,
             ]);
 
-        $imagePath = $request->file('image_url')->store('concerts', 'public');
+        // Save image directly to public/foto/concerts directory
+        $file = $request->file('image_url');
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('foto/concerts'), $filename);
+        $imagePath = 'foto/concerts/' . $filename;
 
         // ⭕ STATUS = Masih DRAFT, BELUM DI AJUKAN
         $concert = Concert::create([
             'title'           => $request->title,
             'location'        => $request->location,
             'date'            => $request->date,
+            'time'            => $request->time,
             'price'           => 0,
             'image_url'       => $imagePath,
             'selling_status'  => 'coming_soon',
@@ -72,26 +78,40 @@ class EoConcertController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $concert = Concert::where('organizer_id', auth()->user()->organizer->id)
-            ->findOrFail($id);
+{
+    $organizerId = auth()->user()->organizer->id;
+    $concert = Concert::where('organizer_id', $organizerId)->findOrFail($id);
 
-        $request->validate([
-            'title'       => 'required|max:255',
-            'location'    => 'required',
-            'date'        => 'required|date',
-            'description' => 'nullable|string',
-        ]);
+    $request->validate([
+        'title' => 'required|max:255',
+        'location' => 'required',
+        'date' => 'nullable|date',
+        'time' => 'nullable',
+        'description' => 'nullable|string',
+        'image_url' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $concert->update([
-            'title'       => $request->title,
-            'location'    => $request->location,
-            'date'        => $request->date,
-            'description' => $request->description,
-        ]);
+    $data = [
+        'title' => $request->title,
+        'location' => $request->location,
+        'date' => $request->date ?? $concert->date,
+        'time' => $request->time ?? $concert->time,
+        'description' => $request->description ?? $concert->description,
+    ];
 
-        return back()->with('success', 'Konser berhasil diperbarui!');
+    if ($request->hasFile('image_url')) {
+        // Save image directly to public/foto/concerts directory
+        $file = $request->file('image_url');
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('foto/concerts'), $filename);
+        $data['image_url'] = 'foto/concerts/' . $filename;
     }
+
+    $concert->update($data);
+
+    return back()->with('success', 'Konser berhasil diperbarui!');
+}
+
 
     public function review($id)
     {

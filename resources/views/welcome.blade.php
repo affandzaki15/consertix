@@ -140,7 +140,7 @@
             @forelse($concerts as $concert)
             <a href="{{ route('concerts.show', $concert->id) }}" class="block bg-white border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
                 <div class="relative">
-                    <img src="{{ asset('storage/' . $concert->image_url) }}" class="w-full h-56 object-cover" />
+                    <img src="{{ $concert->image_url ? asset($concert->image_url) : asset('images/default-event.png') }}" class="w-full h-56 object-cover" />
 
                     <div class="absolute left-3 top-3 bg-white/80 backdrop-blur-sm text-xs font-semibold text-gray-800 rounded-md px-3 py-1 flex items-center gap-2">
                         <span class="text-sm">📍</span>
@@ -182,7 +182,7 @@
                         $logo = $concert->organizer->url_logo ?? null;
                         @endphp
 
-                        <img src="{{ $logo ? asset('storage/'.$logo) : asset('images/default-org.png') }}"
+                        <img src="{{ $logo ? asset('foto/'.$logo) : asset('images/default-org.png') }}"
                             class="h-10 w-10 rounded-full object-cover border"
                             alt="Organizer Logo">
 
@@ -414,8 +414,8 @@
         <div>
             <h3 class="font-semibold text-lg mb-3">Tentang Kami</h3>
             <ul class="space-y-2 text-gray-300 text-sm">
-                <li><a href="#" class="hover:text-white transition">Tentang Kami</a></li>
-                <li><a href="#" class="hover:text-white transition">Hubungi Kami</a></li>
+                <li><a href="{{ route('about') }}" class="hover:text-white transition">Tentang Kami</a></li>
+                <li><a href="{{ route('contact') }}" class="hover:text-white transition">Hubungi Kami</a></li>
             </ul>
         </div>
 

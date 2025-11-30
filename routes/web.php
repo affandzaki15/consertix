@@ -9,6 +9,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ContactController;
 
 // Controllers EO
 use App\Http\Controllers\Eo\EoDashboardController;
@@ -42,6 +43,10 @@ Route::get('/concerts/search', [ConcertController::class, 'search'])->name('conc
 Route::get('/concerts/{concert}', [ConcertController::class, 'show'])->name('concerts.show');
 Route::get('/organizers/{organizer}', [OrganizerController::class, 'show'])->name('organizers.show');
 Route::get('/about', [PagesController::class, 'about'])->name('about');
+// Contact page
+Route::view('/contact', 'pages.contact')->name('contact');
+// Contact form POST
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 /*
 |--------------------------------------------------------------------------

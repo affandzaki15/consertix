@@ -52,9 +52,9 @@
             <label class="font-semibold text-gray-800">Logo Organizer</label>
             <input type="file" name="url_logo" class="w-full mt-2">
 
-            @if(!empty($organizer->url_logo))
-            <img src="{{ asset('storage/'.$organizer->url_logo) }}"
-                 class="mt-3 w-24 h-24 object-cover rounded-lg shadow">
+              @if(!empty($organizer->url_logo))
+              <img src="{{ asset('foto/' . $organizer->url_logo) }}"
+                  class="mt-3 w-24 h-24 object-cover rounded-lg shadow">
             @endif
         </div>
 

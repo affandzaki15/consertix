@@ -12,6 +12,13 @@ class EoProfileController extends Controller
     {
         $organizer = auth()->user()->organizer;
 
+        if (!$organizer) {
+            $organizer = Organizer::create([
+                'user_id' => auth()->id(),
+                'organization_name' => auth()->user()->name, // Fallback default
+            ]);
+        }
+
         return view('eo.profile.edit', compact('organizer'));
     }
 
@@ -21,7 +28,7 @@ class EoProfileController extends Controller
             'organization_name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'url_logo' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'url_logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $organizer = auth()->user()->organizer;
@@ -29,13 +36,23 @@ class EoProfileController extends Controller
         if (!$organizer) {
             $organizer = Organizer::create([
                 'user_id' => auth()->id(),
+                'organization_name' => $request->organization_name,
             ]);
         }
 
+        // Ambil data selain logo
         $data = $request->only(['organization_name', 'phone', 'address']);
 
+        // Jika upload logo baru
         if ($request->hasFile('url_logo')) {
-            $data['url_logo'] = $request->file('url_logo')->store('organizers', 'public');
+            // Hapus logo lama jika ada
+            if ($organizer->url_logo && file_exists(public_path('foto/' . $organizer->url_logo))) {
+                unlink(public_path('foto/' . $organizer->url_logo));
+            }
+
+            $filename = time() . '_' . $request->file('url_logo')->getClientOriginalName();
+            $request->file('url_logo')->move(public_path('foto/organizers'), $filename);
+            $data['url_logo'] = 'organizers/' . $filename;
         }
 
         $organizer->update($data);

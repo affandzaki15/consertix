@@ -245,6 +245,13 @@
                             </div>
                         </div>
 
+                        <!-- QRIS Code Display (shown only for QRIS) -->
+                        <div id="qrisCodeSection" class="hidden text-center border rounded-xl p-6 bg-white">
+                            <p class="text-sm text-gray-600 mb-4 font-semibold">Scan this QRIS code with your e-wallet</p>
+                            <img src="{{ asset('images/qris/qris.svg') }}" alt="QRIS Code" class="w-48 h-48 mx-auto border rounded-lg shadow-sm">
+                            <p class="text-xs text-gray-500 mt-4">Use any e-wallet app to scan and complete payment</p>
+                        </div>
+
                         <!-- Amount Display -->
                         <div class="border-t border-b py-4">
                             <div class="flex justify-between items-center mb-2">
@@ -490,6 +497,14 @@ document.addEventListener('DOMContentLoaded', function () {
         // Display selected method name
         const methodName = methodMap[selectedMethod] || selectedMethod.toUpperCase();
         document.getElementById('selectedMethodName').textContent = methodName;
+
+        // Show/hide QRIS code section
+        const qrisCodeSection = document.getElementById('qrisCodeSection');
+        if (selectedMethod === 'qris') {
+            qrisCodeSection.classList.remove('hidden');
+        } else {
+            qrisCodeSection.classList.add('hidden');
+        }
 
         // Display amounts
         const subtotal = parseFloat(document.getElementById('subtotalAmount').textContent.replace(/[^\d]/g, ''));

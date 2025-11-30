@@ -8,7 +8,7 @@
         <!-- Left: Event Image -->
         <div class="lg:col-span-1">
             <div class="rounded-lg overflow-hidden shadow-md sticky top-8">
-                <img src="{{ asset('storage/' . $concert->image_url) }}" alt="{{ $concert->title }}"
+                <img src="{{ asset($concert->image_url) }}" alt="{{ $concert->title }}"
                     class="w-full h-96 object-cover">
             </div>
         </div>
@@ -26,12 +26,16 @@
                         </svg>
                         <span>{{ $concert->date->format('d F Y') }}</span>
                     </div>
+                   
+                    {{-- Waktu dari EO --}}
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>{{ $concert->date->format('H:i') }} - 23:00</span>
+                        <span>{{ \Carbon\Carbon::parse($concert->time)->format('H:i') }} WIB</span>
                     </div>
+
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -46,7 +50,7 @@
                     <p class="text-sm text-gray-500 mb-3">Creator</p>
                     <a href="{{ route('organizers.show', $concert->organizer->id) }}" class="flex items-center gap-4 hover:opacity-75 transition-opacity">
                         @if($concert->organizer->url_logo)
-                        <img src="{{ asset('storage/' . $concert->organizer->url_logo) }}" alt="{{ $concert->organizer->organization_name }}" class="w-16 h-16 object-contain rounded">
+                        <img src="{{ asset('foto/' . $concert->organizer->url_logo) }}" alt="{{ $concert->organizer->organization_name }}" class="w-16 h-16 object-contain rounded">
                         @else
                         <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
                             <span class="text-xs text-gray-500">No Logo</span>

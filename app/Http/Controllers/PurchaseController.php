@@ -538,15 +538,12 @@ class PurchaseController extends Controller
 
             try {
                 $pngBinary = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(400)->generate($qrPayload);
-                // Use a filename per order reference to keep it consistent
-                $filename = 'tickets/order-' . $order->reference_code . '.png';
-                // add timestamp suffix if file already exists to avoid caching overwrites
-                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($filename)) {
-                    $filename = 'tickets/order-' . $order->reference_code . '-' . time() . '.png';
-                }
-
-                \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $pngBinary);
-                $qrUrl = \Illuminate\Support\Facades\Storage::url($filename);
+                // Save to public/qrcodes instead of storage
+                $filename = 'order-' . $order->reference_code . '.png';
+                $publicPath = public_path('qrcodes/' . $filename);
+                
+                file_put_contents($publicPath, $pngBinary);
+                $qrUrl = '/qrcodes/' . $filename;
 
                 // update all tickets for this order to reference the single QR image
                 \App\Models\Ticket::whereIn('id', $createdTicketIds)->update(['qr_code_url' => $qrUrl]);

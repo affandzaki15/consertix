@@ -15,7 +15,7 @@
 
             {{-- Poster --}}
             <div class="w-full">
-                <img src="{{ asset('storage/' . $concert->image_url) }}"
+                <img src="{{ asset($concert->image_url) }}"
                     class="rounded-xl w-full h-56 sm:h-72 md:h-80 object-cover border shadow-md"
                     alt="{{ $concert->title }}">
             </div>
@@ -38,6 +38,14 @@
                         {{ $concert->date->format('d M Y') }}
                     </p>
                 </div>
+
+                <div>
+                    <p class="text-gray-500 text-xs sm:text-sm font-medium">Waktu</p>
+                    <p class="text-sm sm:text-base">
+                        {{ \Carbon\Carbon::parse($concert->time)->format('H:i') }} WIB
+                    </p>
+                </div>
+
 
                 <div>
                     <p class="text-gray-500 text-xs sm:text-sm font-medium">Status Approval</p>
@@ -221,7 +229,7 @@
         document.getElementById('approvalModal').classList.remove('flex');
     }
 
-      function submitApproval() {
+    function submitApproval() {
         const loadingScreen = document.getElementById('loadingScreen');
         const progressBar = document.getElementById('progressBar');
         const form = document.getElementById('approvalForm');
