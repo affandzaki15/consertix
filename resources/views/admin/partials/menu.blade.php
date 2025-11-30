@@ -1,4 +1,4 @@
-{{-- Sticky Admin Menu --}}
+{{-- Sticky Admin Header --}}
 @php
     $menuItems = [
         ['label' => 'Dashboard',   'routes' => ['admin.dashboard']],
@@ -6,75 +6,101 @@
         ['label' => 'Organizers',  'routes' => ['admin.organizers.pending', 'admin.organizers.index']],
         ['label' => 'Concerts',    'routes' => ['admin.concerts.pending', 'admin.concerts.index']],
         ['label' => 'Orders',      'routes' => ['admin.orders.index']],
-        ['label' => 'Payments',    'routes' => ['admin.payments.index']],
-        ['label' => 'Tickets',     'routes' => ['admin.tickets.index']],
         ['label' => 'Reports',     'routes' => ['admin.reports.index']],
     ];
 @endphp
 
-<div class="fixed top-0 left-0 w-full z-40 bg-[#0d0f55] text-white shadow-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<header class="w-full bg-gradient-to-b from-[#0d0f55] to-[#0a0c38] text-white py-4 shadow-lg fixed top-0 left-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
-        <div class="flex items-center justify-between py-4">
-            <div class="flex items-center gap-3">
-                <img src="{{ asset('logo/header-white.png') }}" class="h-8">
-                <span class="text-lg font-semibold">Admin Panel</span>
+        <!-- MOBILE -->
+        <div class="md:hidden">
+            <div class="flex justify-center mb-4">
+                <a href="{{ route('admin.dashboard') }}">
+                    <img src="{{ asset('logo/header.png') }}" class="h-10" alt="Logo">
+                </a>
             </div>
 
-            <div class="hidden md:flex items-center gap-3">
-                <span class="text-sm">{{ Auth::user()->name }}</span>
+            <div class="flex items-center justify-between text-sm font-medium">
+                <nav class="flex items-center space-x-3">
+                    <a href="{{ route('admin.dashboard') }}" class="hover:text-indigo-300">Dashboard</a>
+                    <a href="{{ route('admin.concerts.index') }}" class="hover:text-indigo-300">Konser</a>
+                </nav>
 
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button
-                        class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm font-medium">
-                        Logout
-                    </button>
-                </form>
+                @auth
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium">
+                                {{ Auth::user()->name }}
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); this.closest('form').submit();">
+                                    Logout
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+                @endauth
             </div>
         </div>
 
-        {{-- Navigation --}}
-        <nav class="flex items-center overflow-x-auto py-3 -mx-2 border-t border-indigo-800">
-            @foreach($menuItems as $item)
-                @php
-                    $resolvedName = null;
-                    foreach ($item['routes'] as $candidate) {
-                        if (\Illuminate\Support\Facades\Route::has($candidate)) {
-                            $resolvedName = $candidate;
-                            break;
-                        }
-                    }
-
-                    if ($resolvedName) {
-                        $url = route($resolvedName);
-                        $active = request()->routeIs($resolvedName . '*')
-                            || in_array(request()->route()?->getName(), $item['routes']);
-                    } else {
-                        $url = '#';
+        <!-- DESKTOP -->
+        <div class="hidden md:flex items-center justify-between">
+            <nav class="flex items-center space-x-6 text-sm lg:text-base font-medium">
+                @foreach($menuItems as $item)
+                    @php
                         $active = false;
-                    }
+                        $url = '#';
+                        foreach ($item['routes'] as $route) {
+                            if (Route::has($route)) {
+                                $url = route($route);
+                                if (request()->routeIs($route . '*') || request()->route()?->getName() === $route) {
+                                    $active = true;
+                                }
+                                break;
+                            }
+                        }
+                    @endphp
+                    @if($url !== '#')
+                        <a href="{{ $url }}"
+                           class="{{ $active ? 'text-white font-semibold' : 'text-gray-200 hover:text-indigo-300' }} transition">
+                            {{ $item['label'] }}
+                        </a>
+                    @endif
+                @endforeach
+            </nav>
 
-                    $baseClasses = 'inline-flex items-center gap-2 px-4 py-2 mx-2 text-sm font-medium rounded-md whitespace-nowrap transition-all duration-150';
-                    $activeClasses = $active
-                        ? 'bg-indigo-500 text-white shadow'
-                        : 'text-gray-300 hover:bg-indigo-700 hover:text-white';
-                @endphp
+            <a href="{{ route('admin.dashboard') }}" class="flex justify-center">
+                <img src="{{ asset('logo/header.png') }}" class="h-10 sm:h-12" alt="Admin Logo">
+            </a>
 
-                @if($resolvedName)
-                    <a href="{{ $url }}" 
-                       class="{{ $baseClasses }} {{ $activeClasses }}"
-                       aria-current="{{ $active ? 'page' : 'false' }}">
-                        {{ $item['label'] }}
-                    </a>
-                @else
-                    <span 
-                       class="{{ $baseClasses }} text-gray-500 cursor-not-allowed">
-                        {{ $item['label'] }}
-                    </span>
-                @endif
-            @endforeach
-        </nav>
-
+            <div class="flex items-center space-x-4">
+                @auth
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="flex items-center space-x-2 bg-white text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100">
+                                <span>{{ Auth::user()->name }}</span>
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); this.closest('form').submit();">
+                                    Logout
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+                @endauth
+            </div>
+        </div>
     </div>
-</div>
+</header>
+
+{{-- ✅ Spacer yang diperbaiki — responsif dan pas! --}}
+<div class="h-[100px] md:h-[112px] lg:h-[120px]"></div>

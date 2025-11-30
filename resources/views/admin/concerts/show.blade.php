@@ -66,6 +66,17 @@
                     </div>
                 @endif
 
+                {{-- ✅ TAMPILKAN POSTER KONSE DENGAN STORAGE::URL --}}
+{{-- ✅ INI YANG AKAN BERHASIL --}}
+@if($concert->image_url)
+    <div class="mt-6">
+        <p class="text-sm text-gray-500 mb-2">Poster Konser</p>
+        <img src="/{{ $concert->image_url }}"
+             alt="Poster {{ $concert->title }}"
+             class="max-w-full h-auto rounded-lg shadow border border-gray-200">
+    </div>
+@endif
+
                 @if($concert->notes)
                     <div class="mt-4">
                         <p class="text-sm text-gray-500 mb-1">Catatan Admin</p>

@@ -52,21 +52,31 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <div class="flex items-center space-x-2">
+                                                    <!-- ✅ TOMBOL LIHAT -->
+                                                    <a href="{{ route('admin.concerts.show', $c) }}"
+                                                       class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg font-medium transition shadow-sm hover:shadow">
+                                                        Lihat
+                                                    </a>
+
+                                                    <!-- Tombol Setujui -->
                                                     <form action="{{ route('admin.concerts.approve', $c) }}" method="POST" class="inline">
                                                         @csrf
                                                         <button type="submit"
-                                                            class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg font-medium transition shadow-sm hover:shadow">
+                                                            class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg font-medium transition shadow-sm hover:shadow"
+                                                            onclick="return confirm('Yakin ingin menyetujui konser ini?')">
                                                             Setujui
                                                         </button>
                                                     </form>
 
+                                                    <!-- Tombol Tolak dengan catatan -->
                                                     <form action="{{ route('admin.concerts.reject', $c) }}" method="POST" class="inline flex items-center">
                                                         @csrf
                                                         <input type="text" name="note"
                                                             placeholder="Catatan (opsional)"
-                                                            class="border border-gray-300 rounded-lg px-2.5 py-1 text-xs text-gray-700 mr-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 min-w-[120px] max-w-[180px]">
+                                                            class="border border-gray-300 rounded-lg px-2.5 py-1 text-xs text-gray-700 mr-2 focus:outline-none focus:ring-2 focus:ring-red-200 min-w-[120px] max-w-[180px]">
                                                         <button type="submit"
-                                                            class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg font-medium transition shadow-sm hover:shadow">
+                                                            class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg font-medium transition shadow-sm hover:shadow"
+                                                            onclick="return confirm('Yakin ingin menolak konser ini?')">
                                                             Tolak
                                                         </button>
                                                     </form>

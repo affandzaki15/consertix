@@ -81,10 +81,7 @@
 
                     <!-- Logo Tengah -->
                     <a href="{{ route('eo.dashboard') }}" class="flex justify-center">
-                        <img src="{{ asset('logo/header.png') }}" class="h-10 sm:h-12">
-                    </a>
-
-                    <!-- User Profile Kanan -->
+                                            <!-- User Profile Kanan -->
                     <div class="flex items-center space-x-4">
 
 

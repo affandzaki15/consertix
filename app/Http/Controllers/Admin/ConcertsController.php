@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Concert;
@@ -11,26 +12,56 @@ use App\Models\ConcertAdminAction;
 
 class ConcertsController extends Controller
 {
-   public function pending()
-{
-    // Ambil konser pending
-    if (Schema::hasColumn('concerts', 'approval_status')) {
-        $pending = Concert::where('approval_status', 'pending')->paginate(10, ['*'], 'pending_page');
-        // Ambil approved & rejected (bukan pending)
-        $history = Concert::whereNotIn('approval_status', ['pending'])
-                         ->orderBy('updated_at', 'desc')
-                         ->paginate(10, ['*'], 'history_page');
-    } elseif (Schema::hasColumn('concerts', 'status')) {
-        $pending = Concert::where('status', 'pending')->paginate(10, ['*'], 'pending_page');
-        $history = Concert::whereNotIn('status', ['pending'])
-                         ->orderBy('updated_at', 'desc')
-                         ->paginate(10, ['*'], 'history_page');
-    } else {
-        $pending = Concert::whereRaw('1 = 0')->paginate(10, ['*'], 'pending_page');
-        $history = Concert::whereRaw('1 = 0')->paginate(10, ['*'], 'history_page');
+    public function pending()
+    {
+        if (Schema::hasColumn('concerts', 'approval_status')) {
+            $pending = Concert::where('approval_status', 'pending')->paginate(10, ['*'], 'pending_page');
+            $history = Concert::whereNotIn('approval_status', ['pending'])
+                             ->orderBy('updated_at', 'desc')
+                             ->paginate(10, ['*'], 'history_page');
+        } elseif (Schema::hasColumn('concerts', 'status')) {
+            $pending = Concert::where('status', 'pending')->paginate(10, ['*'], 'pending_page');
+            $history = Concert::whereNotIn('status', ['pending'])
+                             ->orderBy('updated_at', 'desc')
+                             ->paginate(10, ['*'], 'history_page');
+        } else {
+            $pending = Concert::whereRaw('1 = 0')->paginate(10, ['*'], 'pending_page');
+            $history = Concert::whereRaw('1 = 0')->paginate(10, ['*'], 'history_page');
+        }
+
+        return view('admin.concerts.pending', compact('pending', 'history'));
     }
 
-    return view('admin.concerts.pending', compact('pending', 'history'));
+    public function store(Request $request)
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'location' => 'required|string|max:255',
+        'date' => 'required|date',
+        'time' => 'required',
+        'image_url' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'description' => 'nullable|string',
+    ]);
+
+    $concert = new Concert();
+    $concert->title = $request->title;
+    $concert->location = $request->location;
+    $concert->date = $request->date;
+    $concert->time = $request->time;
+    $concert->description = $request->description;
+
+    // ✅ SIMPAN GAMBAR KE FOLDER 'concerts' DI DISK 'public'
+        if ($request->hasFile('image_url')) {
+        // ✅ Simpan langsung ke public/foto/concerts
+        $filename = time() . '_' . $request->file('image_url')->getClientOriginalName();
+        $request->file('image_url')->move(public_path('foto/concerts'), $filename);
+        $concert->image_url = 'foto/concerts/' . $filename;
+    }
+
+    $concert->save();
+
+    return redirect()->route('eo.concerts.tickets', $concert->id)
+                     ->with('success', 'Konser berhasil dibuat! Silakan tambahkan tipe tiket.');
 }
 
     public function approve(Request $request, Concert $concert)
@@ -59,7 +90,7 @@ class ConcertsController extends Controller
         return redirect()->route('admin.concerts.pending')->with('success', 'Konser disetujui.');
     }
 
-        public function index()
+    public function index()
     {
         if (Schema::hasColumn('concerts', 'approval_status')) {
             $concerts = Concert::orderBy('created_at', 'desc')->paginate(20);
@@ -71,6 +102,7 @@ class ConcertsController extends Controller
 
         return view('admin.concerts.index', compact('concerts'));
     }
+
     public function reject(Request $request, Concert $concert)
     {
         if (Schema::hasColumn('concerts', 'approval_status')) {
@@ -97,9 +129,11 @@ class ConcertsController extends Controller
 
         return redirect()->route('admin.concerts.pending')->with('success', 'Konser ditolak.');
     }
-        public function show(Concert $concert)
+
+    public function show(Concert $concert)
     {
+        // Pastikan relasi adminActions dimuat
+        $concert->load('adminActions.admin');
         return view('admin.concerts.show', compact('concert'));
     }
-
 }
