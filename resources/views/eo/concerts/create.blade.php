@@ -7,7 +7,7 @@
 
         {{-- TITLE --}}
         <h2 class="text-2xl font-bold text-gray-800 mb-6">
-            Buat Konser Baru 🎤
+            Buat Konser Baru 
         </h2>
 
         {{-- SUCCESS ALERT --}}

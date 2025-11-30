@@ -13,6 +13,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\Eo\EoDashboardController;
 use App\Http\Controllers\Eo\EoConcertController;
 use App\Http\Controllers\Eo\TicketTypeController;
+use App\Http\Controllers\Eo\EoProfileController;
 
 // Controllers Admin
 use App\Http\Controllers\Admin\DashboardController;
@@ -81,32 +82,43 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/purchase/{order}/complete', [PurchaseController::class, 'completePayment'])->name('purchase.complete');
     // Cancel order
     Route::post('/purchase/{order}/cancel', [PurchaseController::class, 'cancelOrder'])->name('purchase.cancel');
+
 });
 
 
 // ============================
 // EO AREA (Event Organizer)
-Route::middleware(['auth', 'role:eo'])->prefix('eo')->name('eo.')->group(function () {
+Route::middleware(['auth', 'role:eo'])
+    ->prefix('eo')
+    ->name('eo.')
+    ->group(function () {
 
-    Route::get('/dashboard', [EoDashboardController::class, 'index'])->name('dashboard');
+        // Dashboard EO
+        Route::get('/dashboard', [EoDashboardController::class, 'index'])
+            ->name('dashboard');
+        Route::get('/profile', [EoProfileController::class, 'edit'])
+            ->name('profile.edit');
 
-    Route::resource('concerts', EoConcertController::class);
-    Route::resource('concerts.tickets', TicketTypeController::class)
-        ->shallow()
-        ->except(['show']);
+        Route::post('/profile', [EoProfileController::class, 'update'])
+            ->name('profile.update');
 
-    Route::get(
-        '/eo/concerts/{id}/approval',
-        [EoConcertController::class, 'approvalPage']
-    )
-        ->name('eo.concerts.approval');
 
-    Route::post(
-        '/eo/concerts/{id}/submit-approval',
-        [EoConcertController::class, 'submitApproval']
-    )
-        ->name('eo.concerts.submitApproval');
-});
+        // CRUD Concert EO
+        Route::resource('concerts', EoConcertController::class);
+
+        // CRUD Ticket Types EO
+        Route::resource('concerts.tickets', TicketTypeController::class)
+            ->shallow()
+            ->except(['show']);
+
+        // Halaman Review Approval (setelah tiket selesai dibuat)
+        Route::get('/concerts/{id}/review', [EoConcertController::class, 'review'])
+            ->name('concerts.review');
+
+        // Submit ke Admin untuk approval
+        Route::post('/concerts/{id}/submit', [EoConcertController::class, 'submitApproval'])
+            ->name('concerts.submit');
+    });
 
 
 
@@ -160,11 +172,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 // PROFILE ROUTES
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+
 
 
 // AUTH ROUTES

@@ -76,17 +76,13 @@
                                        ($c->status == 'pending' ? 'bg-yellow-100 text-yellow-700' :
                                         'bg-gray-100 text-gray-700') }}">
                                     @if($c->approval_status === 'approved')
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">
-                                        Approved
-                                    </span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">Approved</span>
                                     @elseif($c->approval_status === 'pending')
-                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">
-                                        Pending Approval
-                                    </span>
+                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">Pending Approval</span>
+                                    @elseif($c->approval_status === 'rejected')
+                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs">Rejected</span>
                                     @else
-                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs">
-                                        Rejected
-                                    </span>
+                                    <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">Draft</span>
                                     @endif
 
                                 </span>

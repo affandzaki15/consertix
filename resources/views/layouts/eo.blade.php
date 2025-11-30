@@ -17,108 +17,109 @@
 </head>
 
 <body class="bg-gray-100">
-<div id="app" class="min-h-screen">
+    <div id="app" class="min-h-screen">
 
-    <!-- ================= NAVBAR EO ================= -->
-    <header class="w-full bg-gradient-to-b from-[#0d0f55] to-[#0a0c38] text-white py-4 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <!-- ================= NAVBAR EO ================= -->
+        <header class="w-full bg-gradient-to-b from-[#0d0f55] to-[#0a0c38] text-white py-4 shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
-            <!-- MOBILE -->
-            <div class="md:hidden">
+                <!-- MOBILE -->
+                <div class="md:hidden">
 
-                <div class="flex justify-center mb-4">
-                    <a href="{{ route('eo.dashboard') }}">
-                        <img src="{{ asset('logo/header.png') }}" class="h-10">
-                    </a>
+                    <div class="flex justify-center mb-4">
+                        <a href="{{ route('eo.dashboard') }}">
+                            <img src="{{ asset('logo/header.png') }}" class="h-10">
+                        </a>
+                    </div>
+
+                    <div class="flex items-center justify-between text-sm font-medium">
+
+                        <!-- Menu -->
+                        <nav class="flex items-center space-x-4">
+                            <a href="{{ route('eo.dashboard') }}" class="hover:text-indigo-300">Dashboard</a>
+                        </nav>
+
+                        <!-- Profile / Logout -->
+                        @auth
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button class="bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium">
+                                    {{ Auth::user()->name }}
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('eo.profile.edit')">
+                                    Profil
+                                </x-dropdown-link>
+
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); this.closest('form').submit();">
+                                        Logout
+                                    </x-dropdown-link>
+                                </form>
+                            </x-slot>
+                        </x-dropdown>
+                        @endauth
+
+                    </div>
                 </div>
 
-                <div class="flex items-center justify-between text-sm font-medium">
+                <!-- DESKTOP -->
+                <div class="hidden md:flex items-center justify-between">
 
-                    <!-- Menu -->
-                    <nav class="flex items-center space-x-4">
-                        <a href="{{ route('eo.dashboard') }}" class="hover:text-indigo-300">Dashboard</a>
-                        <a href="{{ route('eo.concerts.index') }}" class="hover:text-indigo-300">Konser</a>
+                    <!-- Menu Kiri -->
+                    <nav class="flex items-center space-x-8 text-sm lg:text-lg font-medium">
+                        <a href="{{ route('eo.dashboard') }}" class="hover:text-indigo-300 transition">Dashboard</a>
+
                     </nav>
 
-                    <!-- Profile / Logout -->
-                    @auth
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium">
-                                {{ Auth::user()->name }}
-                            </button>
-                        </x-slot>
+                    <!-- Logo Tengah -->
+                    <a href="{{ route('eo.dashboard') }}" class="flex justify-center">
+                        <img src="{{ asset('logo/header.png') }}" class="h-10 sm:h-12">
+                    </a>
 
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                Profil
-                            </x-dropdown-link>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link href="{{ route('logout') }}"
-                                                 onclick="event.preventDefault(); this.closest('form').submit();">
-                                    Logout
+                    <!-- User Profile Kanan -->
+                    <div class="flex items-center space-x-4">
+
+
+                        @auth
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button class="flex items-center space-x-2 bg-white text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100">
+                                    <span>{{ Auth::user()->name }}</span>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                  <x-dropdown-link :href="route('eo.profile.edit')">
+                                    Profil
                                 </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
-                    @endauth
-
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); this.closest('form').submit();">
+                                        Logout
+                                    </x-dropdown-link>
+                                </form>
+                            </x-slot>
+                        </x-dropdown>
+                        @endauth
+                    </div>
                 </div>
+
             </div>
-
-            <!-- DESKTOP -->
-            <div class="hidden md:flex items-center justify-between">
-
-                <!-- Menu Kiri -->
-                <nav class="flex items-center space-x-8 text-sm lg:text-lg font-medium">
-                    <a href="{{ route('eo.dashboard') }}" class="hover:text-indigo-300 transition">Dashboard</a>
-                
-                </nav>
-
-                <!-- Logo Tengah -->
-                <a href="{{ route('eo.dashboard') }}" class="flex justify-center">
-                    <img src="{{ asset('logo/header.png') }}" class="h-10 sm:h-12">
-                </a>
-
-                <!-- User Profile Kanan -->
-                <div class="flex items-center space-x-4">
+        </header>
 
 
-                    @auth
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="flex items-center space-x-2 bg-white text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100">
-                                <span>{{ Auth::user()->name }}</span>
-                            </button>
-                        </x-slot>
+        <!-- MAIN CONTENT -->
+        <main class="pt-6 pb-10 px-4">
+            @yield('content')
+        </main>
 
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                Profil
-                            </x-dropdown-link>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link href="{{ route('logout') }}"
-                                                 onclick="event.preventDefault(); this.closest('form').submit();">
-                                    Logout
-                                </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
-                    @endauth
-                </div>
-            </div>
-
-        </div>
-    </header>
-
-
-    <!-- MAIN CONTENT -->
-    <main class="pt-6 pb-10 px-4">
-        @yield('content')
-    </main>
-
-</div>
+    </div>
 </body>
+
 </html>

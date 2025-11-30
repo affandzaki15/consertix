@@ -13,6 +13,8 @@ class Organizer extends Model
         'user_id',
         'organization_name',
         'description',
+        'phone',
+        'address',
         'status',
         'url_logo',
     ];
