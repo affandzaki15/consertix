@@ -108,17 +108,31 @@ class EoConcertController extends Controller
 
     public function submitApproval($id)
     {
+        $organizerId = auth()->user()->organizer->id;
+
+        $concert = Concert::where('organizer_id', $organizerId)->findOrFail($id);
         $concert = Concert::where('organizer_id', auth()->user()->organizer->id)
             ->findOrFail($id);
 
-        // 🔄 STATUS berubah ke pending ketika SUBMIT
-        $concert->update([
-            'approval_status' => 'pending'
-        ]);
+        $concert->approval_status = 'pending';
+        $concert->save();
 
         return redirect()->route('eo.dashboard')
-            ->with('success', 'Konser telah diajukan ke admin untuk approval 🎯');
+            ->with('success', 'Konser berhasil diajukan ke admin!');
+
+        // Cegah submit lagi kalau sudah pending / approved
+        if (in_array($concert->approval_status, ['pending', 'approved'])) {
+            return redirect()->route('eo.dashboard')
+                ->with('warning', 'Konser ini sudah pernah diajukan!');
+        }
+
+        $concert->approval_status = 'pending';
+        $concert->save();
+
+        return redirect()->route('eo.dashboard')
+            ->with('success', 'Konser berhasil dikirim ke admin untuk approval!');
     }
+
 
     public function destroy($id)
     {

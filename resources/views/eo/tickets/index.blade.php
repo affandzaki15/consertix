@@ -5,7 +5,7 @@
     <h2 class="text-2xl font-bold mb-4">Tiket untuk: {{ $concert->title }}</h2>
 
     <a href="{{ route('eo.concerts.tickets.create', $concert->id) }}"
-        class="mb-3 inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg">
+        class="mb-3 inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
         + Tambah Tipe Tiket
     </a>
 
@@ -13,7 +13,7 @@
     @if($tickets->count() > 0)
     <a href="{{ route('eo.concerts.review', $concert->id) }}"
         class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-        Review & Submit to Admin 
+        Review & Submit to Admin
     </a>
     @else
     <button disabled
@@ -22,13 +22,20 @@
     </button>
     @endif
 
-
-
+    {{-- SUCCESS ALERT --}}
     @if(session('success'))
-    <div class="bg-green-100 text-green-700 p-3 rounded mb-3">
+    <div class="bg-green-100 text-green-700 p-3 rounded mb-3 text-center">
         {{ session('success') }}
     </div>
     @endif
+
+    {{-- DELETE ALERT --}}
+    @if(session('deleted'))
+    <div class="bg-red-100 text-red-700 p-3 rounded mb-3 text-center">
+        {{ session('deleted') }}
+    </div>
+    @endif
+
 
     <table class="w-full bg-white border shadow-sm rounded-lg">
         <thead class="bg-gray-100">
@@ -48,8 +55,9 @@
                 <td class="p-3">{{ $t->quota }}</td>
                 <td class="p-3">{{ $t->sold }}</td>
                 <td class="p-3 space-x-2 text-center">
+
                     <a href="{{ route('eo.tickets.edit', $t->id) }}"
-                        class="bg-yellow-500 text-white px-3 py-1 rounded">
+                        class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
                         Edit
                     </a>
 
@@ -57,11 +65,12 @@
                         method="POST" class="inline">
                         @csrf
                         @method('DELETE')
-                        <button class="bg-red-600 text-white px-3 py-1 rounded"
-                            onclick="return confirm('Hapus?')">
+                        <button class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                            onclick="return confirm('Yakin ingin menghapus tiket ini?')">
                             Hapus
                         </button>
                     </form>
+
                 </td>
             </tr>
             @empty

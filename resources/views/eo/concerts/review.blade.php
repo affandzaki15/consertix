@@ -7,7 +7,7 @@
 
         {{-- Title --}}
         <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mb-6">
-            Review Konser 
+            Review Konser 🎤
         </h2>
 
         {{-- Wrapper Poster + Info --}}
@@ -79,7 +79,7 @@
                     <p class="text-xs sm:text-sm text-gray-500">Kuota: {{ $t->quota }}</p>
                 </div>
                 @endforeach
-            
+
             </div>
             @else
             <p class="text-gray-500 italic text-sm sm:text-base">
@@ -91,23 +91,57 @@
         {{-- Action Buttons --}}
         <div class="mt-12 flex flex-col sm:flex-row justify-between gap-4">
 
-            {{-- Back --}}
             <a href="{{ route('eo.concerts.tickets.index', $concert->id) }}"
                 class="w-full sm:w-auto text-center px-5 py-3 bg-gray-100 hover:bg-gray-200
                 rounded-lg font-medium shadow-sm text-gray-800 transition">
                 ← Kembali Edit Tiket
             </a>
 
+            {{-- Button Open Modal --}}
+            {{-- Submit --}}
             {{-- Submit --}}
             @if($concert->ticketTypes->count() > 0)
-            <form action="{{ route('eo.concerts.submit', $concert->id) }}" method="POST" class="w-full sm:w-auto">
+
+            @if($concert->approval_status === 'pending')
+            <button disabled
+                class="w-full sm:w-auto px-6 py-3 bg-yellow-400 text-yellow-900 font-semibold
+            rounded-lg cursor-not-allowed opacity-80">
+                Menunggu Approval ⏳
+            </button>
+
+            @elseif($concert->approval_status === 'approved')
+            <button disabled
+                class="w-full sm:w-auto px-6 py-3 bg-green-600 text-white font-semibold
+            rounded-lg cursor-not-allowed">
+                Approved ✔
+            </button>
+
+            @elseif($concert->approval_status === 'rejected')
+            <button type="button" onclick="openApprovalModal()"
+                class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold
+            rounded-lg shadow">
+                Kirim Ulang ke Admin 🔁
+            </button>
+
+            {{-- Hidden Form Submit --}}
+            <form id="approvalForm" action="{{ route('eo.concerts.submit', $concert->id) }}" method="POST" class="hidden">
                 @csrf
-                <button
-                    class="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700
-                    text-white font-semibold rounded-lg shadow transition">
-                    Kirim ke Admin untuk Review 🚀
-                </button>
             </form>
+
+            @else
+            {{-- Default: Belum Pernah Submit --}}
+            <button type="button" onclick="openApprovalModal()"
+                class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow">
+                Kirim ke Admin untuk Review 🚀
+            </button>
+
+            {{-- Hidden Form --}}
+            <form id="approvalForm" action="{{ route('eo.concerts.submit', $concert->id) }}" method="POST" class="hidden">
+                @csrf
+            </form>
+
+            @endif
+
             @else
             <button disabled
                 class="w-full sm:w-auto px-6 py-3 bg-gray-400 text-white font-semibold rounded-lg cursor-not-allowed opacity-70">
@@ -115,9 +149,116 @@
             </button>
             @endif
 
+
+
+
+
         </div>
 
     </div>
 
 </div>
+
+
+{{-- ================= MODAL CONFIRM ================= --}}
+<div id="approvalModal"
+    class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+    <div class="bg-white w-[90%] sm:w-[380px] rounded-xl shadow-lg p-6 text-center animate-modalShow">
+
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+            Apakah Anda sudah yakin?
+        </h3>
+        <p class="text-sm text-gray-600 mb-6">
+            Kirim konser ini ke admin untuk proses persetujuan.
+        </p>
+
+        <div class="flex justify-center gap-3">
+            <button onclick="closeApprovalModal()"
+                class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium">
+                Batal
+            </button>
+
+            <button onclick="submitApproval()"
+                class="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium">
+                Kirim
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+{{-- SUCCESS TOAST --}}
+<div id="successToast"
+    class="hidden fixed top-5 right-5 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium z-50">
+    ✓ Konser berhasil dikirim ke admin!
+</div>
+
+
+{{-- LOADING OVERLAY --}}
+<div id="loadingScreen"
+    class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex-col gap-6 text-white text-xl flex items-center justify-center z-50">
+
+    <div class="w-64 h-2 bg-gray-300 overflow-hidden rounded-full">
+        <div id="progressBar" class="h-full bg-indigo-500 w-0"></div>
+    </div>
+
+    <strong class="animate-pulse text-center">Mengirim konser...</strong>
+</div>
+
+
+
+{{-- ================= SCRIPT ================= --}}
+<script>
+    function openApprovalModal() {
+        document.getElementById('approvalModal').classList.remove('hidden');
+        document.getElementById('approvalModal').classList.add('flex');
+    }
+
+    function closeApprovalModal() {
+        document.getElementById('approvalModal').classList.add('hidden');
+        document.getElementById('approvalModal').classList.remove('flex');
+    }
+
+      function submitApproval() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.getElementById('progressBar');
+        const form = document.getElementById('approvalForm');
+
+        loadingScreen.classList.remove('hidden');
+
+        let width = 0;
+        const interval = setInterval(() => {
+            width += 3;
+            progressBar.style.width = width + "%";
+
+            if (width >= 100) {
+                clearInterval(interval);
+                form.submit();
+            }
+        }, 40);
+    }
+</script>
+
+
+{{-- ANIMATION STYLE --}}
+<style>
+    @keyframes modalShow {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .animate-modalShow {
+        animation: modalShow .25s ease-out forwards;
+    }
+</style>
+
 @endsection
