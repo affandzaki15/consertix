@@ -10,6 +10,7 @@ class Concert extends Model
         'title',
         'location',
         'date',
+        'time',
         'price',
         'image_url',
         'selling_status',   // coming_soon / available / sold_out
@@ -21,6 +22,7 @@ class Concert extends Model
 
     protected $casts = [
         'date' => 'date',
+        'time' => 'datetime:H:i',
         'price' => 'integer',
     ];
 

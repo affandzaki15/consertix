@@ -42,17 +42,18 @@
                 </div>
 
                 <!-- Creator Info -->
-                <div class="flex items-center gap-3 mb-8 pb-8 border-b border-gray-200">
-                    <div>
-                        <p class="text-sm text-gray-500">Organizer</p>
-                        <p class="font-semibold text-gray-900">
-                            {{ $concert->organizer->organization_name ?? 'Unknown Organizer' }}
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Creator</p>
-                        <p class="font-semibold text-gray-900">{{ $concert->organizer->organization_name ?? 'Unknown' }}</p>
-                    </div>
+                <div class="mb-8 pb-8 border-b border-gray-200">
+                    <p class="text-sm text-gray-500 mb-3">Creator</p>
+                    <a href="{{ route('organizers.show', $concert->organizer->id) }}" class="flex items-center gap-4 hover:opacity-75 transition-opacity">
+                        @if($concert->organizer->url_logo)
+                        <img src="{{ asset('storage/' . $concert->organizer->url_logo) }}" alt="{{ $concert->organizer->organization_name }}" class="w-16 h-16 object-contain rounded">
+                        @else
+                        <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                            <span class="text-xs text-gray-500">No Logo</span>
+                        </div>
+                        @endif
+                        <p class="font-semibold text-gray-900 text-lg">{{ $concert->organizer->organization_name ?? 'Unknown Organizer' }}</p>
+                    </a>
                 </div>
 
                 <!-- Price Starts From -->
