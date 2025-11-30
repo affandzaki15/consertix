@@ -17,12 +17,6 @@
         <div class="lg:col-span-2">
             <!-- Title and Basic Info -->
             <div class="mb-8">
-                <div class="flex items-center gap-3 mb-4">
-                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">
-                        🎵 Music
-                    </span>
-                </div>
-
                 <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ $concert->title }}</h1>
 
                 <div class="space-y-3 text-gray-700 mb-6">
@@ -48,26 +42,18 @@
                 </div>
 
                 <!-- Creator Info -->
-                <!-- Organizer Info -->
-                <div class="flex items-center gap-4 mb-8 pb-8 border-b border-gray-200">
-
-                    @php
-                    $logo = $concert->organizer->url_logo ?? null;
-                    @endphp
-
-                    <img src="{{ $logo ? asset('storage/'.$logo) : asset('images/default-org.png') }}"
-                        class="w-14 h-14 rounded-full object-cover border shadow-sm"
-                        alt="Organizer Logo">
-
+                <div class="flex items-center gap-3 mb-8 pb-8 border-b border-gray-200">
                     <div>
                         <p class="text-sm text-gray-500">Organizer</p>
                         <p class="font-semibold text-gray-900">
                             {{ $concert->organizer->organization_name ?? 'Unknown Organizer' }}
                         </p>
                     </div>
-
+                    <div>
+                        <p class="text-sm text-gray-600">Creator</p>
+                        <p class="font-semibold text-gray-900">{{ $concert->organizer->organization_name ?? 'Unknown' }}</p>
+                    </div>
                 </div>
-
 
                 <!-- Price Starts From -->
                 <div class="mb-8">

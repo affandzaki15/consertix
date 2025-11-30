@@ -174,11 +174,17 @@
             </header>
         @endif
 
+        
+
         <!-- Page Content -->
         <main class="{{ request()->is('admin*') ? 'pt-32' : 'pt-0' }}">
             @yield('content')
         </main>
+        <!-- Payment icons strip (moved; rendered below footer) -->
     </div>
+
+    
+
 </body>
 
 </html>

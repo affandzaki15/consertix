@@ -9,47 +9,44 @@
         @if ($orders->count() > 0)
             <div class="space-y-4">
                 @foreach ($orders as $order)
-                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-center">
-                            <div class="flex-1 mb-3 md:mb-0">
-                                <!-- Concert Info -->
-                                <h3 class="text-lg font-semibold text-gray-900">
-                                    {{ $order->concert->name ?? 'Concert' }}
-                                </h3>
-                                
-                                <!-- Order Details -->
-                                <div class="grid grid-cols-2 gap-3 text-sm text-gray-600 mt-2">
+                    <div class="relative bg-white border border-gray-200 rounded-2xl overflow-hidden p-6">
+                        <!-- ticket notches -->
+                        <div class="absolute -left-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full border border-gray-200"></div>
+                        <div class="absolute -right-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full border border-gray-200"></div>
+
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1 pr-6">
+                                <h3 class="text-2xl font-bold text-gray-900">{{ $order->concert->name ?? 'Concert' }}</h3>
+
+                                <div class="grid grid-cols-2 gap-4 text-sm text-gray-600 mt-4">
                                     <div>
-                                        <span class="font-medium">Reference Code:</span>
-                                        <p class="font-mono text-blue-600">{{ $order->reference_code }}</p>
+                                        <div class="font-medium text-gray-700">Reference Code:</div>
+                                        <div class="font-mono text-blue-600">{{ $order->reference_code }}</div>
                                     </div>
                                     <div>
-                                        <span class="font-medium">Tanggal Concert:</span>
-                                        <p>{{ \Carbon\Carbon::parse($order->concert->date)->format('d M Y H:i') }}</p>
+                                        <div class="font-medium text-gray-700">Tanggal Concert:</div>
+                                        <div>{{ \Carbon\Carbon::parse($order->concert->date)->format('d M Y H:i') }}</div>
                                     </div>
                                     <div>
-                                        <span class="font-medium">Total Tiket:</span>
-                                        <p>{{ $order->items->sum('quantity') }} tiket</p>
+                                        <div class="font-medium text-gray-700">Total Tiket:</div>
+                                        <div>{{ $order->items->sum('quantity') }} tiket</div>
                                     </div>
                                     <div>
-                                        <span class="font-medium">Total Harga:</span>
-                                        <p class="text-green-600 font-semibold">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</p>
+                                        <div class="font-medium text-gray-700">Total Harga:</div>
+                                        <div class="text-green-600 font-semibold">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</div>
                                     </div>
                                 </div>
 
-                                <!-- Status Badge -->
-                                <div class="mt-3">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                <div class="mt-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-50 text-green-800">
                                         ✓ Sudah Dibayar
                                     </span>
                                 </div>
                             </div>
 
-                            <!-- Action Button -->
-                            <div class="flex gap-2">
-                                <a href="{{ route('history.show', $order->id) }}"
-                                   class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex-shrink-0 ml-4 flex items-center">
+                                <a href="{{ route('history.show', $order->id) }}" class="inline-flex items-center px-5 py-3 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 transition-colors">
+                                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
@@ -58,14 +55,13 @@
                             </div>
                         </div>
 
-                        <!-- Ticket Items Preview -->
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <p class="text-sm font-medium text-gray-700 mb-2">Detail Tiket:</p>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                        <div class="border-t border-dashed border-gray-200 mt-6 pt-6">
+                            <p class="text-sm font-medium text-gray-700 mb-3">Detail Tiket:</p>
+                            <div class="space-y-2">
                                 @foreach ($order->items as $item)
-                                    <div class="text-sm bg-gray-50 p-2 rounded">
-                                        <span class="font-medium">{{ $item->ticketType->name }}</span>
-                                        <span class="text-gray-600">x{{ $item->quantity }}</span>
+                                    <div class="bg-gray-50 p-3 rounded-md flex items-center justify-between">
+                                        <div class="text-sm font-medium text-gray-900">{{ $item->ticketType->name }}</div>
+                                        <div class="text-sm text-gray-600">x{{ $item->quantity }}</div>
                                     </div>
                                 @endforeach
                             </div>

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'About - Artatix')
+@section('title', 'About - Concertix')
 
 @section('content')
 <div class="min-h-screen bg-gray-50">
     <!-- Hero Section -->
     <section class="bg-gradient-to-b from-[#0d0f55] to-[#0a0c38] text-white py-20 px-4">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6">Tentang Artatix</h1>
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">Tentang Concertix</h1>
             <p class="text-lg md:text-xl text-gray-300">Platform Manajemen Tiket Pertunjukan Profesional</p>
         </div>
     </section>
@@ -17,12 +17,12 @@
         <!-- About Overview -->
         <div class="grid md:grid-cols-2 gap-12 mb-20 items-center">
             <div>
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">Apa itu Artatix?</h2>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">Apa itu Concertix?</h2>
                 <p class="text-gray-700 leading-relaxed mb-4">
-                    Artatix merupakan platform penyedia Ticket Management Service (TMS) untuk mendukung setiap acara apaupun tempat wisata selanjutnya membutuhkan sistem manajemen tiket, dan memberikan kemudahan kepada pelanggan dalam melakukan pemesanan tiket, penjualan tiket secara mandiri, maupun administrasi tiket.
+                    Concertix merupakan platform penyedia Ticket Management Service (TMS) untuk mendukung setiap acara apapun tempat wisata selanjutnya membutuhkan sistem manajemen tiket, dan memberikan kemudahan kepada pelanggan dalam melakukan pemesanan tiket, penjualan tiket secara mandiri, maupun administrasi tiket.
                 </p>
                 <p class="text-gray-700 leading-relaxed">
-                    Artatix memiliki tujuan bahwa teknologi unggulan yang kami miliki dapat memudahkan, mengutamakan dan mempermudah pelayanan penyediaan tiket di berbagai tempat wisata selanjutnya mendatangkan laporan pra-acara hingga menyediakan laporan tiket acara secara mandiri.
+                    Concertix memiliki tujuan bahwa teknologi unggulan yang kami miliki dapat memudahkan, mengutamakan dan mempermudah pelayanan penyediaan tiket di berbagai tempat wisata selanjutnya mendatangkan laporan pra-acara hingga menyediakan laporan tiket acara secara mandiri.
                 </p>
             </div>
             <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl p-8 text-white">
@@ -193,8 +193,8 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Artatix Didirikan</h3>
-                        <p class="text-gray-700 mt-2">Artatix berhasil diluncurkan dengan suatu rasalnya dengan jutaan ribu pembeli yang tersebar di seluruh Indonesia.</p>
+                        <h3 class="text-lg font-semibold text-gray-900">Concertix Didirikan</h3>
+                        <p class="text-gray-700 mt-2">Concertix berhasil diluncurkan dengan suatu rasalnya dengan jutaan ribu pembeli yang tersebar di seluruh Indonesia.</p>
                     </div>
                 </div>
                 <div class="flex gap-4">
@@ -225,7 +225,7 @@
         <!-- CTA Section -->
         <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-lg p-12 text-center text-white">
             <h2 class="text-3xl font-bold mb-4">Siap Memulai?</h2>
-            <p class="text-indigo-100 mb-8 text-lg">Bergabunglah dengan ribuan penyelenggara acara yang mempercayai Artatix</p>
+            <p class="text-indigo-100 mb-8 text-lg">Bergabunglah dengan ribuan penyelenggara acara yang mempercayai Concertix</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('concerts.index') }}" class="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
                     Jelajahi Konser
@@ -237,11 +237,79 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <section class="bg-gray-900 text-gray-400 py-12 mt-20">
-        <div class="max-w-6xl mx-auto px-4 text-center">
-            <p>&copy; 2025 Artatix. Semua hak dilindungi. Platform Tiket Management Service Terpercaya di Indonesia.</p>
+    <!-- Footer: copied from welcome.blade.php -->
+    <footer class="w-full bg-gray-900 text-white py-14">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
+
+            <!-- Logo + Tagline -->
+            <div>
+                <div class="flex items-center space-x-3 mb-3">
+                    <img src="{{ asset('logo/header.png') }}" class="h-10">
+                </div>
+                <p class="text-gray-300 text-sm">
+                    Your Professional Ticketing Partner
+                </p>
+            </div>
+
+            <!-- Tentang Kami -->
+            <div>
+                <h3 class="font-semibold text-lg mb-3">Tentang Kami</h3>
+                <ul class="space-y-2 text-gray-300 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Tentang Kami</a></li>
+                    <li><a href="#" class="hover:text-white transition">Hubungi Kami</a></li>
+                </ul>
+            </div>
+
+            <!-- Informasi -->
+            <div>
+                <h3 class="font-semibold text-lg mb-3">Informasi</h3>
+                <ul class="space-y-2 text-gray-300 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Syarat & Ketentuan</a></li>
+                    <li><a href="#" class="hover:text-white transition">Kebijakan Privasi & Pemrosesan Data</a></li>
+                    <li><a href="#" class="hover:text-white transition">FAQ</a></li>
+                </ul>
+            </div>
+
         </div>
-    </section>
+
+        <!-- Divider -->
+        <div class="max-w-7xl mx-auto mt-10 border-t border-gray-500/30"></div>
+
+        <!-- Bottom Section -->
+        <div class="max-w-7xl mx-auto px-6 mt-6 flex flex-col md:flex-row items-center justify-between">
+
+            <p class="text-gray-300 text-sm">
+                © 2025 Concertix.
+            </p>
+
+            <div class="flex space-x-4 text-xl mt-4 md:mt-0">
+
+                <a href="#" class="hover:text-gray-200 transition">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="#" class="hover:text-gray-200 transition">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="hover:text-gray-200 transition">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="#" class="hover:text-gray-200 transition">
+                    <i class="fab fa-x-twitter"></i>
+                </a>
+                <a href="#" class="hover:text-gray-200 transition">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="hover:text-gray-200 transition">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="#" class="hover:text-gray-200 transition">
+                    <i class="fab fa-facebook"></i>
+                </a>
+
+            </div>
+
+        </div>
+    </footer>
+
 </div>
 @endsection

@@ -223,7 +223,7 @@
 
             <!-- CTA Button -->
             <a href="{{ route('concerts.index') }}"
-                class="mt-6 md:mt-0 inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition">
+                class="mt-6 md:mt-0 inline-flex items-center backgrouncolor:##3337BF; hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition">
                 Buy Ticket
                 <span class="ml-2 text-lg">→</span>
             </a>
@@ -353,7 +353,41 @@
 
     </div>
 </section>
+<!-- Payment icons strip (welcome page only, below footer) -->
+    @if(request()->is('/'))
+    <div class="w-full bg-white border-t mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-6">
+            <h4 class="text-center text-lg font-semibold text-gray-700 mb-6">Solusi Pembayaran yang Praktis</h4>
 
+        <div class="marquee">
+    <div class="marquee-track">
+        <!-- LIST 1 -->
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbca.png&w=320&q=50" alt="BCA">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fmandiri.png&w=320&q=50" alt="Mandiri">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbri.png&w=320&q=50" alt="BRI">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbni.png&w=320&q=50" alt="BNI">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fovo.png&w=320&q=50" alt="OVO">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fgopay.png&w=320&q=50" alt="Gopay">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fdana.png&w=320&q=50" alt="DANA">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fqris.png&w=320&q=50" alt="QRIS">
+
+        <!-- LIST 2 (duplikat supaya looping mulus) -->
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbca.png&w=320&q=50" alt="BCA">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fmandiri.png&w=320&q=50" alt="Mandiri">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbri.png&w=320&q=50" alt="BRI">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbni.png&w=320&q=50" alt="BNI">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fovo.png&w=320&q=50" alt="OVO">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fgopay.png&w=320&q=50" alt="Gopay">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fdana.png&w=320&q=50" alt="DANA">
+        <img src="https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fqris.png&w=320&q=50" alt="QRIS">
+    </div>
+</div>
+
+           
+
+        </div>
+    </div>
+    @endif
 
 
 <!-- Footers t-->
@@ -381,9 +415,7 @@
             <h3 class="font-semibold text-lg mb-3">Tentang Kami</h3>
             <ul class="space-y-2 text-gray-300 text-sm">
                 <li><a href="#" class="hover:text-white transition">Tentang Kami</a></li>
-                <li><a href="#" class="hover:text-white transition">Panduan Penyelenggara</a></li>
                 <li><a href="#" class="hover:text-white transition">Hubungi Kami</a></li>
-                <li><a href="#" class="hover:text-white transition">Biaya</a></li>
             </ul>
         </div>
 
@@ -394,21 +426,9 @@
                 <li><a href="#" class="hover:text-white transition">Syarat & Ketentuan</a></li>
                 <li><a href="#" class="hover:text-white transition">Kebijakan Privasi & Pemrosesan Data</a></li>
                 <li><a href="#" class="hover:text-white transition">FAQ</a></li>
-                <li><a href="#" class="hover:text-white transition">Tiket Gelang</a></li>
-            </ul>
         </div>
 
-        <!-- Kategori -->
-        <div>
-            <h3 class="font-semibold text-lg mb-3">Kategori Event</h3>
-            <ul class="space-y-2 text-gray-300 text-sm">
-                <li><a href="#" class="hover:text-white transition">Musik</a></li>
-                <li><a href="#" class="hover:text-white transition">Pameran</a></li>
-                <li><a href="#" class="hover:text-white transition">Wahana</a></li>
-                <li><a href="#" class="hover:text-white transition">Olahraga</a></li>
-                <li><a href="#" class="hover:text-white transition">Semua Kategori</a></li>
-            </ul>
-        </div>
+       
     </div>
 
     <!-- Divider -->
@@ -449,10 +469,6 @@
 
     </div>
 </footer>
-
-
-
-
 
 
 

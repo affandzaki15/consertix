@@ -2,21 +2,23 @@
 
 @section('content')
 <div class="min-h-screen flex">
-    <!-- Left: image/hero -->
-    <div class="hidden md:flex md:w-1/2 bg-indigo-700 text-white items-center justify-center" style="background-image: url('/logo/concert-bg.jpg'); background-size: cover; background-position: center;">
-        <div class="max-w-lg text-center p-8 bg-black/30 rounded-l-xl">
-            <h1 class="text-4xl font-extrabold">Create an account</h1>
-            <p class="mt-4 text-gray-100">Sign up to access all features</p>
+    <!-- Image (right on md+) -->
+    <div class="hidden md:flex md:w-1/2 bg-indigo-700 text-white items-center justify-center md:order-2" style="background-image: url('/logo/login.png'); background-size: cover; background-position: center;">
+        <div class="w-full h-full text-center p-8 bg-black/50 flex items-center justify-center rounded-l-xl">
+            <div class="max-w-lg">
+                <h1 class="text-4xl font-extrabold">Create an account</h1>
+                <p class="mt-4 text-gray-100">Sign up to access all features</p>
+            </div>
         </div>
     </div>
 
     <!-- Right: form -->
-    <div class="flex-1 flex items-center justify-center p-8 bg-white">
+    <div class="flex-1 flex items-center justify-center p-8 bg-white md:order-1">
         <div class="w-full max-w-md">
             <div class="mb-6 text-center">
                 <div class="flex justify-center mb-4">
                     <a href="{{ url('/') }}">
-                        <img src="{{ asset('logo/header.png') }}" alt="Logo" class="h-12">
+                        <img src="{{ asset('logo/logoblack.png') }}" alt="Logo" class="h-12">
                     </a>
                 </div>
                 <h2 class="text-2xl font-bold">Create an account</h2>
@@ -68,9 +70,13 @@
                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                 </div>
 
-                <div class="flex items-center justify-between mt-4">
-                    <a href="{{ route('login') }}" class="text-sm text-gray-600 hover:text-gray-900">Already registered?</a>
-                    <button type="submit" class="ms-4 w-full ml-3 bg-indigo-600 text-white py-3 rounded-full font-semibold">Register</button>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-full font-semibold text-lg">Register</button>
+
+                    <div class="mt-4 text-center text-sm text-gray-600">
+                        Already have an account?
+                        <a href="{{ route('login') }}" class="text-indigo-600 font-semibold ml-1">Log In</a>
+                    </div>
                 </div>
             </form>
         </div>

@@ -2,24 +2,26 @@
 
 @section('content')
 <div class="min-h-screen flex">
-    <!-- Left: image/hero -->
-    <div class="hidden md:flex md:w-1/2 bg-indigo-700 text-white items-center justify-center" style="background-image: url('/logo/concert-bg.jpg'); background-size: cover; background-position: center;">
-        <div class="max-w-lg text-center p-8 bg-black/30 rounded-l-xl">
-            <h1 class="text-4xl font-extrabold">Welcome Back</h1>
-            <p class="mt-4 text-gray-100">Access your personal account by logging in</p>
+    <!-- Image (right on md+) -->
+    <div class="hidden md:flex md:w-1/2 bg-indigo-700 text-white items-center justify-center md:order-2" style="background-image: url('/logo/login.png'); background-size: cover; background-position: center;">
+        <div class="w-full h-full text-center p-8 bg-black/50 flex items-center justify-center rounded-l-xl">
+            <div class="max-w-lg">
+                <h1 class="text-4xl font-extrabold">Welcome</h1>
+                <p class="mt-4 text-gray-100">Access your personal account by logging in</p>
+            </div>
         </div>
     </div>
 
     <!-- Right: form -->
-    <div class="flex-1 flex items-center justify-center p-8 bg-white">
+    <div class="flex-1 flex items-center justify-center p-8 bg-white md:order-1">
         <div class="w-full max-w-md">
             <div class="mb-6 text-center">
                 <div class="flex justify-center mb-4">
                     <a href="{{ url('/') }}">
-                        <img src="{{ asset('logo/header.png') }}" alt="Logo" class="h-12">
+                        <img src="{{ asset('logo/logoblack.png') }}" alt="Logo" class="h-12">
                     </a>
                 </div>
-                <h2 class="text-2xl font-bold">Welcome Back</h2>
+                <h2 class="text-2xl font-bold">Welcome</h2>
                 <p class="text-sm text-gray-500">Access your personal account by logging in</p>
             </div>
 

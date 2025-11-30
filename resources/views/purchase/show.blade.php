@@ -94,48 +94,48 @@
                     @foreach($ticketTypes as $t)
                     @php $soldOut = $t->sold >= $t->quota; @endphp
 
-                    <div class="relative bg-white border border-gray-200 shadow-md rounded-2xl px-6 py-5">
+                        <div class="relative bg-white border border-gray-200 shadow-md rounded-2xl px-6 py-5">
 
-                        {{-- TICKET CUT --}}
-                        <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-7 h-7 bg-white rounded-full border border-gray-200"></div>
-                        <div class="absolute -right-3 top-1/2 -translate-y-1/2 w-7 h-7 bg-white rounded-full border border-gray-200"></div>
+                            {{-- TICKET CUT --}}
+                            <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-7 h-7 bg-white rounded-full border border-gray-200"></div>
+                            <div class="absolute -right-3 top-1/2 -translate-y-1/2 w-7 h-7 bg-white rounded-full border border-gray-200"></div>
 
-                        <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between">
 
-                            <div>
-                                <div class="flex items-center gap-2 mb-1">
-                                    <h3 class="text-lg font-semibold text-gray-800">
-                                        {{ strtoupper($t->name) }}
-                                    </h3>
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h3 class="text-lg font-semibold text-gray-800">
+                                            {{ strtoupper($t->name) }}
+                                        </h3>
 
+                                        @if(!$soldOut)
+                                            <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full">On Sale</span>
+                                        @else
+                                            <span class="bg-red-100 text-red-700 text-xs font-semibold px-2.5 py-1 rounded-full">Sold Out</span>
+                                        @endif
+                                    </div>
+
+                                    <p class="text-gray-700 text-base font-medium">
+                                        Rp{{ number_format($t->price) }}
+                                    </p>
+                                </div>
+
+                                <div>
                                     @if(!$soldOut)
-                                    <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full">On Sale</span>
+                                        <div class="flex items-center gap-3">
+                                            <button type="button" class="qty-minus w-10 h-10 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-700 flex items-center justify-center" data-id="{{ $t->id }}">−</button>
+                                            <input type="text" class="qty-display w-12 text-center text-lg font-bold bg-transparent" value="0" readonly data-id="{{ $t->id }}" data-price="{{ $t->price }}">
+                                            <button type="button" class="qty-plus w-10 h-10 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-700 flex items-center justify-center" data-id="{{ $t->id }}">+</button>
+                                        </div>
                                     @else
-                                    <span class="bg-red-100 text-red-700 text-xs font-semibold px-2.5 py-1 rounded-full">Sold Out</span>
+                                        <button class="px-6 py-2 bg-gray-300 text-gray-600 rounded-lg font-medium cursor-not-allowed">
+                                            Sold Out
+                                        </button>
                                     @endif
                                 </div>
 
-                                <p class="text-gray-700 text-base font-medium">
-                                    Rp{{ number_format($t->price) }}
-                                </p>
                             </div>
-
-                            <div>
-                                @if(!$soldOut)
-                                <div class="flex items-center gap-3">
-                                    <button type="button" class="qty-minus w-10 h-10 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-700 flex items-center justify-center" data-id="{{ $t->id }}">−</button>
-                                    <input type="text" class="qty-display w-12 text-center text-lg font-bold bg-transparent" value="0" readonly data-id="{{ $t->id }}" data-price="{{ $t->price }}">
-                                    <button type="button" class="qty-plus w-10 h-10 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-700 flex items-center justify-center" data-id="{{ $t->id }}">+</button>
-                                </div>
-                                @else
-                                <button class="px-6 py-2 bg-gray-300 text-gray-600 rounded-lg font-medium cursor-not-allowed">
-                                    Sold Out
-                                </button>
-                                @endif
-                            </div>
-
                         </div>
-                    </div>
                     @endforeach
                 </div>
             </div>

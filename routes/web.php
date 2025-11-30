@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // Controllers User & Public
 use App\Http\Controllers\ConcertController;
+use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
@@ -41,6 +42,9 @@ Route::get('/concerts/search', [ConcertController::class, 'search'])
     ->name('concerts.search');
 
 Route::get('/concerts/{concert}', [ConcertController::class, 'show'])->name('concerts.show');
+
+// Public organizer profile
+Route::get('/organizers/{organizer}', [OrganizerController::class, 'show'])->name('organizers.show');
 
 Route::get('/about', [PagesController::class, 'about'])->name('about');
 

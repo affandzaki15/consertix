@@ -35,13 +35,13 @@
                     <div class="text-5xl font-bold text-indigo-600 mb-6 font-mono" id="countdown">00:30:00</div>
 
                     <p class="text-gray-700 mb-2">Silahkan lakukan pembayaran sebelum</p>
-                    <p class="text-lg font-semibold text-gray-900 mb-6">{{ now()->addMinutes(30)->format('d F Y H:i') }}</p>
+                    <p class="text-lg font-semibold text-gray-900 mb-6">{{ \Carbon\Carbon::now('Asia/Jakarta')->addMinutes(30)->format('d F Y H:i') }}</p>
 
                     <p class="text-gray-600 text-sm mb-8">
                         Jika meleawati batas waktu tersebut, pesanan akan dibatalkan secara otomatis
                     </p>
 
-                    <div class="space-y-3">
+                    <div class="space-y-3" id="paymentActions">
                         @if(strtolower($order->status) !== 'paid')
                             <button id="bayarSekarangBtn" type="button" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold">
                                 Bayar Sekarang
@@ -61,8 +61,28 @@
                 <!-- Payment Method Info -->
                 <div class="bg-white rounded-3xl shadow-md p-8 mt-8">
                     <div class="flex items-center gap-3 mb-6">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/BCA_logo.svg/1200px-BCA_logo.svg.png" alt="Mandiri" class="h-8">
-                        <span class="font-semibold text-lg">Bank Transfer - {{ strtoupper($order->payment_method ?? 'N/A') }}</span>
+                        @php
+                            $method = strtolower(trim($order->payment_method ?? ''));
+                            $paymentLogos = [
+                                'bca' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbca.png&w=320&q=50',
+                                'mandiri' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fmandiri.png&w=320&q=50',
+                                'bri' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbri.png&w=320&q=50',
+                                'bni' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbni.png&w=320&q=50',
+                                'ovo' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fovo.png&w=320&q=50',
+                                'gopay' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fgopay.png&w=320&q=50',
+                                'dana' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fdana.png&w=320&q=50',
+                                'qris' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fqris.png&w=320&q=50',
+                            ];
+                            $logoUrl = $paymentLogos[$method] ?? null;
+                        @endphp
+
+                        @if($logoUrl)
+                            <img src="{{ $logoUrl }}" alt="{{ $order->payment_method }}" class="h-8">
+                        @else
+                            <div class="h-8 w-24 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-600">{{ strtoupper($order->payment_method ?? 'PAY') }}</div>
+                        @endif
+
+                        <span class="font-semibold text-lg"> Pembayaran {{ strtoupper($order->payment_method ?? 'N/A') }}</span>
                     </div>
 
                     <div class="grid grid-cols-2 gap-6">
@@ -150,10 +170,30 @@
             <!-- Payment Method Display -->
             <div class="bg-gray-50 rounded-xl p-4">
                 <p class="text-sm text-gray-600 mb-2">Payment Method</p>
+                @php
+                    $modalMethod = strtolower(trim($order->payment_method ?? ''));
+                    $modalLogos = [
+                        'bca' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbca.png&w=320&q=50',
+                                'mandiri' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fmandiri.png&w=320&q=50',
+                                'bri' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbri.png&w=320&q=50',
+                                'bni' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fbni.png&w=320&q=50',
+                                'ovo' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fovo.png&w=320&q=50',
+                                'gopay' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fgopay.png&w=320&q=50',
+                                'dana' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fdana.png&w=320&q=50',
+                                'qris' => 'https://artatix.co.id/_next/image?url=https%3A%2F%2Fassets.artatix.co.id%2Fpayment%2Fqris.png&w=320&q=50',
+                    ];
+                    $modalLogoUrl = $modalLogos[$modalMethod] ?? null;
+                @endphp
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
-                        <i class="fa-solid fa-building-columns text-indigo-600 text-xl"></i>
-                    </div>
+                    @if($modalLogoUrl)
+                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center border">
+                            <img src="{{ $modalLogoUrl }}" alt="{{ $order->payment_method }}" class="h-8 object-contain">
+                        </div>
+                    @else
+                        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-building-columns text-indigo-600 text-xl"></i>
+                        </div>
+                    @endif
                     <div>
                         <p class="font-semibold text-gray-900 capitalize" id="selectedMethodName">{{ $order->payment_method ?? '-' }}</p>
                         <p class="text-xs text-gray-500">Secure Payment</p>
@@ -194,12 +234,17 @@
             </div>
 
             <!-- Success State -->
-            <div id="successState" class="text-center space-y-4 hidden">
+                <div id="successState" class="text-center space-y-4 hidden">
                 <div class="flex justify-center">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-check text-3xl text-green-600"></i>
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center relative">
+                        <i class="fa-solid fa-check text-4xl text-green-600"></i>
                     </div>
                 </div>
+                @if(isset($modalLogoUrl) && $modalLogoUrl)
+                    <div class="flex justify-center">
+                        <img src="{{ $modalLogoUrl }}" alt="{{ $order->payment_method }}" class="h-10 mt-2 object-contain">
+                    </div>
+                @endif
                 <div>
                     <p class="font-semibold text-gray-900">Payment Successful!</p>
                     <p class="text-sm text-gray-500 mt-1">Your payment has been processed</p>
@@ -221,9 +266,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Timer countdown
+    // Timer countdown (persist across navigation using localStorage per-order)
     const countdownElement = document.getElementById('countdown');
-    let timeLeft = 30 * 60; // 30 minutes in seconds
+    const STORAGE_KEY = 'payment_timer_order_{{ $order->id }}';
+    const SERVER_EXPIRES = {{ \Carbon\Carbon::now('Asia/Jakarta')->addMinutes(30)->valueOf() }}; // ms since epoch in WIB
 
     function formatTime(seconds) {
         const hours = Math.floor(seconds / 3600);
@@ -232,17 +278,69 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
-    countdownElement.textContent = formatTime(timeLeft);
-
-    const timer = setInterval(() => {
-        timeLeft--;
-        countdownElement.textContent = formatTime(timeLeft);
-
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            alert('Waktu pembayaran telah habis. Pesanan dibatalkan.');
+    // Restore expires timestamp from localStorage or use server-provided WIB expiry
+    if (!window.paymentExpires) {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        const now = Date.now();
+        if (stored && !isNaN(parseInt(stored))) {
+            const expires = parseInt(stored, 10);
+            if (expires > now) {
+                window.paymentExpires = expires;
+            } else {
+                // expired value, clear it and fall back to server expiry or now + 30min
+                localStorage.removeItem(STORAGE_KEY);
+                if (SERVER_EXPIRES && SERVER_EXPIRES > now) {
+                    window.paymentExpires = SERVER_EXPIRES;
+                } else {
+                    window.paymentExpires = now + 30 * 60 * 1000;
+                }
+                localStorage.setItem(STORAGE_KEY, window.paymentExpires);
+            }
+        } else {
+            if (SERVER_EXPIRES && SERVER_EXPIRES > now) {
+                window.paymentExpires = SERVER_EXPIRES;
+            } else {
+                window.paymentExpires = now + 30 * 60 * 1000;
+            }
+            localStorage.setItem(STORAGE_KEY, window.paymentExpires);
         }
-    }, 1000);
+    }
+
+    // compute remaining seconds helper
+    function getRemainingSeconds() {
+        return Math.max(0, Math.ceil((window.paymentExpires - Date.now()) / 1000));
+    }
+
+    // initial render
+    if (countdownElement) countdownElement.textContent = formatTime(getRemainingSeconds());
+
+    // Start interval only once per page session
+    if (!window.paymentTimer) {
+        window.paymentTimer = setInterval(() => {
+            const secs = getRemainingSeconds();
+            if (countdownElement) countdownElement.textContent = formatTime(secs);
+
+            // persist expiry so it survives navigation/reload
+            try { localStorage.setItem(STORAGE_KEY, window.paymentExpires); } catch(e) {}
+
+            if (secs <= 0) {
+                clearInterval(window.paymentTimer);
+                window.paymentTimer = null;
+                try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+                alert('Waktu pembayaran telah habis. Pesanan dibatalkan.');
+            }
+        }, 1000);
+    }
+
+    // save expiry when leaving the page
+    window.addEventListener('beforeunload', function() {
+        try { localStorage.setItem(STORAGE_KEY, window.paymentExpires); } catch(e) {}
+    });
+
+    // keep saved expiry in sync when user hides the page
+    document.addEventListener('visibilitychange', function() {
+        try { localStorage.setItem(STORAGE_KEY, window.paymentExpires); } catch(e) {}
+    });
 
     // Midtrans Modal Logic
     const midtransModal = document.getElementById('midtransModal');
@@ -330,8 +428,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data && data.success) {
                     // Stop countdown timer
-                    try { clearInterval(timer); } catch(e) {}
-                    
+                    try { clearInterval(window.paymentTimer); window.paymentTimer = null; } catch(e) {}
+                    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
                     // Redirect to home page
                     window.location.href = '/';
                 } else {
@@ -388,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     hideMidtransModal();
 
                     // stop countdown timer
-                    try { clearInterval(timer); } catch(e) {}
+                    try { clearInterval(window.paymentTimer); window.paymentTimer = null; } catch(e) {}
 
                     // update countdown label and display a green check
                     const countdownLabel = document.getElementById('countdownLabel');
@@ -411,6 +509,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         cancelOrderBtn.classList.remove('bg-red-50');
                         cancelOrderBtn.classList.add('bg-gray-200', 'text-gray-600');
                         cancelOrderBtn.textContent = 'Pesanan Selesai';
+                    }
+
+                    // Replace main payment action area with paid confirmation and link to ticket
+                    var paymentActions = document.getElementById('paymentActions');
+                    if (paymentActions) {
+                        var ticketUrl = "{{ route('history.show', $order->id) }}";
+                        paymentActions.innerHTML = '' +
+                            '<div class="w-full py-3 rounded-xl bg-green-50 border border-green-200 text-green-700 font-semibold text-center">Pesanan Sudah Dibayar</div>' +
+                            '<a href="' + ticketUrl + '" class="block w-full py-3 text-center rounded-xl bg-white border border-gray-200 text-indigo-600 font-semibold mt-2">Lihat Tiket</a>';
+
+                        // remove persisted timer for this order so it won't reappear
+                        try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
                     }
             } else {
                 alert('Gagal menandai pembayaran. Silakan coba lagi.');
