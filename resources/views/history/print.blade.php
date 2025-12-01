@@ -149,7 +149,7 @@
                 <!-- Judul Tiket -->
                 <div style="text-align:center; margin-bottom:18px;">
                     <div style="font-size:12px;color:#6b7280;">Judul Tiket</div>
-                    <div style="font-size:20px;font-weight:700;color:#111;margin-top:6px;">{{ $order->concert->name }}</div>
+                    <div style="font-size:20px;font-weight:700;color:#111;margin-top:6px;">{{ $order->concert->title ?? 'N/A' }}</div>
                 </div>
 
                 @if($qrUrl && !empty($qrUrl))

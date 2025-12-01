@@ -6,6 +6,7 @@
         ['label' => 'Organizers',  'routes' => ['admin.organizers.pending', 'admin.organizers.index']],
         ['label' => 'Concerts',    'routes' => ['admin.concerts.pending', 'admin.concerts.index']],
         ['label' => 'Orders',      'routes' => ['admin.orders.index']],
+        ['label' => 'Pesan',       'routes' => ['admin.contact-messages.index', 'admin.contact-messages.show']],
         ['label' => 'Reports',     'routes' => ['admin.reports.index']],
     ];
 @endphp

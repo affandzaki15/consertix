@@ -53,7 +53,7 @@
                         <div class="flex items-center space-x-3">
 
                             <!-- Cart -->
-                            <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300 relative">
+                            <button type="button" id="openCartBtn" class="text-white hover:text-indigo-300 relative cursor-pointer">
                                 <i class="fa-solid fa-cart-shopping text-lg"></i>
                                 @php
                                     $cart = session()->get('cart', []);
@@ -67,7 +67,7 @@
                                 @if($count > 0)
                                 <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ $count }}</span>
                                 @endif
-                            </a>
+                            </button>
 
                             @guest
                             <a href="{{ route('login') }}"
@@ -120,7 +120,7 @@
                     <div class="flex items-center space-x-4 order-3">
 
                         <!-- Cart -->
-                        <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300 transition relative">
+                        <button type="button" id="openCartBtnDesktop" class="text-white hover:text-indigo-300 transition relative cursor-pointer">
                             <i class="fa-solid fa-cart-shopping text-xl md:text-2xl"></i>
                             @php
                                 $cart = session()->get('cart', []);
@@ -134,7 +134,7 @@
                             @if($count > 0)
                             <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ $count }}</span>
                             @endif
-                        </a>
+                        </button>
 
                             @guest
                                 <a href="{{ route('login') }}"
@@ -184,6 +184,156 @@
     
     <!-- Font Awesome (load once for all pages) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="fixed inset-0 z-50 hidden items-end md:items-center justify-center" data-cart-backdrop>
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white w-full md:max-w-2xl max-h-[80vh] overflow-y-auto rounded-t-2xl md:rounded-2xl shadow-xl">
+            <!-- Header -->
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h2 class="text-xl font-bold text-gray-900">Shopping Cart</h2>
+                <button type="button" id="closeCartBtn" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fa-solid fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items -->
+            <div id="cartItemsContainer" class="p-6">
+                <!-- Items will be loaded here via JavaScript -->
+            </div>
+
+            <!-- Footer with Action Buttons -->
+            <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 space-y-3">
+                <a href="{{ route('cart.show') }}" class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-xl font-semibold transition">
+                    View Full Cart
+                </a>
+                <button type="button" id="closeCartBtnFooter" class="w-full text-gray-700 hover:text-gray-900 px-4 py-3 font-semibold transition">
+                    Continue Shopping
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cart Modal Management
+        (function() {
+            const cartModal = document.getElementById('cartModal');
+            const openCartBtn = document.getElementById('openCartBtn');
+            const openCartBtnDesktop = document.getElementById('openCartBtnDesktop');
+            const closeCartBtn = document.getElementById('closeCartBtn');
+            const closeCartBtnFooter = document.getElementById('closeCartBtnFooter');
+            const backdrop = cartModal.querySelector('[data-cart-backdrop]');
+            const cartItemsContainer = document.getElementById('cartItemsContainer');
+
+            function showCartModal() {
+                cartModal.classList.remove('hidden');
+                cartModal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+                loadCartItems();
+            }
+
+            function hideCartModal() {
+                cartModal.classList.add('hidden');
+                cartModal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+
+            function loadCartItems() {
+                fetch('{{ route('cart.show') }}')
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const cartContent = doc.querySelector('.space-y-4');
+                        
+                        if (cartContent) {
+                            cartItemsContainer.innerHTML = cartContent.innerHTML;
+                        } else {
+                            cartItemsContainer.innerHTML = '<p class="text-center text-gray-600 py-8">Your cart is empty</p>';
+                        }
+                    })
+                    .catch(err => console.error('Error loading cart:', err));
+            }
+
+            if (openCartBtn) {
+                @guest
+                    openCartBtn.addEventListener('click', function() {
+                        window.location.href = "{{ route('login') }}";
+                    });
+                @else
+                    openCartBtn.addEventListener('click', showCartModal);
+                @endguest
+            }
+            
+            if (openCartBtnDesktop) {
+                @guest
+                    openCartBtnDesktop.addEventListener('click', function() {
+                        window.location.href = "{{ route('login') }}";
+                    });
+                @else
+                    openCartBtnDesktop.addEventListener('click', showCartModal);
+                @endguest
+            }
+
+            if (closeCartBtn) {
+                closeCartBtn.addEventListener('click', hideCartModal);
+            }
+
+            if (closeCartBtnFooter) {
+                closeCartBtnFooter.addEventListener('click', hideCartModal);
+            }
+
+            if (backdrop) {
+                backdrop.addEventListener('click', hideCartModal);
+            }
+
+            // Close on ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !cartModal.classList.contains('hidden')) {
+                    hideCartModal();
+                }
+            });
+
+            // Cart badge update function (called from other pages)
+            window.updateCartBadge = function(count) {
+                // Find all cart buttons
+                const cartButtons = [
+                    document.getElementById('openCartBtn'),
+                    document.getElementById('openCartBtnDesktop')
+                ];
+
+                cartButtons.forEach(btn => {
+                    if (!btn) return;
+
+                    // Find or create badge span
+                    let badge = btn.querySelector('span');
+                    
+                    if (count > 0) {
+                        if (!badge) {
+                            // Create badge if it doesn't exist
+                            badge = document.createElement('span');
+                            badge.className = 'absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center';
+                            btn.appendChild(badge);
+                        }
+                        badge.textContent = count;
+                    } else {
+                        // Remove badge if count is 0
+                        if (badge) {
+                            badge.remove();
+                        }
+                    }
+                });
+
+                // Reload cart items in modal if it's open
+                if (!cartModal.classList.contains('hidden')) {
+                    loadCartItems();
+                }
+            };
+        })();
+    </script>
 
     @stack('scripts')
 </body>

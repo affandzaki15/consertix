@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Organizer;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class OrganizersController extends Controller
 {
@@ -120,5 +123,31 @@ class OrganizersController extends Controller
 
         return redirect()->route('admin.organizers.index')
             ->with('success', 'Organizer berhasil dihapus.');
+    }
+
+    /**
+     * Generate a new random password for the organizer's user and email it.
+     */
+    public function sendPassword(Organizer $organizer)
+    {
+        $user = $organizer->user;
+
+        if (!$user) {
+            return back()->with('error', 'User untuk organizer ini tidak ditemukan.');
+        }
+
+        $plain = Str::random(10);
+        $user->password = Hash::make($plain);
+        $user->save();
+
+        try {
+            Mail::raw("Halo {$user->name},\n\nPassword akun Anda: {$plain}\n\nSilakan login dan ganti password setelah berhasil masuk.", function ($m) use ($user) {
+                $m->to($user->email)->subject('Akun Organizer - Password Baru');
+            });
+
+            return back()->with('success', 'Password baru telah dibuat dan dikirim ke ' . $user->email);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengirim email: ' . $e->getMessage());
+        }
     }
 }

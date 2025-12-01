@@ -26,7 +26,7 @@ use App\Http\Controllers\Admin\ConcertsController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\PaymentsController;
 use App\Http\Controllers\Admin\TicketsController;
-use App\Http\Controllers\Admin\ReportsController; // ← Pastikan file ini ada: ReportsController.php
+use App\Http\Controllers\Admin\ReportsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -145,6 +145,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/organizers', [OrganizersController::class, 'index'])->name('organizers.index');
         Route::get('/organizers/create', [OrganizersController::class, 'create'])->name('organizers.create');
         Route::post('/organizers', [OrganizersController::class, 'store'])->name('organizers.store');
+        Route::post('/organizers/{organizer}/send-password', [OrganizersController::class, 'sendPassword'])->name('organizers.send_password');
         Route::get('/organizers/{organizer}/edit', [OrganizersController::class, 'edit'])->name('organizers.edit');
         Route::patch('/organizers/{organizer}', [OrganizersController::class, 'update'])->name('organizers.update');
         Route::delete('/organizers/{organizer}', [OrganizersController::class, 'destroy'])->name('organizers.destroy');
@@ -158,7 +159,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/concerts/{concert}/reject', [ConcertsController::class, 'reject'])->name('concerts.reject');
 
         // Orders
+        // Show organizers first, then orders per organizer. Place these before the single-order show route to avoid route conflicts.
         Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
+        Route::get('/orders/organizers', [OrdersController::class, 'organizers'])->name('orders.organizers');
+        Route::get('/orders/organizers/{organizer}', [OrdersController::class, 'byOrganizer'])->name('orders.by_organizer');
         Route::get('/orders/{order}', [OrdersController::class, 'show'])->name('orders.show');
         Route::post('/orders/{order}/generate-tickets', [OrdersController::class, 'generateTickets'])->name('orders.generate-tickets');
 
@@ -174,10 +178,9 @@ Route::middleware(['auth', 'role:admin'])
             $order = \App\Models\Order::findOrFail($id);
             return view('admin.payments.show', compact('order'));
         });
-
-        // ✅ REPORTS — HANYA INI YANG DIBUTUHKAN
-Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
-Route::post('/reports/export', [ReportsController::class, 'export'])->name('reports.export');
+        // Reports
+        Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
+        Route::post('/reports/export', [ReportsController::class, 'export'])->name('reports.export');
     });
 
 /*

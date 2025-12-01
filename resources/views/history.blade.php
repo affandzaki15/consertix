@@ -16,7 +16,7 @@
 
                         <div class="flex items-start justify-between">
                             <div class="flex-1 pr-3">
-                                <h3 class="text-lg font-semibold text-gray-900">{{ $order->concert->name ?? 'Concert' }}</h3>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ $order->concert->title ?? 'Concert' }}</h3>
 
                                 <div class="grid grid-cols-2 gap-2 text-sm text-gray-600 mt-2">
                                     <div>

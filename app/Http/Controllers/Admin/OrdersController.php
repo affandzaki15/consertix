@@ -4,19 +4,51 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Organizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
 class OrdersController extends Controller
 {
    public function index()
-{
-    $orders = Order::with('concert') // 👈 Load relasi concert
+    {
+        // Default admin orders page: show organizers list (so admin can pick organizer first)
+        return $this->organizers();
+    }
+
+    /**
+     * Show list of organizers for admin to choose from.
+     */
+    public function organizers()
+    {
+        $organizers = Organizer::orderBy('organization_name')->get();
+
+        // Add orders_count per organizer (simple approach)
+        foreach ($organizers as $org) {
+            $org->orders_count = Order::whereHas('concert', function ($q) use ($org) {
+                $q->where('organizer_id', $org->id);
+            })->count();
+        }
+
+        return view('admin.orders.organizers', compact('organizers'));
+    }
+
+    /**
+     * Show orders filtered by organizer id
+     */
+    public function byOrganizer($organizerId)
+    {
+        $organizer = Organizer::findOrFail($organizerId);
+
+        $orders = Order::whereHas('concert', function ($q) use ($organizerId) {
+                        $q->where('organizer_id', $organizerId);
+                    })
+                    ->with('concert')
                     ->latest()
                     ->paginate(15);
 
-    return view('admin.orders.index', compact('orders')); // sesuaikan nama view
-}
+        return view('admin.orders.index', compact('orders', 'organizer'));
+    }
 
         public function generateTickets(Request $request, Order $order)
 {
