@@ -100,7 +100,7 @@
 
                     <div>
                         <p class="text-gray-600 text-sm mb-1">Total Pembayaran</p>
-                        <p class="text-2xl font-bold text-gray-900">Rp{{ number_format($order->total_amount * 1.25) }}</p>
+                        <p class="text-2xl font-bold text-gray-900">Rp{{ number_format($order->total_amount - ($order->discount_amount ?? 0)) }}</p>
                     </div>
                 </div>
             </div>
@@ -108,9 +108,7 @@
             <!-- Right: Order Summary Card -->
             <div class="bg-white rounded-3xl shadow-lg p-6 border h-fit">
                 <div class="mb-6">
-                    @if($concert->image_url)
-                        <img src="{{ $concert->image_url }}" alt="{{ $concert->title }}" class="w-full h-40 object-cover rounded-xl mb-4">
-                    @endif
+                    <img src="{{ $concert->image_url ? asset($concert->image_url) : asset('images/default-event.png') }}" alt="{{ $concert->title }}" class="w-full h-40 object-cover rounded-xl mb-4">
                     <h3 class="text-lg font-bold text-gray-900">{{ $concert->title }}</h3>
                     <p class="text-gray-600 text-sm mt-2">
                         {{ \Carbon\Carbon::parse($concert->date)->format('d F Y') }} • {{ $concert->time ?? '19:00 – 22:00' }}
@@ -136,21 +134,18 @@
                     <span>Rp{{ number_format($order->total_amount) }}</span>
                 </div>
 
-                <div class="flex justify-between text-gray-600 text-sm mb-2">
-                    <span>Local Tax (20%)</span>
-                    <span>Rp{{ number_format($order->total_amount * 0.20) }}</span>
+                @if($order->discount_amount > 0)
+                <div class="flex justify-between text-green-600 text-sm mb-2">
+                    <span>Diskon</span>
+                    <span>-Rp{{ number_format($order->discount_amount) }}</span>
                 </div>
-
-                <div class="flex justify-between text-gray-600 text-sm mb-4">
-                    <span>Service Fee (5%)</span>
-                    <span>Rp{{ number_format($order->total_amount * 0.05) }}</span>
-                </div>
+                @endif
 
                 <hr class="my-4">
 
                 <div class="flex justify-between font-semibold text-gray-900 text-lg">
-                    <span>Grand Total</span>
-                    <span>Rp{{ number_format($order->total_amount * 1.25) }}</span>
+                    <span>Total</span>
+                    <span>Rp{{ number_format($order->total_amount - ($order->discount_amount ?? 0)) }}</span>
 </div>
 </div>
 
