@@ -100,13 +100,15 @@
                     <span class="text-gray-700">Subtotal</span>
                     <span class="font-semibold">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
                 </div>
-                <div class="flex justify-between items-center text-sm text-gray-600 mt-2">
-                    <span>Tax & Fee (25%)</span>
-                    <span>Rp {{ number_format($order->total_amount * 0.25, 0, ',', '.') }}</span>
+                @if($order->discount_amount > 0)
+                <div class="flex justify-between items-center text-green-600 mt-2">
+                    <span>Diskon</span>
+                    <span>-Rp {{ number_format($order->discount_amount, 0, ',', '.') }}</span>
                 </div>
+                @endif
                 <div class="flex justify-between items-center text-lg font-bold text-gray-900 mt-4 pt-4 border-t border-gray-200">
                     <span>Total Bayar</span>
-                    <span class="text-indigo-600">Rp {{ number_format($order->total_amount * 1.25, 0, ',', '.') }}</span>
+                    <span class="text-indigo-600">Rp {{ number_format($order->total_amount - ($order->discount_amount ?? 0), 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>

@@ -186,10 +186,19 @@
                     <span class="value">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</span>
                 </div>
             @endforeach
-
+            <div class="price-item">
+                <span class="label">Subtotal</span>
+                <span class="value">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+            </div>
+            @if($order->discount_amount > 0)
+            <div class="price-item" style="color: #16a34a;">
+                <span class="label">Diskon</span>
+                <span class="value">-Rp {{ number_format($order->discount_amount, 0, ',', '.') }}</span>
+            </div>
+            @endif
             <div class="price-item total">
                 <span>Total</span>
-                <span class="value">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                <span class="value">Rp {{ number_format($order->total_amount - ($order->discount_amount ?? 0), 0, ',', '.') }}</span>
             </div>
         </div>
 

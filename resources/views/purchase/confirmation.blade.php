@@ -108,7 +108,9 @@
             <!-- Right: Order Summary Card -->
             <div class="bg-white rounded-3xl shadow-lg p-6 border h-fit">
                 <div class="mb-6">
-                    <img src="{{ $concert->image_url ? asset($concert->image_url) : asset('images/default-event.png') }}" alt="{{ $concert->title }}" class="w-full h-40 object-cover rounded-xl mb-4">
+                    @if($concert->image_url)
+                        <img src="{{ $concert->image_url }}" alt="{{ $concert->title }}" class="w-full h-40 object-cover rounded-xl mb-4">
+                    @endif
                     <h3 class="text-lg font-bold text-gray-900">{{ $concert->title }}</h3>
                     <p class="text-gray-600 text-sm mt-2">
                         {{ \Carbon\Carbon::parse($concert->date)->format('d F Y') }} • {{ $concert->time ?? '19:00 – 22:00' }}
@@ -202,13 +204,15 @@
                     <span class="text-gray-600">Subtotal</span>
                     <span class="font-medium" id="modalSubtotal">Rp{{ number_format($order->total_amount) }}</span>
                 </div>
+                @if($order->discount_amount > 0)
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-gray-600">Tax & Fee</span>
-                    <span class="font-medium" id="modalTaxFee">Rp{{ number_format($order->total_amount * 0.25) }}</span>
+                    <span class="text-green-600">Diskon</span>
+                    <span class="font-medium text-green-600" id="modalDiscount">-Rp{{ number_format($order->discount_amount) }}</span>
                 </div>
+                @endif
                 <div class="flex justify-between items-center pt-2 border-t">
                     <span class="font-bold text-gray-900">Total</span>
-                    <span class="font-bold text-xl text-indigo-600" id="modalTotal">Rp{{ number_format($order->total_amount * 1.25) }}</span>
+                    <span class="font-bold text-xl text-indigo-600" id="modalTotal">Rp{{ number_format($order->total_amount - ($order->discount_amount ?? 0)) }}</span>
                 </div>
             </div>
 
