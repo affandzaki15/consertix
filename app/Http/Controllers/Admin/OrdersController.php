@@ -9,18 +9,14 @@ use Illuminate\Support\Facades\Schema;
 
 class OrdersController extends Controller
 {
-    public function index()
-    {
-        // Ambil order tanpa perlu relasi user karena data buyer disimpan langsung di order
-        $orders = Order::latest()->paginate(20);
+   public function index()
+{
+    $orders = Order::with('concert') // 👈 Load relasi concert
+                    ->latest()
+                    ->paginate(15);
 
-        return view('admin.orders.index', compact('orders'));
-    }
-
-     public function show(Order $order)
-    {
-        return view('admin.orders.show', compact('order'));
-    }
+    return view('admin.orders.index', compact('orders')); // sesuaikan nama view
+}
 
         public function generateTickets(Request $request, Order $order)
 {
@@ -36,5 +32,8 @@ class OrdersController extends Controller
 
     return redirect()->back()->with('success', 'Tiket berhasil digenerate. Status diubah ke "Selesai".');
 }
-
+public function concert()
+{
+    return $this->belongsTo(\App\Models\Concert::class);
+}
 }
