@@ -15,6 +15,7 @@ header {
     height: 45px;
     background: rgba(0, 0, 0, 0.4);
     border-radius: 50%;
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
@@ -49,7 +50,6 @@ textarea:focus {
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); /* Tambahkan efek glow tipis */
 }
 
-
 .marquee {
     overflow: hidden;
     width: 100%;
@@ -72,8 +72,12 @@ textarea:focus {
 }
 
 @keyframes scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
 }
 
 .search-border {

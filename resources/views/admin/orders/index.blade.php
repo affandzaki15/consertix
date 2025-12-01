@@ -5,32 +5,39 @@
 
     <div class="py-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-xl font-bold">Orders</h2>
-            <div class="overflow-x-auto mt-4">
+            <h2 class="text-2xl font-bold text-gray-900">Orders</h2>
+            <div class="overflow-x-auto mt-4 shadow rounded-lg border border-gray-200">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Concert</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Type</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Number</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($orders as $order)
                             <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3">{{ $order->id }}</td>
-                                <td class="px-4 py-3">{{ $order->buyer_name ?? '-' }}</td>
-                                <td class="px-4 py-3 text-gray-700">{{ $order->buyer_email ?? '-' }}</td>
-                                <td class="px-4 py-3">{{ $order->identity_type ?? '-' }}</td>
-                                <td class="px-4 py-3">{{ $order->identity_number ?? '-' }}</td>
-                                <td class="px-4 py-3">{{ $order->payment_method ?? '-' }}</td>
-                                <td class="px-4 py-3">Rp {{ number_format($order->total_amount ?? 0, 0, ',', '.') }}</td>
+                                <td class="px-4 py-3 text-sm font-mono text-gray-600">{{ $order->id }}</td>
+                                <td class="px-4 py-3">
+                                    @if($order->concert)
+                                        <span class="font-medium text-indigo-700">{{ $order->concert->title ?? $order->concert->name }}</span>
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            {{ \Carbon\Carbon::parse($order->concert->date)->translatedFormat('d F Y') }}
+                                        </div>
+                                    @else
+                                        <span class="text-gray-400 italic">Concert deleted</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3 text-sm">{{ $order->buyer_name ?? '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ $order->buyer_email ?? '-' }}</td>
+                                <td class="px-4 py-3 text-sm">{{ $order->payment_method ?? '-' }}</td>
+                                <td class="px-4 py-3 text-sm font-semibold">Rp {{ number_format($order->total_amount ?? 0, 0, ',', '.') }}</td>
                                 <td class="px-4 py-3">
                                     @php
                                         $status = $order->status ?? 'unknown';
@@ -49,11 +56,11 @@
                                             default => 'Unknown'
                                         };
                                     @endphp
-                                    <span class="px-2 py-1 rounded text-xs font-medium {{ $badgeClass }}">
+                                    <span class="px-2 py-1 inline-flex items-center rounded-full text-xs font-medium {{ $badgeClass }}">
                                         {{ $displayStatus }}
                                     </span>
                                 </td>
-                                <td class="px-4 py-3">
+                                                                <td class="px-4 py-3">
                                     @include('admin.orders.row-actions', ['order' => $order])
                                 </td>
                             </tr>
