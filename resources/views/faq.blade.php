@@ -50,7 +50,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFaq({{ $i }})">
                     {{ $faq['q'] }}
-                    <span id="icon-{{ $i }}">&#x25BC;</span>
+                    <i id="icon-{{ $i }}" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-{{ $i }}" class="hidden pb-4 text-gray-700">
                     {{ $faq['a'] }}
@@ -66,11 +66,19 @@
         const icon = document.getElementById('icon-' + id);
         if (content.classList.contains('hidden')) {
             content.classList.remove('hidden');
-            icon.innerHTML = '&#x25B2;';
+            if (icon.classList.contains('fa-chevron-down')) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
         } else {
             content.classList.add('hidden');
-            icon.innerHTML = '&#x25BC;';
+            if (icon.classList.contains('fa-chevron-up')) {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
         }
     }
 </script>
+
+@include('partials.footer')
 @endsection

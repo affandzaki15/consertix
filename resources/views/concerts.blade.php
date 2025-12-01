@@ -35,22 +35,31 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
 
             @forelse($concerts as $concert)
+            @php $isSoldOut = isset($concert->selling_status) && $concert->selling_status === 'sold_out'; @endphp
+            @if($isSoldOut)
+            <div class="block bg-white border rounded-xl shadow transition overflow-hidden opacity-90 filter grayscale pointer-events-none cursor-not-allowed">
+            @else
             <a href="{{ route('concerts.show', $concert->id) }}" class="block bg-white border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            @endif
                 <div class="relative">
                     <img src="{{ $concert->image_url ? asset($concert->image_url) : asset('images/default-event.png') }}" class="w-full h-56 object-cover" />
-
-                    <div class="absolute left-3 top-3 bg-white/80 backdrop-blur-sm text-xs font-semibold text-gray-800 rounded-md px-3 py-1 flex items-center gap-2">
-                        <span class="text-sm">📍</span>
-                        <span class="truncate max-w-[10rem]">{{ $concert->location }}</span>
-                    </div>
-
-                    <div class="absolute right-3 top-3 bg-indigo-600 text-white text-xs font-semibold rounded-md px-3 py-1">
-                        {{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}
-                    </div>
+                    <!-- location & date moved below title (use FA icons) -->
                 </div>
 
                 <div class="p-4">
                     <h3 class="text-lg font-semibold text-gray-900 truncate">{{ $concert->title }}</h3>
+
+                    <div class="mt-2 flex items-center gap-4 text-sm text-gray-500">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span class="truncate max-w-[12rem]">{{ $concert->location }}</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span>{{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}</span>
+                        </div>
+                    </div>
 
                     <div class="mt-3 flex items-center justify-between">
                         <div>
@@ -90,7 +99,11 @@
                     </div>
 
                 </div>
+            @if($isSoldOut)
+            </div>
+            @else
             </a>
+            @endif
             @empty
             <div class="col-span-1 sm:col-span-2 md:col-span-4">
                 <div class="bg-white rounded-xl shadow p-8 text-center">
@@ -143,75 +156,6 @@
     </div>
 </section>
 
-<!-- FOOTER SECTION -->
-<footer class="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-16">
-    <div class="max-w-7xl mx-auto px-6">
-        <!-- Main Footer Content -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-
-            <!-- Logo + Tagline -->
-            <div class="col-span-1">
-                <div class="flex items-center space-x-3 mb-4">
-                    <img src="{{ asset('logo/header.png') }}" class="h-12 w-auto">
-                </div>
-                <p class="text-gray-400 text-sm leading-relaxed">
-                    Platform tiket konser terpercaya untuk pengalaman pertunjukan yang tak terlupakan.
-                </p>
-                <div class="flex space-x-3 mt-6">
-                    <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-700 hover:bg-indigo-600 transition duration-300">
-                        <i class="fab fa-whatsapp text-sm"></i>
-                    </a>
-                    <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-700 hover:bg-indigo-600 transition duration-300">
-                        <i class="fab fa-instagram text-sm"></i>
-                    </a>
-                    <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-700 hover:bg-indigo-600 transition duration-300">
-                        <i class="fab fa-tiktok text-sm"></i>
-                    </a>
-                    <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-700 hover:bg-indigo-600 transition duration-300">
-                        <i class="fab fa-x-twitter text-sm"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Tentang Kami -->
-            <div>
-                <h3 class="font-bold text-lg mb-5 text-white">Tentang Kami</h3>
-                <ul class="space-y-3">
-                    <li><a href="{{ route('about') }}" class="text-gray-400 hover:text-white text-sm transition duration-300">Tentang Kami</a></li>
-                    <li><a href="{{ route('contact') }}" class="text-gray-400 hover:text-white text-sm transition duration-300">Hubungi Kami</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Blog</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Karir</a></li>
-                </ul>
-            </div>
-
-            <!-- Informasi -->
-            <div>
-                <h3 class="font-bold text-lg mb-5 text-white">Informasi</h3>
-                <ul class="space-y-3">
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Syarat & Ketentuan</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Kebijakan Privasi</a></li>
-                    <li><a href="{{ route('faq') }}" class="text-gray-400 hover:text-white text-sm transition duration-300">FAQ</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Pusat Bantuan</a></li>
-                </ul>
-            </div>
-
-        </div>
-
-        <!-- Divider -->
-        <div class="border-t border-gray-700"></div>
-
-        <!-- Bottom Section -->
-        <div class="mt-8 pt-8 flex flex-col md:flex-row items-center justify-between">
-            <p class="text-gray-400 text-sm">
-                © 2025 Concertix. Semua hak dilindungi.
-            </p>
-            <div class="flex space-x-6 mt-6 md:mt-0 text-xs text-gray-400">
-                <a href="#" class="hover:text-white transition duration-300">Privasi</a>
-                <a href="#" class="hover:text-white transition duration-300">Terms</a>
-                <a href="#" class="hover:text-white transition duration-300">Cookies</a>
-            </div>
-        </div>
-    </div>
-</footer>
+@include('partials.footer')
 
 @endsection

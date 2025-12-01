@@ -70,25 +70,6 @@
             </div>
         </div>
 
-        <!-- Statistics -->
-        <div class="grid md:grid-cols-4 gap-8 mb-20">
-            <div class="bg-white rounded-lg shadow p-8 text-center">
-                <div class="text-4xl font-bold text-indigo-600 mb-2">2.047.987++</div>
-                <p class="text-gray-600 font-medium">Tiket Terjual</p>
-            </div>
-            <div class="bg-white rounded-lg shadow p-8 text-center">
-                <div class="text-4xl font-bold text-indigo-600 mb-2">987++</div>
-                <p class="text-gray-600 font-medium">Event</p>
-            </div>
-            <div class="bg-white rounded-lg shadow p-8 text-center">
-                <div class="text-4xl font-bold text-indigo-600 mb-2">87++</div>
-                <p class="text-gray-600 font-medium">Kota</p>
-            </div>
-            <div class="bg-white rounded-lg shadow p-8 text-center">
-                <div class="text-4xl font-bold text-indigo-600 mb-2">100%</div>
-                <p class="text-gray-600 font-medium">Kepuasan Pelanggan</p>
-            </div>
-        </div>
 
         <!-- Vision & Mission -->
         <div class="grid md:grid-cols-2 gap-12 mb-20">
@@ -121,66 +102,6 @@
             </div>
         </div>
 
-        <!-- Features Section -->
-        <div class="bg-white rounded-lg shadow-lg p-12 mb-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Fitur Unggulan</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="text-center">
-                    <div class="bg-indigo-100 rounded-lg p-6 mb-4 inline-block">
-                        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Manajemen Tiket Fleksibel</h3>
-                    <p class="text-gray-600">Kelola berbagai jenis tiket dengan harga dan kuota yang dapat disesuaikan</p>
-                </div>
-                <div class="text-center">
-                    <div class="bg-indigo-100 rounded-lg p-6 mb-4 inline-block">
-                        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Laporan & Analytics</h3>
-                    <p class="text-gray-600">Dapatkan insights mendalam tentang penjualan dan performa acara Anda</p>
-                </div>
-                <div class="text-center">
-                    <div class="bg-indigo-100 rounded-lg p-6 mb-4 inline-block">
-                        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Multi Metode Pembayaran</h3>
-                    <p class="text-gray-600">Dukung berbagai metode pembayaran untuk kemudahan pelanggan</p>
-                </div>
-                <div class="text-center">
-                    <div class="bg-indigo-100 rounded-lg p-6 mb-4 inline-block">
-                        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m7 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">E-Ticket Digital</h3>
-                    <p class="text-gray-600">Kirim tiket digital langsung ke pelanggan via email atau SMS</p>
-                </div>
-                <div class="text-center">
-                    <div class="bg-indigo-100 rounded-lg p-6 mb-4 inline-block">
-                        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Sistem Keamanan Canggih</h3>
-                    <p class="text-gray-600">Enkripsi tingkat enterprise melindungi data pelanggan Anda</p>
-                </div>
-                <div class="text-center">
-                    <div class="bg-indigo-100 rounded-lg p-6 mb-4 inline-block">
-                        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Support 24/7</h3>
-                    <p class="text-gray-600">Tim dukungan kami siap membantu Anda kapan saja</p>
-                </div>
-            </div>
-        </div>
 
         <!-- History Section -->
         <div class="bg-indigo-50 rounded-lg p-12 mb-20">
@@ -237,79 +158,7 @@
         </div>
     </section>
 
-    <!-- Footer: copied from welcome.blade.php -->
-    <footer class="w-full bg-gray-900 text-white py-14">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
-
-            <!-- Logo + Tagline -->
-            <div>
-                <div class="flex items-center space-x-3 mb-3">
-                    <img src="{{ asset('logo/header.png') }}" class="h-10">
-                </div>
-                <p class="text-gray-300 text-sm">
-                    Your Professional Ticketing Partner
-                </p>
-            </div>
-
-            <!-- Tentang Kami -->
-            <div>
-                <h3 class="font-semibold text-lg mb-3">Tentang Kami</h3>
-                <ul class="space-y-2 text-gray-300 text-sm">
-                    <li><a href="#" class="hover:text-white transition">Tentang Kami</a></li>
-                    <li><a href="#" class="hover:text-white transition">Hubungi Kami</a></li>
-                </ul>
-            </div>
-
-            <!-- Informasi -->
-            <div>
-                <h3 class="font-semibold text-lg mb-3">Informasi</h3>
-                <ul class="space-y-2 text-gray-300 text-sm">
-                    <li><a href="#" class="hover:text-white transition">Syarat & Ketentuan</a></li>
-                    <li><a href="#" class="hover:text-white transition">Kebijakan Privasi & Pemrosesan Data</a></li>
-                    <li><a href="#" class="hover:text-white transition">FAQ</a></li>
-                </ul>
-            </div>
-
-        </div>
-
-        <!-- Divider -->
-        <div class="max-w-7xl mx-auto mt-10 border-t border-gray-500/30"></div>
-
-        <!-- Bottom Section -->
-        <div class="max-w-7xl mx-auto px-6 mt-6 flex flex-col md:flex-row items-center justify-between">
-
-            <p class="text-gray-300 text-sm">
-                © 2025 Concertix.
-            </p>
-
-            <div class="flex space-x-4 text-xl mt-4 md:mt-0">
-
-                <a href="#" class="hover:text-gray-200 transition">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-                <a href="#" class="hover:text-gray-200 transition">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="hover:text-gray-200 transition">
-                    <i class="fab fa-tiktok"></i>
-                </a>
-                <a href="#" class="hover:text-gray-200 transition">
-                    <i class="fab fa-x-twitter"></i>
-                </a>
-                <a href="#" class="hover:text-gray-200 transition">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-                <a href="#" class="hover:text-gray-200 transition">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                <a href="#" class="hover:text-gray-200 transition">
-                    <i class="fab fa-facebook"></i>
-                </a>
-
-            </div>
-
-        </div>
-    </footer>
+    @include('partials.footer')
 
 </div>
 @endsection

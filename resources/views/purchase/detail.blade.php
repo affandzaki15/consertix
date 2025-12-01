@@ -115,7 +115,11 @@
                 {{-- <div class="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center mb-3">
                     <i class="fa-solid fa-music text-indigo-600 text-lg"></i>
                 </div> --}}
-                <h3 class="text-lg font-bold text-gray-900">Rincian Pesanan</h3>
+                 <div class="flex items-center gap-2 mb-5">
+                <div class="w-7 h-7 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-lg">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Rincian Pesanan</h3>
             </div>
 
             {{-- Ticket Items --}}

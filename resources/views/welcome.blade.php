@@ -132,28 +132,40 @@
         <!-- Header with search -->
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-3xl font-bold text-gray-900">Event Terbaru</h2>
+            <a href="{{ route('concerts.index') }}" class="px-5 py-2 text-red font-semibold rounded-lg transition">
+                Lihat Semua
+            </a>
         </div>
 
         <!-- Event List -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
 
             @forelse($concerts as $concert)
+            @php $isSoldOut = isset($concert->selling_status) && $concert->selling_status === 'sold_out'; @endphp
+            @if($isSoldOut)
+            <div class="block bg-white border rounded-xl shadow transition overflow-hidden opacity-90 filter grayscale pointer-events-none cursor-not-allowed">
+            @else
             <a href="{{ route('concerts.show', $concert->id) }}" class="block bg-white border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            @endif
                 <div class="relative">
                     <img src="{{ $concert->image_url ? asset($concert->image_url) : asset('images/default-event.png') }}" class="w-full h-56 object-cover" />
-
-                    <div class="absolute left-3 top-3 bg-white/80 backdrop-blur-sm text-xs font-semibold text-gray-800 rounded-md px-3 py-1 flex items-center gap-2">
-                        <span class="text-sm">📍</span>
-                        <span class="truncate max-w-[10rem]">{{ $concert->location }}</span>
-                    </div>
-
-                    <div class="absolute right-3 top-3 bg-indigo-600 text-white text-xs font-semibold rounded-md px-3 py-1">
-                        {{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}
-                    </div>
+                    <!-- location & date moved below title (use FA icons) -->
                 </div>
 
                 <div class="p-4">
                     <h3 class="text-lg font-semibold text-gray-900 truncate">{{ $concert->title }}</h3>
+
+                    <div class="mt-2 flex items-center gap-4 text-sm text-gray-500">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span class="truncate max-w-[12rem]">{{ $concert->location }}</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span>{{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}</span>
+                        </div>
+                    </div>
 
                     <div class="mt-3 flex items-center justify-between">
                         <div>
@@ -193,7 +205,11 @@
                     </div>
 
                 </div>
+            @if($isSoldOut)
+            </div>
+            @else
             </a>
+            @endif
             @empty
             <div class="col-span-1 sm:col-span-2 md:col-span-4">
                 <div class="bg-white rounded-xl shadow p-8 text-center">
@@ -223,7 +239,7 @@
 
             <!-- CTA Button -->
             <a href="{{ route('concerts.index') }}"
-                class="mt-6 md:mt-0 inline-flex items-center backgrouncolor:##3337BF; hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition">
+                class="mt-6 md:mt-0 inline-flex items-center bg-blue-800 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition">
                 Buy Ticket
                 <span class="ml-2 text-lg">→</span>
             </a>
@@ -292,7 +308,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(0)">
                     Cara Membeli Tiket di Concertix
-                    <span id="icon-0">&#x25BC;</span>
+                    <i id="icon-0" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-0" class="hidden pb-4 text-gray-700">
                     Pilih konser, tentukan jadwal, pilih tiket, dan lakukan pembayaran. Tiket akan dikirim ke email setelah pembayaran berhasil.
@@ -301,7 +317,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(1)">
                     Informasi Email Konfirmasi
-                    <span id="icon-1">&#x25BC;</span>
+                    <i id="icon-1" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-1" class="hidden pb-4 text-gray-700">
                     Email konfirmasi dan e-ticket akan dikirim otomatis setelah pembayaran berhasil. Pastikan email yang dimasukkan benar.
@@ -310,7 +326,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(2)">
                     Kebijakan Pembatalan dan Pengembalian Dana
-                    <span id="icon-2">&#x25BC;</span>
+                    <i id="icon-2" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-2" class="hidden pb-4 text-gray-700">
                     Kebijakan pembatalan dan refund mengikuti aturan promotor. Silakan cek detail event atau hubungi CS.
@@ -319,7 +335,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(3)">
                     Batas Waktu Pembayaran
-                    <span id="icon-3">&#x25BC;</span>
+                    <i id="icon-3" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-3" class="hidden pb-4 text-gray-700">
                     Waktu pembayaran maksimal 15 menit setelah checkout. Jika lewat, pesanan otomatis dibatalkan.
@@ -328,7 +344,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(4)">
                     Penukaran E-Tiket
-                    <span id="icon-4">&#x25BC;</span>
+                    <i id="icon-4" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-4" class="hidden pb-4 text-gray-700">
                     E-ticket dapat langsung digunakan untuk masuk ke venue. Tunjukkan QR code ke petugas.
@@ -337,7 +353,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(5)">
                     Metode Pembayaran yang Tersedia
-                    <span id="icon-5">&#x25BC;</span>
+                    <i id="icon-5" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-5" class="hidden pb-4 text-gray-700">
                     Kami mendukung transfer bank, e-wallet, dan kartu kredit.
@@ -346,7 +362,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(6)">
                     Informasi Harga Tiket
-                    <span id="icon-6">&#x25BC;</span>
+                    <i id="icon-6" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-6" class="hidden pb-4 text-gray-700">
                     Harga tiket tertera di halaman event. Harga dapat berubah sesuai kebijakan promotor.
@@ -355,7 +371,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(7)">
                     Data Pemesan untuk Pembelian Lebih dari Satu Tiket
-                    <span id="icon-7">&#x25BC;</span>
+                    <i id="icon-7" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-7" class="hidden pb-4 text-gray-700">
                     Setiap tiket dapat diisi data pemilik berbeda saat checkout.
@@ -364,7 +380,7 @@
             <div class="border-b">
                 <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(8)">
                     Informasi Seputar Acara
-                    <span id="icon-8">&#x25BC;</span>
+                    <i id="icon-8" class="fa-solid fa-chevron-down text-gray-600"></i>
                 </button>
                 <div id="faq-8" class="hidden pb-4 text-gray-700">
                     Detail acara, lokasi, dan waktu tersedia di halaman event.
@@ -417,79 +433,7 @@
             <p>&copy; {{ date('Y') }} Concertix. All rights reserved.</p>
 </div>
 </footer> --}}
-<!-- FOOTER SECTION -->
-<footer class="w-full bg-gray-900 text-white py-14">
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
-
-        <!-- Logo + Tagline -->
-        <div>
-            <div class="flex items-center space-x-3 mb-3">
-                <img src="{{ asset('logo/header.png') }}" class="h-10">
-            </div>
-            <p class="text-gray-300 text-sm">
-                Your Professional Ticketing Partner
-            </p>
-        </div>
-
-        <!-- Tentang Kami -->
-        <div>
-            <h3 class="font-semibold text-lg mb-3">Tentang Kami</h3>
-            <ul class="space-y-2 text-gray-300 text-sm">
-                <li><a href="{{ route('about') }}" class="hover:text-white transition">Tentang Kami</a></li>
-                <li><a href="{{ route('contact') }}" class="hover:text-white transition">Hubungi Kami</a></li>
-            </ul>
-        </div>
-
-        <!-- Informasi -->
-        <div>
-            <h3 class="font-semibold text-lg mb-3">Informasi</h3>
-            <ul class="space-y-2 text-gray-300 text-sm">
-                <li><a href="#" class="hover:text-white transition">Syarat & Ketentuan</a></li>
-                <li><a href="#" class="hover:text-white transition">Kebijakan Privasi & Pemrosesan Data</a></li>
-                <li><a href="{{ route('faq') }}" class="hover:text-white transition">FAQ</a></li>
-        </div>
-
-       
-    </div>
-
-    <!-- Divider -->
-    <div class="max-w-7xl mx-auto mt-10 border-t border-gray-500/30"></div>
-
-    <!-- Bottom Section -->
-    <div class="max-w-7xl mx-auto px-6 mt-6 flex flex-col md:flex-row items-center justify-between">
-
-        <p class="text-gray-300 text-sm">
-            © 2025 Concertix.
-        </p>
-
-        <div class="flex space-x-4 text-xl mt-4 md:mt-0">
-
-            <a href="#" class="hover:text-gray-200 transition">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="#" class="hover:text-gray-200 transition">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="#" class="hover:text-gray-200 transition">
-                <i class="fab fa-tiktok"></i>
-            </a>
-            <a href="#" class="hover:text-gray-200 transition">
-                <i class="fab fa-x-twitter"></i>
-            </a>
-            <a href="#" class="hover:text-gray-200 transition">
-                <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="#" class="hover:text-gray-200 transition">
-                <i class="fab fa-youtube"></i>
-            </a>
-            <a href="#" class="hover:text-gray-200 transition">
-                <i class="fab fa-facebook"></i>
-            </a>
-
-        </div>
-
-    </div>
-</footer>
+@include('partials.footer')
 
 
 
@@ -521,15 +465,20 @@
 
         if (content.classList.contains('hidden')) {
             content.classList.remove('hidden');
-            icon.textContent = '−';
+            // toggle icon to up
+            if (icon.classList.contains('fa-chevron-down')) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
         } else {
             content.classList.add('hidden');
-            icon.textContent = '+';
+            if (icon.classList.contains('fa-chevron-up')) {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
         }
     }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
-
 <script>
     // Live search dropdown behavior
     (function() {

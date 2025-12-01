@@ -54,12 +54,7 @@
 
                             <!-- Cart -->
                             <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300 relative">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
-                                    class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
-                                </svg>
+                                <i class="fa-solid fa-cart-shopping text-lg"></i>
                                 @php
                                     $cart = session()->get('cart', []);
                                     $count = 0;
@@ -85,16 +80,19 @@
                                     <button
                                         class="flex items-center space-x-1 bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100">
                                         <span>{{ Auth::user()->name }}</span>
+                                        <i class="fa-solid fa-chevron-down text-xs text-indigo-700"></i>
                                     </button>
                                 </x-slot>
 
                                         <x-slot name="content">
-                                            <x-dropdown-link :href="route('history')">History</x-dropdown-link>
+                                            <x-dropdown-link :href="route('history')">
+                                                <i class="fa-solid fa-clock-rotate-left mr-2"></i>History
+                                            </x-dropdown-link>
                                             <form method="POST" action="{{ route('logout') }}">
                                                 @csrf
                                                 <x-dropdown-link href="{{ route('logout') }}"
                                                     onclick="event.preventDefault(); this.closest('form').submit();">
-                                                    Logout
+                                                    <i class="fa-solid fa-sign-out-alt mr-2"></i>Logout
                                                 </x-dropdown-link>
                                             </form>
                                         </x-slot>
@@ -123,12 +121,7 @@
 
                         <!-- Cart -->
                         <a href="{{ route('cart.show') }}" class="text-white hover:text-indigo-300 transition relative">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"
-                                class="w-7 h-7 md:w-8 md:h-8">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75h10.5l2.25-6.75H5.106m0 0l-.383-1.438M6.75 12.75L7.5 15.75h9l.75-3" />
-                            </svg>
+                            <i class="fa-solid fa-cart-shopping text-xl md:text-2xl"></i>
                             @php
                                 $cart = session()->get('cart', []);
                                 $count = 0;
@@ -154,16 +147,19 @@
                                         <button
                                             class="flex items-center space-x-2 bg-white text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100">
                                             <span>{{ Auth::user()->name }}</span>
+                                            <i class="fa-solid fa-chevron-down text-sm text-indigo-700"></i>
                                         </button>
                                     </x-slot>
 
                                     <x-slot name="content">
-                                        <x-dropdown-link :href="route('history')">History</x-dropdown-link>
+                                        <x-dropdown-link :href="route('history')">
+                                            <i class="fa-solid fa-clock-rotate-left mr-2"></i>History
+                                        </x-dropdown-link>
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
                                             <x-dropdown-link href="{{ route('logout') }}"
                                                 onclick="event.preventDefault(); this.closest('form').submit();">
-                                                Logout
+                                                <i class="fa-solid fa-sign-out-alt mr-2"></i>Logout
                                             </x-dropdown-link>
                                         </form>
                                     </x-slot>
@@ -186,7 +182,10 @@
     </div>
 
     
-@stack('scripts')
+    <!-- Font Awesome (load once for all pages) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+
+    @stack('scripts')
 </body>
 
 </html>

@@ -39,14 +39,15 @@ class ConcertController extends Controller
             $q->where('title', 'like', '%' . $query . '%')
                 ->orWhere('location', 'like', '%' . $query . '%');
         })
-            ->with('organizer.user:id,name')
-            ->select('id', 'title', 'location', 'date', 'image_url', 'organizer_id')
+            ->leftJoin('organizers', 'concerts.organizer_id', '=', 'organizers.id')
+            ->leftJoin('users', 'organizers.user_id', '=', 'users.id')
+            ->select('concerts.id', 'concerts.title', 'concerts.location', 'concerts.date', 'concerts.image_url', 'concerts.organizer_id', 'users.name as organizer_name')
             ->get();
-
 
         // Perbaiki image path
         foreach ($concerts as $c) {
             $c->image_url = asset($c->image_url);
+            $c->organizer = $c->organizer_name ?? 'Unknown';
         }
 
         return response()->json($concerts);

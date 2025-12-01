@@ -52,22 +52,32 @@
             @endphp
 
             @forelse($active as $concert)
+                @php $isSoldOut = isset($concert->selling_status) && $concert->selling_status === 'sold_out'; @endphp
+                @if($isSoldOut)
+                <div class="block bg-white border rounded-xl shadow transition overflow-hidden opacity-90 filter grayscale pointer-events-none cursor-not-allowed">
+                @else
                 <a href="{{ route('concerts.show', $concert->id) }}" class="block bg-white border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+                @endif
                     <div class="relative">
                         <img src="{{ $concert->image_url ? asset($concert->image_url) : ( $concert->image ?? '') }}" class="w-full h-56 object-cover" />
 
-                        <div class="absolute left-3 top-3 bg-white/80 backdrop-blur-sm text-xs font-semibold text-gray-800 rounded-md px-3 py-1 flex items-center gap-2">
-                            <span class="text-sm">📍</span>
-                            <span class="truncate max-w-[10rem]">{{ $concert->location }}</span>
-                        </div>
-
-                        <div class="absolute right-3 top-3 bg-indigo-600 text-white text-xs font-semibold rounded-md px-3 py-1">
-                            {{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}
-                        </div>
+                        <!-- location & date moved below title (use FA icons) -->
                     </div>
 
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-900 truncate">{{ Str::limit($concert->title, 36) }}</h3>
+
+                        <div class="mt-2 flex items-center gap-4 text-sm text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span class="truncate max-w-[12rem]">{{ $concert->location }}</span>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                <span>{{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}</span>
+                            </div>
+                        </div>
 
                         <div class="mt-3 flex items-center justify-between">
                             <div>
@@ -104,7 +114,11 @@
                             </div>
                         </div>
                     </div>
+                @if($isSoldOut)
+                </div>
+                @else
                 </a>
+                @endif
             @empty
                 <div class="col-span-1 sm:col-span-2 lg:col-span-4">
                     <div class="bg-white rounded-xl shadow p-8 text-center">
@@ -124,22 +138,31 @@
             @endphp
 
             @forelse($past as $concert)
+                @php $isSoldOut = isset($concert->selling_status) && $concert->selling_status === 'sold_out'; @endphp
+                @if($isSoldOut)
+                <div class="block bg-white border rounded-xl shadow transition overflow-hidden opacity-60 pointer-events-none cursor-not-allowed">
+                @else
                 <a href="{{ route('concerts.show', $concert->id) }}" class="block bg-white border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+                @endif
                     <div class="relative">
                         <img src="{{ $concert->image_url ? asset($concert->image_url) : ( $concert->image ?? '') }}" class="w-full h-56 object-cover" />
-
-                        <div class="absolute left-3 top-3 bg-white/80 backdrop-blur-sm text-xs font-semibold text-gray-800 rounded-md px-3 py-1 flex items-center gap-2">
-                            <span class="text-sm">📍</span>
-                            <span class="truncate max-w-[10rem]">{{ $concert->location }}</span>
-                        </div>
-
-                        <div class="absolute right-3 top-3 bg-indigo-600 text-white text-xs font-semibold rounded-md px-3 py-1">
-                            {{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}
-                        </div>
+                        <!-- location & date moved below title (use FA icons) -->
                     </div>
 
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-900 truncate">{{ Str::limit($concert->title, 36) }}</h3>
+
+                        <div class="mt-2 flex items-center gap-4 text-sm text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span class="truncate max-w-[12rem]">{{ $concert->location }}</span>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                <span>{{ \Illuminate\Support\Carbon::parse($concert->date)->format('d M Y') }}</span>
+                            </div>
+                        </div>
 
                         <div class="mt-3 flex items-center justify-between">
                             <div>
@@ -176,7 +199,11 @@
                             </div>
                         </div>
                     </div>
+                @if($isSoldOut)
+                </div>
+                @else
                 </a>
+                @endif
             @empty
                 <div class="col-span-1 sm:col-span-2 lg:col-span-4">
                     <div class="bg-white rounded-xl shadow p-8 text-center">
