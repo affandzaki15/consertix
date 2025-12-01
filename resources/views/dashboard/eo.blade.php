@@ -69,16 +69,26 @@
 
                         <td class="px-3">
                             @php
-                                $statusClass = [
-                                    'approved' => 'bg-green-100 text-green-700',
-                                    'pending' => 'bg-yellow-100 text-yellow-700',
-                                    'rejected' => 'bg-red-100 text-red-700',
-                                    'draft' => 'bg-gray-100 text-gray-700'
-                                ][$c->approval_status ?? 'draft'];
+                            $statusClass = [
+                            'approved' => 'bg-green-100 text-green-700',
+                            'pending' => 'bg-yellow-100 text-yellow-700',
+                            'rejected' => 'bg-red-100 text-red-700',
+                            'draft' => 'bg-gray-100 text-gray-700'
+                            ][$c->approval_status ?? 'draft'];
                             @endphp
                             <span class="px-3 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
                                 {{ ucfirst($c->approval_status ?? 'draft') }}
                             </span>
+
+                            {{-- Tampilkan alasan jika di-reject --}}
+                            @if($c->approval_status === 'rejected' && $c->rejection_note)
+                            <p class="text-xs text-red-500 mt-1">
+                                ❌ Alasan: {{ $c->rejection_note }}
+                            </p>
+                            <p class="text-[10px] text-red-400 italic mt-1">
+                                Konser ditolak, tombol aksi dinonaktifkan
+                            </p>
+                            @endif
                         </td>
 
                         <td class="px-3 text-indigo-600 font-semibold">{{ $c->ticketTypes->sum('sold') }}</td>
@@ -87,11 +97,54 @@
                             Rp {{ number_format($c->ticketTypes->sum(fn($t)=>$t->price*$t->sold), 0, ',', '.') }}
                         </td>
 
-
+                        {{-- ACTIONS --}}
                         {{-- ACTIONS --}}
                         <td class="px-3 py-3 text-center">
                             <div class="flex flex-wrap justify-center gap-2">
 
+                                {{-- Jika REJECTED -> Semua disabled --}}
+                                @if($c->approval_status === 'rejected')
+
+                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                    Edit
+                                </button>
+
+                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                    Tiket
+                                </button>
+
+                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                    Preview
+                                </button>
+
+                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                    Hapus
+                                </button>
+
+
+                                {{-- Jika APPROVED -> Hanya Preview yang aktif --}}
+                                @elseif($c->approval_status === 'approved')
+
+                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                    Edit
+                                </button>
+
+                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                    Tiket
+                                </button>
+
+                                <a href="{{ route('concerts.show', $c->id) }}" target="_blank"
+                                    class="px-3 py-1 bg-gray-700 hover:bg-gray-800 text-white rounded-md">
+                                    Preview
+                                </a>
+
+                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                    Hapus
+                                </button>
+
+
+                                {{-- DEFAULT (draft / pending) --}}
+                                @else
                                 <a href="{{ route('eo.concerts.edit', $c->id) }}"
                                     class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md">
                                     Edit
@@ -107,14 +160,15 @@
                                     Preview
                                 </a>
 
-                                {{-- DELETE BUTTON OPEN MODAL --}}
                                 <button onclick="confirmDelete({{ $c->id }}, '{{ $c->title }}', '{{ $c->approval_status }}')"
                                     class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md">
                                     Hapus
                                 </button>
+                                @endif
 
                             </div>
                         </td>
+
 
                     </tr>
 
@@ -126,6 +180,7 @@
                     </tr>
                     @endforelse
                 </tbody>
+
 
             </table>
         </div>
@@ -161,26 +216,26 @@
 
 {{-- Modal Script --}}
 <script>
-function confirmDelete(id, title, status) {
-    const modal = document.getElementById('deleteModal');
-    const msg = document.getElementById('deleteMessage');
-    const form = document.getElementById('deleteForm');
+    function confirmDelete(id, title, status) {
+        const modal = document.getElementById('deleteModal');
+        const msg = document.getElementById('deleteMessage');
+        const form = document.getElementById('deleteForm');
 
-    if (status === 'approved') {
-        msg.innerHTML = `Konser <b>${title}</b> sudah <span class='text-green-600'>disetujui</span> admin dan <b>tidak dapat dihapus</b>.`;
-        form.classList.add('hidden');
-    } else {
-        msg.innerHTML = `Apakah yakin ingin menghapus <b>${title}</b>? Semua tiket juga akan terhapus!`;
-        form.classList.remove('hidden');
-        form.action = `/eo/concerts/${id}`;
+        if (status === 'approved') {
+            msg.innerHTML = `Konser <b>${title}</b> sudah <span class='text-green-600'>disetujui</span> admin dan <b>tidak dapat dihapus</b>.`;
+            form.classList.add('hidden');
+        } else {
+            msg.innerHTML = `Apakah yakin ingin menghapus <b>${title}</b>? Semua tiket juga akan terhapus!`;
+            form.classList.remove('hidden');
+            form.action = `/eo/concerts/${id}`;
+        }
+
+        modal.classList.remove('hidden');
     }
 
-    modal.classList.remove('hidden');
-}
-
-function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.add('hidden');
-}
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
 </script>
 
 
