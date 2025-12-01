@@ -178,7 +178,7 @@
         
 
         <!-- Page Content -->
-        <main class="{{ request()->is('admin*') ? 'pt-32' : 'pt-0' }}">
+        <main class="{{ request()->is('admin*') ? 'pt-[80px] md:pt-[96px]' : 'pt-0' }}">
             @yield('content')
         </main>
         <!-- Payment icons strip (moved; rendered below footer) -->

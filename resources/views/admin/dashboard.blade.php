@@ -28,24 +28,23 @@
         }
     </style>
 
-    <!-- 🎯 PENTING: Tambahkan padding-top yang lebih besar -->
-    <div class="py-12 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32"> <!-- 👈 Dari pt-24 jadi pt-32 -->
+    <!-- 🎯 Padding top lebih besar -->
 
-            <!-- Header Section - Tambahkan margin top agar tidak menempel -->
-            <div class="mb-8 mt-8"> <!-- 👈 Tambahkan mt-8 -->
-                <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-                <p class="text-gray-600 mt-1">
-                    Ringkasan performa: pengguna, organizer, penjualan, dan aktivitas terbaru.
-                </p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="mb-8 mt-8">
+            <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+            <p class="text-gray-600 mt-1">
+                Ringkasan performa: pengguna, organizer, penjualan, dan aktivitas terbaru.
+            </p>
+        </div>
+
+        <!-- Admin Menu -->
+        @if(View::exists('admin.partials.menu'))
+            <div class="mb-8">
+                @include('admin.partials.menu')
             </div>
-
-            <!-- Admin Menu -->
-            @if(View::exists('admin.partials.menu'))
-                <div class="mb-8">
-                    @include('admin.partials.menu')
-                </div>
-            @endif
+        @endif
 
             <!-- KPI Cards - Grid 4 kolom -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -216,9 +215,8 @@
                             </table>
                         </div>
 
-                        <div class="mt-4">
-                            {{ $recentOrders->links() }}
-                        </div>
+                        {{-- ✅ PAGINATION DIHAPUS DI SINI --}}
+                        {{-- {{ $recentOrders->links() }} --}}
                     @endif
                 </div>
             </div>

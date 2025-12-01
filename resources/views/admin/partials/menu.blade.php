@@ -103,4 +103,3 @@
 </header>
 
 {{-- ✅ Spacer yang diperbaiki — responsif dan pas! --}}
-<div class="h-[100px] md:h-[112px] lg:h-[120px]"></div>
