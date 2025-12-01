@@ -39,6 +39,10 @@ Route::get('/', function () {
     return view('welcome', compact('concerts'));
 });
 
+Route::get('/faq', function () {
+    return view('faq');
+})->name('faq');
+
 Route::get('/concerts', [ConcertController::class, 'index'])->name('concerts.index');
 Route::get('/concerts/search', [ConcertController::class, 'search'])->name('concerts.search');
 Route::get('/concerts/{concert}', [ConcertController::class, 'show'])->name('concerts.show');

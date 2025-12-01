@@ -80,3 +80,23 @@ textarea:focus {
     border: 1px solid #c7c7dd; /* Warna border abu-abu terang */
     padding: 8px 12px; /* Padding di dalam input */
 }
+
+
+    .bestSellerSwiper .swiper-slide {
+        transform: scale(0.78);
+        opacity: 0.4;
+        transition: all 0.35s ease;
+    }
+
+    .bestSellerSwiper .swiper-slide-active {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    /* slide kiri & kanan sedikit lebih besar dari outer */
+    .bestSellerSwiper .swiper-slide-prev,
+    .bestSellerSwiper .swiper-slide-next {
+        transform: scale(0.88);
+        opacity: 0.7;
+    }
+

@@ -288,67 +288,88 @@
 
         <!-- FAQ Container -->
         <div class="space-y-4">
-
-            <!-- Item 1 -->
-            <div class="border rounded-xl bg-white">
-                <button onclick="toggleFAQ(1)"
-                    class="w-full flex justify-between items-center px-6 py-4 text-left font-semibold text-gray-800">
+            <!-- FAQ items, sama seperti di faq.blade.php -->
+            <div class="border-b">
+                <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(0)">
                     Cara Membeli Tiket di Concertix
-                    <span id="icon-1">+</span>
+                    <span id="icon-0">&#x25BC;</span>
                 </button>
-                <div id="faq-1" class="hidden px-6 pb-4 text-gray-600">
-                    Kamu bisa memilih konser, memilih jadwal, dan langsung melakukan pembayaran melalui platform kami.
+                <div id="faq-0" class="hidden pb-4 text-gray-700">
+                    Pilih konser, tentukan jadwal, pilih tiket, dan lakukan pembayaran. Tiket akan dikirim ke email setelah pembayaran berhasil.
                 </div>
             </div>
-
-            <!-- Item 2 -->
-            <div class="border rounded-xl bg-white">
-                <button onclick="toggleFAQ(2)"
-                    class="w-full flex justify-between items-center px-6 py-4 text-left font-semibold text-gray-800">
+            <div class="border-b">
+                <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(1)">
                     Informasi Email Konfirmasi
-                    <span id="icon-2">+</span>
+                    <span id="icon-1">&#x25BC;</span>
                 </button>
-                <div id="faq-2" class="hidden px-6 pb-4 text-gray-600">
-                    Email konfirmasi akan dikirim segera setelah pembayaran berhasil diproses.
+                <div id="faq-1" class="hidden pb-4 text-gray-700">
+                    Email konfirmasi dan e-ticket akan dikirim otomatis setelah pembayaran berhasil. Pastikan email yang dimasukkan benar.
                 </div>
             </div>
-
-            <!-- Item 3 -->
-            <div class="border rounded-xl bg-white">
-                <button onclick="toggleFAQ(3)"
-                    class="w-full flex justify-between items-center px-6 py-4 text-left font-semibold text-gray-800">
+            <div class="border-b">
+                <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(2)">
                     Kebijakan Pembatalan dan Pengembalian Dana
-                    <span id="icon-3">+</span>
+                    <span id="icon-2">&#x25BC;</span>
                 </button>
-                <div id="faq-3" class="hidden px-6 pb-4 text-gray-600">
-                    Pembatalan tiket mengikuti kebijakan promoter acara masing-masing.
+                <div id="faq-2" class="hidden pb-4 text-gray-700">
+                    Kebijakan pembatalan dan refund mengikuti aturan promotor. Silakan cek detail event atau hubungi CS.
                 </div>
             </div>
-
-            <!-- Item 4 -->
-            <div class="border rounded-xl bg-white">
-                <button onclick="toggleFAQ(4)"
-                    class="w-full flex justify-between items-center px-6 py-4 text-left font-semibold text-gray-800">
+            <div class="border-b">
+                <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(3)">
                     Batas Waktu Pembayaran
-                    <span id="icon-4">+</span>
+                    <span id="icon-3">&#x25BC;</span>
                 </button>
-                <div id="faq-4" class="hidden px-6 pb-4 text-gray-600">
-                    Kamu memiliki waktu 15 menit untuk menyelesaikan pembayaran setelah checkout.
+                <div id="faq-3" class="hidden pb-4 text-gray-700">
+                    Waktu pembayaran maksimal 15 menit setelah checkout. Jika lewat, pesanan otomatis dibatalkan.
                 </div>
             </div>
-
-            <!-- Item 5 -->
-            <div class="border rounded-xl bg-white">
-                <button onclick="toggleFAQ(5)"
-                    class="w-full flex justify-between items-center px-6 py-4 text-left font-semibold text-gray-800">
-                    Penukaran E-Ticket
-                    <span id="icon-5">+</span>
+            <div class="border-b">
+                <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(4)">
+                    Penukaran E-Tiket
+                    <span id="icon-4">&#x25BC;</span>
                 </button>
-                <div id="faq-5" class="hidden px-6 pb-4 text-gray-600">
-                    E-ticket dapat langsung digunakan untuk masuk ke venue tanpa perlu dicetak.
+                <div id="faq-4" class="hidden pb-4 text-gray-700">
+                    E-ticket dapat langsung digunakan untuk masuk ke venue. Tunjukkan QR code ke petugas.
                 </div>
             </div>
-
+            <div class="border-b">
+                <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(5)">
+                    Metode Pembayaran yang Tersedia
+                    <span id="icon-5">&#x25BC;</span>
+                </button>
+                <div id="faq-5" class="hidden pb-4 text-gray-700">
+                    Kami mendukung transfer bank, e-wallet, dan kartu kredit.
+                </div>
+            </div>
+            <div class="border-b">
+                <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(6)">
+                    Informasi Harga Tiket
+                    <span id="icon-6">&#x25BC;</span>
+                </button>
+                <div id="faq-6" class="hidden pb-4 text-gray-700">
+                    Harga tiket tertera di halaman event. Harga dapat berubah sesuai kebijakan promotor.
+                </div>
+            </div>
+            <div class="border-b">
+                <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(7)">
+                    Data Pemesan untuk Pembelian Lebih dari Satu Tiket
+                    <span id="icon-7">&#x25BC;</span>
+                </button>
+                <div id="faq-7" class="hidden pb-4 text-gray-700">
+                    Setiap tiket dapat diisi data pemilik berbeda saat checkout.
+                </div>
+            </div>
+            <div class="border-b">
+                <button type="button" class="w-full flex justify-between items-center py-4 text-left font-semibold text-gray-900 focus:outline-none" onclick="toggleFAQ(8)">
+                    Informasi Seputar Acara
+                    <span id="icon-8">&#x25BC;</span>
+                </button>
+                <div id="faq-8" class="hidden pb-4 text-gray-700">
+                    Detail acara, lokasi, dan waktu tersedia di halaman event.
+                </div>
+            </div>
         </div>
 
     </div>
@@ -425,7 +446,7 @@
             <ul class="space-y-2 text-gray-300 text-sm">
                 <li><a href="#" class="hover:text-white transition">Syarat & Ketentuan</a></li>
                 <li><a href="#" class="hover:text-white transition">Kebijakan Privasi & Pemrosesan Data</a></li>
-                <li><a href="#" class="hover:text-white transition">FAQ</a></li>
+                <li><a href="{{ route('faq') }}" class="hover:text-white transition">FAQ</a></li>
         </div>
 
        
