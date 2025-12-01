@@ -45,8 +45,9 @@
                         @auth
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
-                                <button class="bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium">
-                                    {{ Auth::user()->name }}
+                                <button class="bg-white text-indigo-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                                    <span>{{ Auth::user()->name }}</span>
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
                                 </button>
                             </x-slot>
 
@@ -90,6 +91,7 @@
                             <x-slot name="trigger">
                                 <button class="flex items-center space-x-2 bg-white text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100">
                                     <span>{{ Auth::user()->name }}</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
                                 </button>
                             </x-slot>
 
