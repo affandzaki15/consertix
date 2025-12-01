@@ -75,3 +75,8 @@ textarea:focus {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
 }
+
+.search-border {
+    border: 1px solid #c7c7dd; /* Warna border abu-abu terang */
+    padding: 8px 12px; /* Padding di dalam input */
+}

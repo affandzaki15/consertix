@@ -104,7 +104,7 @@
 
         <!-- Search Box (opens dropdown results) -->
         <div class="relative">
-            <div class="bg-white rounded-3xl shadow-lg flex items-center px-6 py-4">
+            <div class="bg-white rounded-3xl shadow-lg flex items-center px-6 py-4 search-border">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-gray-400 mr-3" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round"
