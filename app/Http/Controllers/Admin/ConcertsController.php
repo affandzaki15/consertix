@@ -103,32 +103,33 @@ class ConcertsController extends Controller
         return view('admin.concerts.index', compact('concerts'));
     }
 
-    public function reject(Request $request, Concert $concert)
-    {
-        if (Schema::hasColumn('concerts', 'approval_status')) {
-            $concert->update(['approval_status' => 'rejected']);
-        } elseif (Schema::hasColumn('concerts', 'status')) {
-            $concert->update(['status' => 'rejected']);
-        } else {
-            return redirect()->back()->with('error', 'Kolom status konser tidak ditemukan.');
-        }
+   public function reject(Request $request, Concert $concert)
+{
+    $request->validate([
+        'note' => 'nullable|string|max:500',
+    ]);
 
-        if ($request->filled('note') && Schema::hasColumn('concerts', 'notes')) {
-            $concert->notes = $request->input('note');
-            $concert->save();
-        }
+    // Simpan status dan catatan ke DB langsung
+    $concert->update([
+        'approval_status' => 'rejected',
+        'notes' => $request->note,
+    ]);
 
-        if (class_exists(ConcertAdminAction::class)) {
-            ConcertAdminAction::create([
-                'concert_id' => $concert->id,
-                'admin_id'   => Auth::id(),
-                'action'     => 'rejected',
-                'note'       => $request->input('note'),
-            ]);
-        }
-
-        return redirect()->route('admin.concerts.pending')->with('success', 'Konser ditolak.');
+    // Simpan log riwayat admin
+    if (class_exists(ConcertAdminAction::class)) {
+        ConcertAdminAction::create([
+            'concert_id' => $concert->id,
+            'admin_id'   => Auth::id(),
+            'action'     => 'rejected',
+            'note'       => $request->note,
+        ]);
     }
+
+    return redirect()
+        ->route('admin.concerts.pending')
+        ->with('success', 'Konser berhasil ditolak dengan catatan!');
+}
+
 
     public function show(Concert $concert)
     {

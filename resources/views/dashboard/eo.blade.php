@@ -81,14 +81,13 @@
                             </span>
 
                             {{-- Tampilkan alasan jika di-reject --}}
-                            @if($c->approval_status === 'rejected' && $c->rejection_note)
+                            @if($c->approval_status === 'rejected' && $c->notes)
                             <p class="text-xs text-red-500 mt-1">
-                                ❌ Alasan: {{ $c->rejection_note }}
+                                ❌ Alasan: {{ $c->notes }}
                             </p>
-                            <p class="text-[10px] text-red-400 italic mt-1">
-                                Konser ditolak, tombol aksi dinonaktifkan
-                            </p>
+                           
                             @endif
+
                         </td>
 
                         <td class="px-3 text-indigo-600 font-semibold">{{ $c->ticketTypes->sum('sold') }}</td>
