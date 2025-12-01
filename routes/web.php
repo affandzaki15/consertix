@@ -26,7 +26,7 @@ use App\Http\Controllers\Admin\ConcertsController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\PaymentsController;
 use App\Http\Controllers\Admin\TicketsController;
-use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Admin\ReportsController; // ← Pastikan file ini ada: ReportsController.php
 
 /*
 |--------------------------------------------------------------------------
@@ -152,7 +152,7 @@ Route::middleware(['auth', 'role:admin'])
 
         // Concerts (Approval & Management)
         Route::get('/concerts/pending', [ConcertsController::class, 'pending'])->name('concerts.pending');
-        Route::get('/concerts', [ConcertsController::class, 'index'])->name('concerts.index'); // ✅ removed /admin prefix
+        Route::get('/concerts', [ConcertsController::class, 'index'])->name('concerts.index');
         Route::get('/concerts/{concert}', [ConcertsController::class, 'show'])->name('concerts.show');
         Route::post('/concerts/{concert}/approve', [ConcertsController::class, 'approve'])->name('concerts.approve');
         Route::post('/concerts/{concert}/reject', [ConcertsController::class, 'reject'])->name('concerts.reject');
@@ -160,7 +160,7 @@ Route::middleware(['auth', 'role:admin'])
         // Orders
         Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [OrdersController::class, 'show'])->name('orders.show');
-        Route::post('/orders/{order}/generate-tickets', [OrdersController::class, 'generateTickets'])->name('orders.generate-tickets'); // ✅ key route
+        Route::post('/orders/{order}/generate-tickets', [OrdersController::class, 'generateTickets'])->name('orders.generate-tickets');
 
         // Payments
         Route::get('/payments', [PaymentsController::class, 'index'])->name('payments.index');
@@ -174,18 +174,11 @@ Route::middleware(['auth', 'role:admin'])
             $order = \App\Models\Order::findOrFail($id);
             return view('admin.payments.show', compact('order'));
         });
-        // Reports
-        Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
-        Route::post('/reports/export', [ReportsController::class, 'export'])->name('reports.export');
-    });
 
-/*
-|--------------------------------------------------------------------------
-| Standalone Admin Routes (if any)
-|--------------------------------------------------------------------------
-*/
-// Already covered above — no need for separate toggle route outside group
-// The toggle route is already inside the admin group as `admin.users.toggle`
+        // ✅ REPORTS — HANYA INI YANG DIBUTUHKAN
+Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
+Route::post('/reports/export', [ReportsController::class, 'export'])->name('reports.export');
+    });
 
 /*
 |--------------------------------------------------------------------------
