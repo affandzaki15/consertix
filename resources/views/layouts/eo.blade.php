@@ -37,7 +37,7 @@
                         <!-- Menu -->
                         <nav class="flex items-center space-x-4">
                             <a href="{{ route('eo.dashboard') }}" class="hover:text-indigo-300">Dashboard</a>
-                            <a href="{{ route('eo.concerts.index') }}" class="hover:text-indigo-300">Konser</a>
+                           
                             <a href="{{ route('eo.vouchers.index') }}" class="hover:text-indigo-300">Voucher</a>
                         </nav>
 
