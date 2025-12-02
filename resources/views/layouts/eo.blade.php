@@ -76,7 +76,6 @@
                     <!-- Menu Kiri -->
                     <nav class="flex items-center space-x-8 text-sm lg:text-lg font-medium">
                         <a href="{{ route('eo.dashboard') }}" class="hover:text-indigo-300 transition">Dashboard</a>
-                        <a href="{{ route('eo.concerts.index') }}" class="hover:text-indigo-300 transition">Konser</a>
                         <a href="{{ route('eo.vouchers.index') }}" class="hover:text-indigo-300 transition">Voucher</a>
                     </nav>
 
