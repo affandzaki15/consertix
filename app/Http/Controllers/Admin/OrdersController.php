@@ -21,9 +21,13 @@ class OrdersController extends Controller
      */
     public function organizers()
     {
-        $organizers = Organizer::orderBy('organization_name')->get();
+        // Only show organizers that have an associated user (real registered EOs)
+        $organizers = Organizer::with(['user', 'concerts'])
+            ->whereHas('user')
+            ->orderBy('organization_name')
+            ->get();
 
-        // Add orders_count per organizer (simple approach)
+        // Add orders_count per organizer
         foreach ($organizers as $org) {
             $org->orders_count = Order::whereHas('concert', function ($q) use ($org) {
                 $q->where('organizer_id', $org->id);

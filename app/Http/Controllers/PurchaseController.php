@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Concert;
 use App\Models\Order;
@@ -11,6 +10,7 @@ use App\Models\OrderItem;
 use App\Models\TicketType;
 use App\Models\Voucher;
 use App\Models\VoucherUsage;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseController extends Controller
 {
@@ -44,6 +44,22 @@ class PurchaseController extends Controller
             'user'          => Auth::user(),
             'existingOrder' => $existingOrder
         ]);
+    }
+
+    /**
+     * Persist cart array into authenticated user's `cart` column (if any).
+     */
+    protected function persistCartForUser(array $cart): void
+    {
+        try {
+            if (Auth::check()) {
+                $user = Auth::user();
+                $user->cart = $cart;
+                $user->save();
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to persist cart for user: '.$e->getMessage());
+        }
     }
 
     public function store(Request $request, Concert $concert)
@@ -207,6 +223,7 @@ class PurchaseController extends Controller
         }
 
         session()->put('cart', $cart);
+        $this->persistCartForUser($cart);
 
         // Redirect to confirmation page
         return redirect()->route('purchase.confirmation', $order->id);
@@ -232,6 +249,7 @@ class PurchaseController extends Controller
             }
 
             session()->put('cart', $cart);
+            $this->persistCartForUser($cart);
         }
 
         // Show payment confirmation page with timer and instructions
@@ -432,6 +450,7 @@ class PurchaseController extends Controller
         }
 
         session()->put('cart', $cart);
+        $this->persistCartForUser($cart);
 
         // If request expects JSON (AJAX), return JSON with updated cart count
         if ($request->wantsJson() || $request->ajax()) {
@@ -465,6 +484,7 @@ class PurchaseController extends Controller
         }
 
         session()->put('cart', $cart);
+        $this->persistCartForUser($cart);
 
         return back()->with('success', 'Removed from cart');
     }
@@ -579,6 +599,7 @@ class PurchaseController extends Controller
             }
 
             session()->put('cart', $cart);
+            $this->persistCartForUser($cart);
         }
 
         // Recalculate the remaining cart count to return to the client
@@ -627,6 +648,7 @@ class PurchaseController extends Controller
             unset($cart[$order->concert_id]);
         }
         session()->put('cart', $cart);
+        $this->persistCartForUser($cart);
 
         return response()->json(['success' => true, 'message' => 'Order cancelled successfully']);
     }

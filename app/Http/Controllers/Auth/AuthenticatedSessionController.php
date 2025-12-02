@@ -52,6 +52,32 @@ class AuthenticatedSessionController extends Controller
 
     $request->session()->regenerate();
 
+    // Restore saved cart (if any) from user record into session
+    try {
+        if (! empty($user->cart) && is_array($user->cart)) {
+            $current = session()->get('cart', []);
+            // Merge persisted cart with current session cart, favoring larger quantities
+            foreach ($user->cart as $concertId => $tickets) {
+                if (! isset($current[$concertId])) {
+                    $current[$concertId] = $tickets;
+                    continue;
+                }
+                foreach ($tickets as $typeId => $qty) {
+                    $existing = $current[$concertId][$typeId] ?? 0;
+                    $current[$concertId][$typeId] = max($existing, $qty);
+                }
+            }
+            session()->put('cart', $current);
+
+            // clear stored cart after restoring
+            $user->cart = null;
+            $user->save();
+        }
+    } catch (\Throwable $e) {
+        // don't break login for cart restore issues
+        \Illuminate\Support\Facades\Log::error('Cart restore failed on login: '.$e->getMessage());
+    }
+
     // Redirect by role after login: admin/eo -> their dashboards, others -> welcome
     return match ($user->role) {
         'admin' => redirect()->route('admin.dashboard'),
@@ -64,6 +90,20 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Persist current session cart to user record so it can be restored on next login
+        try {
+            $user = Auth::user();
+            if ($user) {
+                $cart = session()->get('cart', []);
+                if (! empty($cart)) {
+                    $user->cart = $cart;
+                    $user->save();
+                }
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to save cart on logout: '.$e->getMessage());
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

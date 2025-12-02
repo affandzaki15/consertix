@@ -72,7 +72,7 @@
                                     <h3 class="text-lg font-semibold text-gray-900">{{ $user->name }}</h3>
                                     <p class="text-sm text-gray-600 break-words">{{ $user->email }}</p>
                                     <p class="text-xs text-gray-500 mt-2">
-                                        Terdaftar: {{ $user->created_at->format('d M Y') }}
+                                        Terdaftar: {{ $user->created_at ? $user->created_at->format('d M Y') : '-' }}
                                     </p>
                                 </div>
 

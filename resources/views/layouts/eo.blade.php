@@ -80,9 +80,7 @@
                         <a href="{{ route('eo.vouchers.index') }}" class="hover:text-indigo-300 transition">Voucher</a>
                     </nav>
 
-                    <!-- Logo Tengah -->
-                    <a href="{{ route('eo.dashboard') }}" class="flex justify-center">
-                                            <!-- User Profile Kanan -->
+                    <!-- User Profile Kanan -->
                     <div class="flex items-center space-x-4">
 
 

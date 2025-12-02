@@ -178,6 +178,12 @@ Route::middleware(['auth', 'role:admin'])
             $order = \App\Models\Order::findOrFail($id);
             return view('admin.payments.show', compact('order'));
         });
+
+        // Contact Messages (Hubungi Kami)
+        Route::get('/messages', [\App\Http\Controllers\Admin\ContactMessagesController::class, 'index'])->name('contact-messages.index');
+        Route::get('/messages/{id}', [\App\Http\Controllers\Admin\ContactMessagesController::class, 'show'])->name('contact-messages.show');
+        Route::delete('/messages/{id}', [\App\Http\Controllers\Admin\ContactMessagesController::class, 'destroy'])->name('contact-messages.destroy');
+
         // Reports
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
         Route::post('/reports/export', [ReportsController::class, 'export'])->name('reports.export');

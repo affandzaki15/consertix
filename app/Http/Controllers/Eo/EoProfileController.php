@@ -52,7 +52,7 @@ class EoProfileController extends Controller
 
             $filename = time() . '_' . $request->file('url_logo')->getClientOriginalName();
             $request->file('url_logo')->move(public_path('foto/organizers'), $filename);
-            $data['url_logo'] = 'organizers/' . $filename;
+            $data['url_logo'] = 'organizers' . DIRECTORY_SEPARATOR . $filename;
         }
 
         $organizer->update($data);
