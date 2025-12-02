@@ -218,7 +218,7 @@
                                     <li>E-Tiket juga akan dikirim melalui WhatsApp ke nomor anda</li>
                                     <li>Jika belum menerima notifikasi email setelah pembayaran:
                                         <ul class="list-disc list-inside ml-4 mt-2 text-sm text-gray-600">
-                                            <li>Cari “Artatix” pada kolom pencarian email</li>
+                                            <li>Cari “Concertix” pada kolom pencarian email</li>
                                             <li>Periksa folder spam/promosi pada email</li>
                                         </ul>
                                     </li>
