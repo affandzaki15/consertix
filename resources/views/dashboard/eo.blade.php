@@ -85,7 +85,7 @@
                             <p class="text-xs text-red-500 mt-1">
                                 ❌ Alasan: {{ $c->notes }}
                             </p>
-                           
+
                             @endif
 
                         </td>
@@ -124,22 +124,26 @@
                                 {{-- Jika APPROVED -> Hanya Preview yang aktif --}}
                                 @elseif($c->approval_status === 'approved')
 
-                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                <a href="{{ route('eo.concerts.edit', $c->id) }}"
+                                    class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md">
                                     Edit
-                                </button>
+                                </a>
 
-                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                <a href="{{ route('eo.concerts.tickets.index', $c->id) }}"
+                                    class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md">
                                     Tiket
-                                </button>
+                                </a>
 
                                 <a href="{{ route('concerts.show', $c->id) }}" target="_blank"
                                     class="px-3 py-1 bg-gray-700 hover:bg-gray-800 text-white rounded-md">
                                     Preview
                                 </a>
 
-                                <button class="px-3 py-1 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                                <button onclick="confirmDelete({{ $c->id }}, '{{ $c->title }}', '{{ $c->approval_status }}')"
+                                    class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md">
                                     Hapus
                                 </button>
+
 
 
                                 {{-- DEFAULT (draft / pending) --}}
